@@ -1,0 +1,30 @@
+# --- SYSTÈME & IDE ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# --- DOCKER & ENVIRONNEMENT (Sécurité) ---
+# On ignore les fichiers de surcharge locale et les variables d'env réelles
+docker-compose.override.yml
+.env
+.env.local
+.env.*.local
+
+# --- DEPENDANCES GLOBALES ---
+**/node_modules/
+**/vendor/
+
+# --- BACKEND (Symfony) ---
+backend/var/
+backend/public/bundles/
+backend/public/build/
+backend/phpunit.xml
+backend/.phpunit.result.cache
+backend/compose.override.yaml
+
+# --- FRONTEND (React/Vite) ---
+frontend/dist/
+frontend/coverage/
+frontend/.env.local
