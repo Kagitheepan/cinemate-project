@@ -17,14 +17,17 @@ interface AddEventModalProps {
     onClose: () => void;
     onAddEvent: (event: Omit<NewEvent, 'id'>) => void; // Allow caller to generate ID or handle omit
     preselectedDate?: Date | null;
+    preselectedMovieId?: string;
 }
 
-const AddEventModal = ({ isOpen, onClose, onAddEvent, preselectedDate }: AddEventModalProps) => {
+const AddEventModal = ({ isOpen, onClose, onAddEvent, preselectedDate, preselectedMovieId }: AddEventModalProps) => {
     const { movies } = useMovies();
     const [selectedMovieId, setSelectedMovieId] = useState('');
     const [dateString, setDateString] = useState('');
     const [timeString, setTimeString] = useState('20:00');
     const [customTitle, setCustomTitle] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
@@ -33,8 +36,15 @@ const AddEventModal = ({ isOpen, onClose, onAddEvent, preselectedDate }: AddEven
             } else {
                 setDateString(format(new Date(), 'yyyy-MM-dd'));
             }
+            if (preselectedMovieId) {
+                const movie = movies.find(m => m.id === preselectedMovieId);
+                if (movie) {
+                    setSelectedMovieId(movie.id);
+                    setSearchQuery(movie.title);
+                }
+            }
         }
-    }, [isOpen, preselectedDate]);
+    }, [isOpen, preselectedDate, preselectedMovieId, movies]);
 
     if (!isOpen) return null;
 
@@ -56,6 +66,7 @@ const AddEventModal = ({ isOpen, onClose, onAddEvent, preselectedDate }: AddEven
         
         // Reset form
         setSelectedMovieId('');
+        setSearchQuery('');
         setCustomTitle('');
         setTimeString('20:00');
         onClose();
@@ -75,28 +86,51 @@ const AddEventModal = ({ isOpen, onClose, onAddEvent, preselectedDate }: AddEven
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Movie Selection */}
-                    <div>
+                    <div className="relative z-20">
                         <label className="block text-sm font-medium text-gray-400 mb-2">Film</label>
                         <div className="relative">
-                            <select
-                                value={selectedMovieId}
+                            <input
+                                type="text"
+                                placeholder="Rechercher un film..."
+                                value={searchQuery}
                                 onChange={(e) => {
-                                    setSelectedMovieId(e.target.value);
-                                    if (e.target.value) setCustomTitle(''); // Clear custom title if movie selected
+                                    setSearchQuery(e.target.value);
+                                    setIsDropdownOpen(true);
+                                    if (selectedMovieId) setSelectedMovieId('');
+                                    if (e.target.value) setCustomTitle('');
                                 }}
-                                className="w-full bg-neutral-800 border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none appearance-none"
-                            >
-                                <option value="">Sélectionner un film...</option>
-                                {movies.map(movie => (
-                                    <option key={movie.id} value={movie.id}>
-                                        {movie.title}
-                                    </option>
-                                ))}
-                            </select>
+                                onFocus={() => setIsDropdownOpen(true)}
+                                onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
+                                className="w-full bg-neutral-800 border border-white/10 rounded-lg p-3 pr-10 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none placeholder-gray-500"
+                            />
                             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
                                 <Film size={18} />
                             </div>
                         </div>
+                        
+                        {isDropdownOpen && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-neutral-800 border border-white/10 rounded-lg shadow-xl max-h-48 overflow-y-auto z-50">
+                                {movies.filter(m => m.title.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? (
+                                    movies.filter(m => m.title.toLowerCase().includes(searchQuery.toLowerCase())).map(movie => (
+                                        <button
+                                            key={movie.id}
+                                            type="button"
+                                            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-purple-600/50 focus:bg-purple-600/50 outline-none transition-colors"
+                                            onClick={() => {
+                                                setSelectedMovieId(movie.id);
+                                                setSearchQuery(movie.title);
+                                                setCustomTitle('');
+                                                setIsDropdownOpen(false);
+                                            }}
+                                        >
+                                            {movie.title}
+                                        </button>
+                                    ))
+                                ) : (
+                                    <div className="px-4 py-3 text-sm text-gray-500">Aucun film trouvé</div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Or Custom Title */}

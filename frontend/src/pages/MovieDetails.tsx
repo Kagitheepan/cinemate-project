@@ -4,13 +4,18 @@ import { ArrowLeft, Play, Plus, Share2, Star, Calendar, Clock, ChevronLeft, Chev
 import Button from '../components/ui/Button';
 import MovieCard from '../components/MovieCard';
 import { useMovies, type Movie } from '../context/MovieContext';
+import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
+import AddEventModal, { type NewEvent } from '../components/AddEventModal';
 
 const MovieDetails = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { fetchMovieDetails, getMovie, movies, isLoading: isContextLoading } = useMovies();
+    const { user, updateUser } = useAuth();
     const [movie, setMovie] = useState<Movie | undefined>(undefined);
     const [isLocalLoading, setIsLocalLoading] = useState(false);
+    const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     
     useEffect(() => {
         const loadMovieDetails = async () => {
@@ -80,6 +85,53 @@ const MovieDetails = () => {
     const recommendations = movies
         .filter(m => m.category === movie.category && m.id !== movie.id)
         .slice(0, 3);
+
+    const isInWatchlist = user?.watchlist?.includes(movie.id) || false;
+
+    const handleToggleWatchlist = async () => {
+        if (!user) {
+            alert("Veuillez vous connecter pour gérer votre Watchlist.");
+            return;
+        }
+
+        const newWatchlist = isInWatchlist 
+            ? user.watchlist.filter(id => id !== movie.id)
+            : [...(user.watchlist || []), movie.id];
+            
+        updateUser({ watchlist: newWatchlist });
+        try {
+            await api.put('/profile', { watchlist: newWatchlist });
+        } catch (e) {
+            console.error("Failed to update watchlist", e);
+        }
+    };
+
+    const handleAddEvent = async (newEvent: Omit<NewEvent, 'id'>) => {
+        if (!user) return;
+        
+        const eventWithId = {
+            ...newEvent,
+            id: Math.random().toString(36).substr(2, 9)
+        };
+        
+        const agendaItem = {
+            id: eventWithId.id,
+            movieId: eventWithId.movieId,
+            title: eventWithId.title,
+            start: eventWithId.date.toISOString(),
+            end: new Date(eventWithId.date.getTime() + 2 * 60 * 60 * 1000).toISOString()
+        };
+        
+        const updatedAgenda = [...(user.agenda || []), agendaItem];
+        updateUser({ agenda: updatedAgenda });
+        
+        try {
+            await api.put('/profile', { agenda: updatedAgenda });
+            alert("Événement ajouté à l'agenda avec succès !");
+        } catch (error) {
+            console.error("Failed to save agenda", error);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-neutral-950 pt-20 pb-12">
@@ -157,9 +209,28 @@ const MovieDetails = () => {
                                 <Play className="w-5 h-5 mr-2 fill-current" />
                                 Regarder
                             </Button>
-                            <Button variant="secondary" size="lg">
-                                <Plus className="w-5 h-5 mr-2" />
-                                Watchlist
+                            <Button 
+                                variant={isInWatchlist ? "primary" : "secondary"} 
+                                size="lg"
+                                onClick={handleToggleWatchlist}
+                                className={isInWatchlist ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}
+                            >
+                                <Plus className={`w-5 h-5 mr-2 transition-transform ${isInWatchlist ? "rotate-45" : ""}`} />
+                                {isInWatchlist ? "Dans la Watchlist" : "Watchlist"}
+                            </Button>
+                            <Button 
+                                variant="secondary" 
+                                size="lg"
+                                onClick={() => {
+                                    if (!user) {
+                                        alert("Veuillez vous connecter pour planifier un film.");
+                                        return;
+                                    }
+                                    setIsEventModalOpen(true);
+                                }}
+                            >
+                                <Calendar className="w-5 h-5 mr-2" />
+                                Planifier
                             </Button>
                             <Button variant="ghost" size="icon" className="rounded-full border border-white/10">
                                 <Share2 className="w-5 h-5" />
@@ -241,6 +312,13 @@ const MovieDetails = () => {
                     )}
                 </div>
             </div>
+
+            <AddEventModal 
+                isOpen={isEventModalOpen} 
+                onClose={() => setIsEventModalOpen(false)} 
+                onAddEvent={handleAddEvent}
+                preselectedMovieId={movie.id}
+            />
         </div>
     );
 };
