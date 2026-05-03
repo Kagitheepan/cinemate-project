@@ -18,7 +18,6 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
     const [selectedGenre, setSelectedGenre] = useState('');
     const [maxDuration, setMaxDuration] = useState<number | null>(null);
     const [count, setCount] = useState<number>(1);
-    const [results, setResults] = useState<Movie[]>([]);
     const [displayedMovies, setDisplayedMovies] = useState<Movie[]>([]);
     const spinIntervalRef = useRef<any>(null);
 
@@ -34,7 +33,6 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
         setSelectedGenre('');
         setMaxDuration(null);
         setCount(1);
-        setResults([]);
         setDisplayedMovies([]);
         onClose();
     };
@@ -53,7 +51,6 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
         const shuffled = [...filtered].sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, count);
 
-        setResults(selected);
         setStep(2);
         setIsSpinning(true);
         
@@ -231,12 +228,6 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                         </>
                     )}
                 </div>
-            </div>
-        </div>
-    );
-};
-
-export default DiscoverModal;
             </div>
         </div>
     );

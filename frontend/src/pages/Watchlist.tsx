@@ -8,6 +8,7 @@ import {
     PointerSensor,
     useSensor,
     useSensors,
+    useDroppable,
     type DragStartEvent,
     type DragOverEvent,
     type DragEndEvent,
@@ -30,6 +31,15 @@ interface WatchlistData {
     toWatch: string[];
     watched: string[];
 }
+
+const DroppableContainer = ({ id, children, className }: { id: string, children: React.ReactNode, className?: string }) => {
+    const { setNodeRef } = useDroppable({ id });
+    return (
+        <div ref={setNodeRef} className={className} id={id}>
+            {children}
+        </div>
+    );
+};
 
 const Watchlist = () => {
     const { user, updateUser } = useAuth();
@@ -121,6 +131,51 @@ const Watchlist = () => {
         saveWatchlist(newToWatch, newWatched);
         setIsAddModalOpen(false);
         setSearchQuery('');
+    };
+
+    const moveToWatched = (movie: Movie) => {
+        const newToWatch = toWatchMovies.filter(m => m.id !== movie.id);
+        const newWatched = [...watchedMovies, movie];
+        setToWatchMovies(newToWatch);
+        setWatchedMovies(newWatched);
+        saveWatchlist(newToWatch, newWatched);
+    };
+
+    const moveToToWatch = (movie: Movie) => {
+        const newWatched = watchedMovies.filter(m => m.id !== movie.id);
+        const newToWatch = [...toWatchMovies, movie];
+        setWatchedMovies(newWatched);
+        setToWatchMovies(newToWatch);
+        saveWatchlist(newToWatch, newWatched);
+    };
+
+    const removeMovie = (movie: Movie, from: 'toWatch' | 'watched') => {
+        let newToWatch = toWatchMovies;
+        let newWatched = watchedMovies;
+        if (from === 'toWatch') {
+            newToWatch = toWatchMovies.filter(m => m.id !== movie.id);
+            setToWatchMovies(newToWatch);
+        } else {
+            newWatched = watchedMovies.filter(m => m.id !== movie.id);
+            setWatchedMovies(newWatched);
+        }
+        saveWatchlist(newToWatch, newWatched);
+    };
+
+    const clearList = (listName: 'toWatch' | 'watched') => {
+        if (!confirm(`Voulez-vous vraiment vider la liste "${listName === 'toWatch' ? 'Films à voir' : 'Films vus'}" ?`)) return;
+        
+        let newToWatch = toWatchMovies;
+        let newWatched = watchedMovies;
+        
+        if (listName === 'toWatch') {
+            newToWatch = [];
+            setToWatchMovies([]);
+        } else {
+            newWatched = [];
+            setWatchedMovies([]);
+        }
+        saveWatchlist(newToWatch, newWatched);
     };
 
     // Sensors
@@ -224,9 +279,17 @@ const Watchlist = () => {
 
                         {/* Left Column: Film à voir */}
                         <div className="flex flex-col space-y-8 bg-white/5 rounded-2xl p-6 min-h-[600px] border border-white/5 relative">
-                            <div className="text-center mb-4">
+                            <div className="text-center mb-4 relative">
                                 <h2 className="text-2xl font-semibold text-purple-400">Films à voir</h2>
                                 <p className="text-gray-400 text-sm mt-1">Vos prochaines découvertes</p>
+                                {toWatchMovies.length > 0 && (
+                                    <button 
+                                        onClick={() => clearList('toWatch')}
+                                        className="absolute right-0 top-0 text-xs text-red-400 hover:text-red-300 transition-colors bg-red-500/10 px-2 py-1 rounded"
+                                    >
+                                        Tout vider
+                                    </button>
+                                )}
                             </div>
 
                             <SortableContext 
@@ -234,20 +297,30 @@ const Watchlist = () => {
                                 items={toWatchMovies.map(m => m.id)} 
                                 strategy={verticalListSortingStrategy}
                             >
-                                <div className="space-y-4 px-2 flex-grow min-h-[200px]" id="toWatchContainer">
+                                <div className="space-y-6 px-2 flex-grow min-h-[200px]" id="toWatchContainer">
                                     {toWatchMovies.map((movie) => (
-                                        <SortableItem key={movie.id} id={movie.id}>
-                                            <div className="transform transition-transform cursor-grab active:cursor-grabbing">
-                                                <MovieCard 
-                                                    id={movie.id}
-                                                    title={movie.title}
-                                                    description={movie.description}
-                                                    year={String(movie.year)}
-                                                    rating={movie.rating}
-                                                    imageUrl={movie.imageUrl}
-                                                />
+                                        <div key={movie.id} className="flex flex-col space-y-3">
+                                            <SortableItem id={movie.id}>
+                                                <div className="transform transition-transform cursor-grab active:cursor-grabbing">
+                                                    <MovieCard 
+                                                        id={movie.id}
+                                                        title={movie.title}
+                                                        description={movie.description}
+                                                        year={String(movie.year)}
+                                                        rating={movie.rating}
+                                                        imageUrl={movie.imageUrl}
+                                                    />
+                                                </div>
+                                            </SortableItem>
+                                            <div className="flex gap-2 px-1">
+                                                <Button size="sm" variant="secondary" className="flex-1 text-xs" onClick={() => moveToWatched(movie)}>
+                                                    Passer aux vus
+                                                </Button>
+                                                <Button size="sm" variant="ghost" className="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-3" onClick={() => removeMovie(movie, 'toWatch')}>
+                                                    <X size={16} />
+                                                </Button>
                                             </div>
-                                        </SortableItem>
+                                        </div>
                                     ))}
                                 </div>
                             </SortableContext>
@@ -270,9 +343,17 @@ const Watchlist = () => {
 
                         {/* Right Column: Film Vu */}
                         <div className="flex flex-col space-y-8 bg-white/5 rounded-2xl p-6 min-h-[600px] border border-white/5 relative">
-                            <div className="text-center mb-4">
+                            <div className="text-center mb-4 relative">
                                 <h2 className="text-2xl font-semibold text-green-400">Films vus</h2>
                                 <p className="text-gray-400 text-sm mt-1">Votre historique de visionnage</p>
+                                {watchedMovies.length > 0 && (
+                                    <button 
+                                        onClick={() => clearList('watched')}
+                                        className="absolute right-0 top-0 text-xs text-red-400 hover:text-red-300 transition-colors bg-red-500/10 px-2 py-1 rounded"
+                                    >
+                                        Tout vider
+                                    </button>
+                                )}
                             </div>
 
                             <SortableContext 
@@ -280,22 +361,32 @@ const Watchlist = () => {
                                 items={watchedMovies.map(m => m.id)} 
                                 strategy={verticalListSortingStrategy}
                             >
-                                <div className="space-y-4 px-2 flex-grow min-h-[200px]" id="watchedContainer">
+                                <DroppableContainer id="watchedContainer" className="space-y-6 px-2 flex-grow min-h-[200px]">
                                     {watchedMovies.map((movie) => (
-                                        <SortableItem key={movie.id} id={movie.id}>
-                                            <div className="transform transition-transform opacity-90 hover:opacity-100 cursor-grab active:cursor-grabbing">
-                                                 <MovieCard 
-                                                    id={movie.id}
-                                                    title={movie.title}
-                                                    description={movie.description}
-                                                    year={String(movie.year)}
-                                                    rating={movie.rating}
-                                                    imageUrl={movie.imageUrl}
-                                                />
+                                        <div key={movie.id} className="flex flex-col space-y-3">
+                                            <SortableItem id={movie.id}>
+                                                <div className="transform transition-transform opacity-90 hover:opacity-100 cursor-grab active:cursor-grabbing">
+                                                     <MovieCard 
+                                                        id={movie.id}
+                                                        title={movie.title}
+                                                        description={movie.description}
+                                                        year={String(movie.year)}
+                                                        rating={movie.rating}
+                                                        imageUrl={movie.imageUrl}
+                                                    />
+                                                </div>
+                                            </SortableItem>
+                                            <div className="flex gap-2 px-1">
+                                                <Button size="sm" variant="secondary" className="flex-1 text-xs" onClick={() => moveToToWatch(movie)}>
+                                                    Passer aux à voir
+                                                </Button>
+                                                <Button size="sm" variant="ghost" className="text-red-400 hover:text-red-300 hover:bg-red-500/10 px-3" onClick={() => removeMovie(movie, 'watched')}>
+                                                    <X size={16} />
+                                                </Button>
                                             </div>
-                                        </SortableItem>
+                                        </div>
                                     ))}
-                                </div>
+                                </DroppableContainer>
                             </SortableContext>
 
                             <div className="flex justify-center mt-auto pt-4">
