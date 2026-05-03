@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
-
+import { Sparkles } from 'lucide-react';
 import MovieGrid from '../components/MovieGrid';
 import { Link } from 'react-router-dom';
 import TimeModal from '../components/TimeModal';
+import DiscoverModal from '../components/DiscoverModal';
+import Button from '../components/ui/Button';
 import { useMovies } from '../context/MovieContext';
 
 const Home = () => {
     const { movies, isLoading } = useMovies();
     const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
+    const [isDiscoverModalOpen, setIsDiscoverModalOpen] = useState(false);
     const [maxDuration, setMaxDuration] = useState<number | null>(() => {
         const saved = sessionStorage.getItem('cinemate_home_maxDuration');
         return saved ? parseInt(saved) : null;
@@ -134,7 +137,23 @@ const Home = () => {
                             <option value="150">- de 2h30</option>
                         </select>
                     </div>
+
+                    <div className="mt-8 flex justify-center">
+                        <Button 
+                            variant="primary" 
+                            onClick={() => setIsDiscoverModalOpen(true)}
+                            className="shadow-purple-500/25 group"
+                        >
+                            <Sparkles className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                            Découvrir un film
+                        </Button>
+                    </div>
                 </section>
+
+                <DiscoverModal 
+                    isOpen={isDiscoverModalOpen}
+                    onClose={() => setIsDiscoverModalOpen(false)}
+                />
 
                 <section className="mt-12">
                    <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">

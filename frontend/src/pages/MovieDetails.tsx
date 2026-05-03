@@ -86,7 +86,7 @@ const MovieDetails = () => {
         .filter(m => m.category === movie.category && m.id !== movie.id)
         .slice(0, 3);
 
-    const isInWatchlist = user?.watchlist?.includes(movie.id) || false;
+    const isInWatchlist = Array.isArray(user?.watchlist) ? user.watchlist.includes(movie.id) : false;
 
     const handleToggleWatchlist = async () => {
         if (!user) {
@@ -94,9 +94,10 @@ const MovieDetails = () => {
             return;
         }
 
+        const currentWatchlist = Array.isArray(user.watchlist) ? user.watchlist : [];
         const newWatchlist = isInWatchlist 
-            ? user.watchlist.filter(id => id !== movie.id)
-            : [...(user.watchlist || []), movie.id];
+            ? currentWatchlist.filter(id => id !== movie.id)
+            : [...currentWatchlist, movie.id];
             
         updateUser({ watchlist: newWatchlist });
         try {

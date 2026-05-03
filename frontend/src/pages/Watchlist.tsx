@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import {
     DndContext,
     DragOverlay,
@@ -40,6 +40,9 @@ const Watchlist = () => {
     const [watchedMovies, setWatchedMovies] = useState<Movie[]>([]);
     
     const [activeId, setActiveId] = useState<string | null>(null);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [addModalTarget, setAddModalTarget] = useState<'toWatch' | 'watched' | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Hydrate lists from user profile
     useEffect(() => {
@@ -95,18 +98,29 @@ const Watchlist = () => {
         };
 
         try {
-            // Update context immediately for optimistic UI
-            // Cast to any because our TS type says string[], but we want to store object structure if backend allows.
-            // Backend User.php has `watchlist` as `array`. Doctrine JSON type maps to array/object.
-            // So we can store object.
-            // We need to trick TS or update TS interface. 
-            // I updated TS interface to string[]. I should update it to any or specific shape.
-            // For now cast to any.
             updateUser({ watchlist: data as any });
             await api.put('/profile', { watchlist: data });
         } catch (error) {
             console.error("Failed to save watchlist", error);
         }
+    };
+
+    const handleAddMovie = (movie: Movie) => {
+        if (!addModalTarget) return;
+
+        const newToWatch = addModalTarget === 'toWatch' 
+            ? [...toWatchMovies.filter(m => m.id !== movie.id), movie]
+            : toWatchMovies.filter(m => m.id !== movie.id);
+            
+        const newWatched = addModalTarget === 'watched'
+            ? [...watchedMovies.filter(m => m.id !== movie.id), movie]
+            : watchedMovies.filter(m => m.id !== movie.id);
+
+        setToWatchMovies(newToWatch);
+        setWatchedMovies(newWatched);
+        saveWatchlist(newToWatch, newWatched);
+        setIsAddModalOpen(false);
+        setSearchQuery('');
     };
 
     // Sensors
@@ -239,7 +253,15 @@ const Watchlist = () => {
                             </SortableContext>
                             
                             <div className="flex justify-center mt-auto pt-4">
-                                <Button variant="secondary" className="flex items-center gap-2">
+                                <Button 
+                                    variant="secondary" 
+                                    className="flex items-center gap-2"
+                                    onClick={() => {
+                                        setAddModalTarget('toWatch');
+                                        setIsAddModalOpen(true);
+                                        setSearchQuery('');
+                                    }}
+                                >
                                     <Plus size={18} />
                                     Ajouter un film
                                 </Button>
@@ -277,7 +299,15 @@ const Watchlist = () => {
                             </SortableContext>
 
                             <div className="flex justify-center mt-auto pt-4">
-                                <Button variant="secondary" className="flex items-center gap-2">
+                                <Button 
+                                    variant="secondary" 
+                                    className="flex items-center gap-2"
+                                    onClick={() => {
+                                        setAddModalTarget('watched');
+                                        setIsAddModalOpen(true);
+                                        setSearchQuery('');
+                                    }}
+                                >
                                     <Plus size={18} />
                                     Ajouter un film
                                 </Button>
@@ -304,8 +334,54 @@ const Watchlist = () => {
                     </div>
                 ) : null}
             </DragOverlay>
+
+            {isAddModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-neutral-900 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+                        <button 
+                            onClick={() => setIsAddModalOpen(false)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+                        <h2 className="text-2xl font-bold text-white mb-6">
+                            Ajouter à {addModalTarget === 'toWatch' ? 'Films à voir' : 'Films vus'}
+                        </h2>
+                        <div className="space-y-4">
+                            <input 
+                                type="text" 
+                                placeholder="Rechercher un film..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-neutral-800 border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                            />
+                            <div className="max-h-60 overflow-y-auto custom-scrollbar space-y-2">
+                                {searchQuery ? movies.filter(m => m.title.toLowerCase().includes(searchQuery.toLowerCase())).map(movie => (
+                                    <div key={movie.id} className="flex justify-between items-center bg-neutral-800 p-2 rounded-lg border border-white/5">
+                                        <div className="flex items-center gap-3">
+                                            {movie.imageUrl && (
+                                                <img src={movie.imageUrl} alt={movie.title} className="w-8 h-12 object-cover rounded" />
+                                            )}
+                                            <span className="text-white text-sm font-medium">{movie.title}</span>
+                                        </div>
+                                        <button 
+                                            onClick={() => handleAddMovie(movie)}
+                                            className="bg-white/5 hover:bg-purple-600 text-white px-3 py-1.5 rounded text-sm transition-colors border border-white/10"
+                                        >
+                                            Ajouter
+                                        </button>
+                                    </div>
+                                )) : (
+                                    <p className="text-gray-500 text-sm text-center py-4">Commencez à taper pour chercher...</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </DndContext>
     );
 };
 
 export default Watchlist;
+
