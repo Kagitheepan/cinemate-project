@@ -31,6 +31,7 @@ const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "202
                     <img
                         src={imageUrl}
                         alt={title}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                 ) : (

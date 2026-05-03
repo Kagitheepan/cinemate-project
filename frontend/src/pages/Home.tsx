@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import SearchBar from '../components/SearchBar';
+
 import MovieGrid from '../components/MovieGrid';
 import { Link } from 'react-router-dom';
 import TimeModal from '../components/TimeModal';
@@ -8,8 +8,36 @@ import { useMovies } from '../context/MovieContext';
 const Home = () => {
     const { movies, isLoading } = useMovies();
     const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
-    const [maxDuration, setMaxDuration] = useState<number | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [maxDuration, setMaxDuration] = useState<number | null>(() => {
+        const saved = sessionStorage.getItem('cinemate_home_maxDuration');
+        return saved ? parseInt(saved) : null;
+    });
+    const [searchQuery, setSearchQuery] = useState(() => {
+        return sessionStorage.getItem('cinemate_home_searchQuery') || '';
+    });
+    const [selectedGenre, setSelectedGenre] = useState(() => {
+        return sessionStorage.getItem('cinemate_home_selectedGenre') || '';
+    });
+
+    // Derived state for available genres
+    const allGenres = Array.from(new Set(movies.flatMap(m => m.genres || []))).sort();
+
+    // Save filters to sessionStorage whenever they change
+    useEffect(() => {
+        if (maxDuration === null) {
+            sessionStorage.removeItem('cinemate_home_maxDuration');
+        } else {
+            sessionStorage.setItem('cinemate_home_maxDuration', maxDuration.toString());
+        }
+    }, [maxDuration]);
+
+    useEffect(() => {
+        sessionStorage.setItem('cinemate_home_searchQuery', searchQuery);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        sessionStorage.setItem('cinemate_home_selectedGenre', selectedGenre);
+    }, [selectedGenre]);
 
     useEffect(() => {
         // Check if user has already set a preference or visited recently
@@ -43,11 +71,13 @@ const Home = () => {
         const matchesSearch = searchQuery 
             ? movie.title.toLowerCase().includes(searchQuery.toLowerCase()) 
             : true;
-        return matchesDuration && matchesSearch;
+        const matchesGenre = selectedGenre ? (movie.genres || []).includes(selectedGenre) : true;
+        return matchesDuration && matchesSearch && matchesGenre;
     });
 
-    // Show all matching if searching, otherwise show top 6
-    const displayedMovies = searchQuery ? filteredMovies : filteredMovies.slice(0, 6);
+    // Show all matching if searching or filtering, otherwise show top 6
+    const isFiltering = searchQuery || selectedGenre || maxDuration;
+    const displayedMovies = isFiltering ? filteredMovies : filteredMovies.slice(0, 6);
 
     return (
         <div className="flex-grow pt-24 pb-12 transition-all duration-500 ease-in-out">
@@ -73,8 +103,36 @@ const Home = () => {
                         Explorez des milliers de films et séries, créez votre watchlist et partagez vos favoris avec la communauté.
                     </p>
 
-                    <div className="flex justify-center w-full relative z-10">
-                        <SearchBar value={searchQuery} onChange={setSearchQuery} />
+                    <div className="flex flex-wrap justify-center items-center gap-3 w-full relative z-10 max-w-3xl mx-auto">
+                        <input 
+                            type="text" 
+                            placeholder="Rechercher un film..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
+                        />
+                        
+                        <select 
+                            value={selectedGenre}
+                            onChange={(e) => setSelectedGenre(e.target.value)}
+                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                        >
+                            <option value="">Tous les genres</option>
+                            {allGenres.map(genre => (
+                                <option key={genre} value={genre}>{genre}</option>
+                            ))}
+                        </select>
+
+                        <select 
+                            value={maxDuration || ''}
+                            onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
+                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                        >
+                            <option value="">Toutes durées</option>
+                            <option value="90">- de 1h30</option>
+                            <option value="120">- de 2h00</option>
+                            <option value="150">- de 2h30</option>
+                        </select>
                     </div>
                 </section>
 
@@ -82,11 +140,11 @@ const Home = () => {
                    <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
                         <div className="flex items-center gap-4">
                             <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
-                                {searchQuery ? `Résultats pour "${searchQuery}"` : (maxDuration ? `Films de moins de ${Math.floor(maxDuration / 60)}h${maxDuration % 60 > 0 ? maxDuration % 60 : ''}` : 'Tendances du moment')}
+                                {isFiltering ? `${filteredMovies.length} résultat${filteredMovies.length > 1 ? 's' : ''}` : 'Tendances du moment'}
                             </h2>
-                            {(maxDuration || searchQuery) && (
+                            {isFiltering && (
                                 <button 
-                                    onClick={() => { setMaxDuration(null); setSearchQuery(''); }}
+                                    onClick={() => { setMaxDuration(null); setSearchQuery(''); setSelectedGenre(''); }}
                                     className="text-xs text-purple-400 hover:text-white border border-purple-500/30 rounded-full px-3 py-1 transition-colors"
                                 >
                                     Effacer les filtres
@@ -108,7 +166,7 @@ const Home = () => {
                        <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
                            <p className="text-xl text-gray-400 font-medium">Aucun film ne correspond à votre recherche.</p>
                            <button 
-                                onClick={() => { setMaxDuration(null); setSearchQuery(''); }}
+                                onClick={() => { setMaxDuration(null); setSearchQuery(''); setSelectedGenre(''); }}
                                 className="mt-4 text-purple-400 hover:text-white underline"
                            >
                                Voir tous les films

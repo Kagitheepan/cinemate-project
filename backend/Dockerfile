@@ -12,6 +12,13 @@ RUN apt-get update && apt-get install -y \
 # 2. Installation de l'extension MongoDB 
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
+# Activer la compression GZIP globale pour PHP et OPcache pour le serveur CLI
+RUN echo "zlib.output_compression = On" >> /usr/local/etc/php/conf.d/optimizations.ini && \
+    echo "zlib.output_compression_level = 6" >> /usr/local/etc/php/conf.d/optimizations.ini && \
+    echo "opcache.enable_cli = 1" >> /usr/local/etc/php/conf.d/optimizations.ini && \
+    echo "opcache.memory_consumption = 256" >> /usr/local/etc/php/conf.d/optimizations.ini && \
+    echo "opcache.max_accelerated_files = 20000" >> /usr/local/etc/php/conf.d/optimizations.ini
+
 # 3. Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
