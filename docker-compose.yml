@@ -1,0 +1,76 @@
+services:
+  # --- Service 1 : Backend (Symfony) ---
+  backend:
+    build: ./backend
+    container_name: cinemate-back
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/var
+    depends_on:
+      - database
+      - mongo-db
+    environment:
+      # On force l'URL de base de données pour écraser le .env local de Symfony
+      DATABASE_URL: "mysql://root:root@database:3306/cinemate_users?serverVersion=8.0&charset=utf8mb4"
+      MONGODB_URI: "mongodb://root:root@mongo-db:27017"
+      MONGODB_DB: "cinemate_movies"
+      PHP_CLI_SERVER_WORKERS: 4
+      OMDB_API_KEY: "9713dcac"
+
+  # --- Service 2 : Frontend (React) ---
+  frontend:
+    build: ./frontend
+    container_name: cinemate-front
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Évite d'écraser les node_modules du conteneur
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      #- WATCHPACK_POLLING=true # Nécessaire pour le hot-reload sous Windows
+
+  # --- Service 3 : Base de données SQL (Utilisateurs) ---
+  database:
+    image: mysql:8.0
+    container_name: cinemate-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cinemate_users
+    ports:
+      - "3306:3306"
+    volumes:
+      - sql-data:/var/lib/mysql
+
+  # --- Service 4 : Base de données NoSQL (Films) ---
+  mongo-db:
+    image: mongo:6.0
+    container_name: cinemate-mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  # --- Service 5 : Interface SQL (PhpMyAdmin) ---
+  pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: cinemate-pma
+    environment:
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - database
+
+volumes:
+  sql-data:
+  mongo-data:
