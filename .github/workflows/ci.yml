@@ -64,4 +64,13 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
 
       - name: Run tests
-        run: php bin/phpunit
+        run: |
+          set +e
+          php bin/phpunit 2>&1 | tee phpunit.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error::$line"
+            done < phpunit.log
+            exit "$status"
+          fi
