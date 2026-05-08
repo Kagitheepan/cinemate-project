@@ -66,7 +66,7 @@ jobs:
       - name: Run tests
         run: |
           set +e
-          php bin/phpunit 2>&1 | tee phpunit.log
+          php bin/phpunit -c phpunit.dist.xml 2>&1 | tee phpunit.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
             while IFS= read -r line; do

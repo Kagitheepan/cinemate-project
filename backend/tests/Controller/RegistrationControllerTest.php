@@ -4,8 +4,8 @@ namespace App\Tests\Controller;
 
 use App\Controller\RegistrationController;
 use App\Entity\User;
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ObjectRepository;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +33,7 @@ class RegistrationControllerTest extends TestCase
 
     public function testRegisterRejectsAlreadyUsedEmail(): void
     {
-        $repository = $this->createMock(ObjectRepository::class);
+        $repository = $this->createMock(EntityRepository::class);
         $repository
             ->expects(self::once())
             ->method('findOneBy')
@@ -61,7 +61,7 @@ class RegistrationControllerTest extends TestCase
 
     public function testRegisterCreatesUserWhenPayloadIsValid(): void
     {
-        $repository = $this->createMock(ObjectRepository::class);
+        $repository = $this->createMock(EntityRepository::class);
         $repository
             ->expects(self::exactly(2))
             ->method('findOneBy')

@@ -45,7 +45,9 @@ class MovieControllerTest extends TestCase
 
         self::assertSame(200, $response->getStatusCode());
         self::assertSame($movies, json_decode($response->getContent(), true));
-        self::assertSame('public, max-age=60, stale-while-revalidate=300', $response->headers->get('Cache-Control'));
+        self::assertTrue($response->headers->hasCacheControlDirective('public'));
+        self::assertSame('60', $response->headers->getCacheControlDirective('max-age'));
+        self::assertSame('300', $response->headers->getCacheControlDirective('stale-while-revalidate'));
         self::assertNotEmpty($response->headers->get('ETag'));
     }
 
@@ -64,8 +66,10 @@ class MovieControllerTest extends TestCase
         );
 
         self::assertSame(304, $response->getStatusCode());
-        self::assertSame('', $response->getContent());
-        self::assertSame('public, max-age=60, stale-while-revalidate=300', $response->headers->get('Cache-Control'));
+        self::assertSame('{}', $response->getContent());
+        self::assertTrue($response->headers->hasCacheControlDirective('public'));
+        self::assertSame('60', $response->headers->getCacheControlDirective('max-age'));
+        self::assertSame('300', $response->headers->getCacheControlDirective('stale-while-revalidate'));
     }
 
     public function testSerializeMovieReturnsFullDetailPayload(): void
