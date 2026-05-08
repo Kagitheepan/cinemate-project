@@ -19,12 +19,6 @@
         </testsuite>
     </testsuites>
 
-    <coverage>
-        <include>
-            <directory>src</directory>
-        </include>
-    </coverage>
-
     <extensions>
     </extensions>
 </phpunit>
