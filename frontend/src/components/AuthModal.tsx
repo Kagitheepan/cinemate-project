@@ -36,23 +36,13 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
         try {
             if (isLogin) {
                 // Login Flow
-                const response = await api.post('/login_check', {
+                await api.post('/login_check', {
                     username,
                     password
                 });
-                
-                const { token } = response.data;
-                
-                // Fetch user profile with the new token
-                // We need to manually set the header here for the immediate request if interceptor relies on localStorage which isn't set yet in context
-                // But context login function sets localStorage. 
-                // However, avoiding race conditions, let's just use the token in header explicitly or rely on interceptor if we set localStorage first.
-                // For safety, let's set it in localStorage before fetching profile if we rely on interceptor, or pass headers.
-                
-                localStorage.setItem('token', token); // Temporarily set for the next request
-                
+
                 const profileResponse = await api.get('/profile');
-                login(token, profileResponse.data);
+                login(profileResponse.data);
                 onClose();
             } else {
                 // Register Flow
@@ -63,16 +53,13 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                 });
                 
                 // Auto-login after register
-                const loginResponse = await api.post('/login_check', {
+                await api.post('/login_check', {
                     username,
                     password
                 });
-                
-                const { token } = loginResponse.data;
-                localStorage.setItem('token', token);
-                
+
                 const profileResponse = await api.get('/profile');
-                login(token, profileResponse.data);
+                login(profileResponse.data);
                 onClose();
             }
         } catch (err: any) { // using any for simplicity with axios error handling
@@ -88,7 +75,6 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
             } else {
                 setError('Erreur de connexion au serveur.');
             }
-            localStorage.removeItem('token'); // Cleanup if failed mid-way
         } finally {
             setLoading(false);
         }

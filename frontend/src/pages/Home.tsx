@@ -71,9 +71,12 @@ const Home = () => {
 
     const filteredMovies = uniqueMovies.filter(movie => {
         const matchesDuration = maxDuration ? (movie.duration || 999) <= maxDuration : true;
-        const matchesSearch = searchQuery 
-            ? movie.title.toLowerCase().includes(searchQuery.toLowerCase()) 
-            : true;
+        const query = searchQuery.toLowerCase();
+        const matchesSearch = query ? (
+            movie.title.toLowerCase().includes(query) ||
+            (movie.director && movie.director.toLowerCase().includes(query)) ||
+            (movie.castNames && movie.castNames.some(name => name.toLowerCase().includes(query)))
+        ) : true;
         const matchesGenre = selectedGenre ? (movie.genres || []).includes(selectedGenre) : true;
         return matchesDuration && matchesSearch && matchesGenre;
     });
@@ -109,7 +112,7 @@ const Home = () => {
                     <div className="flex flex-wrap justify-center items-center gap-3 w-full relative z-10 max-w-3xl mx-auto">
                         <input 
                             type="text" 
-                            placeholder="Rechercher un film..."
+                            placeholder="Titre, acteur, réalisateur..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"

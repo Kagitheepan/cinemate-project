@@ -46,6 +46,28 @@ class TmdbService
         return $response->toArray()['results'] ?? [];
     }
 
+    public function discoverStreamingMovies(int $page = 1): array
+    {
+        // 7 dernières années
+        $startDate = (new \DateTime('-7 years'))->format('Y-m-d');
+        $endDate = (new \DateTime())->format('Y-m-d');
+
+        $response = $this->client->request('GET', self::BASE_URL . '/discover/movie', [
+            'query' => [
+                'api_key' => $this->apiKey,
+                'language' => 'fr-FR',
+                'page' => $page,
+                'sort_by' => 'popularity.desc',
+                'primary_release_date.gte' => $startDate,
+                'primary_release_date.lte' => $endDate,
+                'watch_region' => 'FR',
+                'with_watch_monetization_types' => 'flatrate|rent|buy|ads|free', // Seulement dispos en streaming/VOD
+            ]
+        ]);
+
+        return $response->toArray()['results'] ?? [];
+    }
+
     public function getMovieDetails(int $movieId): array
     {
         try {
@@ -95,6 +117,22 @@ class TmdbService
             $response = $this->client->request('GET', self::BASE_URL . '/movie/' . $movieId . '/watch/providers', [
                 'query' => [
                     'api_key' => $this->apiKey,
+                ]
+            ]);
+            return $response->toArray()['results'] ?? [];
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    public function getVideos(int $movieId): array
+    {
+        try {
+            $response = $this->client->request('GET', self::BASE_URL . '/movie/' . $movieId . '/videos', [
+                'query' => [
+                    'api_key' => $this->apiKey,
+                    'language' => 'fr-FR',
+                    'include_video_language' => 'fr,en,null'
                 ]
             ]);
             return $response->toArray()['results'] ?? [];

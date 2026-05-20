@@ -18,6 +18,8 @@ export interface Movie {
     availableOn?: string[]; // Platforms
     director?: string;
     cast?: { name: string; role: string; imageUrl?: string }[];
+    castNames?: string[]; // Used for fast searching
+    trailerKey?: string;
 }
 
 interface MovieContextType {
@@ -157,12 +159,13 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
         try {
             const response = await api.get(`/movies/${id}`);
             const fullMovie = {
-                ...response.data,
+                ...existingMovie,      // Keep existing fields (castNames, director from list)
+                ...response.data,      // Override with detailed data
                 year: response.data.year ? parseInt(response.data.year) : (response.data.releaseDate ? new Date(response.data.releaseDate).getFullYear() : 0),
                 duration: response.data.duration // Use real duration from API
             };
 
-            // Update movies list with full details
+            // Update movies list with full details (merged, not replaced)
             setMovies(prev => prev.map(m => m.id === id ? fullMovie : m));
             return fullMovie;
         } catch (err) {

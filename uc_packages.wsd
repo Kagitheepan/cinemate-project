@@ -1,0 +1,32 @@
+@startuml
+left to right direction
+
+actor "User Non Connecté" as Guest
+actor "User Connecté" as User
+actor "Notifications" as Notif
+actor "API JustWatch" as JustWatch
+actor "API TMDB" as TMDB
+
+User -|> Guest
+
+package "Accès Compte" as PkgAccount
+package "Découverte et Recherche" as PkgSearch
+package "Fiche Film" as PkgMovie
+package "Gestion Personnel" as PkgPersonal
+package "Backend & API" as PkgBackend
+
+Guest --> PkgAccount
+Guest --> PkgSearch
+Guest --> PkgMovie
+
+User --> PkgPersonal
+
+PkgPersonal ..> PkgBackend : <<use>>
+PkgSearch ..> PkgBackend : <<use>>
+PkgMovie ..> PkgBackend : <<use>>
+
+PkgPersonal <-- Notif
+PkgBackend <-- JustWatch
+PkgBackend <-- TMDB
+
+@enduml

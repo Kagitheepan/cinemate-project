@@ -2,12 +2,23 @@ lexik_jwt_authentication:
     secret_key: '%env(resolve:JWT_SECRET_KEY)%'
     public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
     pass_phrase: '%env(JWT_PASSPHRASE)%'
+    remove_token_from_body_when_cookies_used: true
+    set_cookies:
+        BEARER:
+            lifetime: 3600
+            samesite: lax
+            path: /
+            secure: '%env(bool:JWT_COOKIE_SECURE)%'
+            httpOnly: true
 
     token_extractors:
         authorization_header:
-            enabled: true
+            enabled: false
             prefix:  Bearer
             name:    Authorization
-        query_parameter:
+        cookie:
             enabled: true
+            name: BEARER
+        query_parameter:
+            enabled: false
             name:    bearer

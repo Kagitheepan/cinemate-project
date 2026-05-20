@@ -63,7 +63,8 @@ class ImportMoviesCommand extends Command
             $io->text("Processing page $page...");
             
             try {
-                $moviesData = $this->tmdbService->getPopularMovies($page);
+                // Utilise la nouvelle méthode ciblée (7 dernières années, streaming/VOD en France)
+                $moviesData = $this->tmdbService->discoverStreamingMovies($page);
             } catch (\Exception $e) {
                 $io->warning("Failed to fetch page $page: " . $e->getMessage());
                 continue;
@@ -158,13 +159,77 @@ class ImportMoviesCommand extends Command
                 // Fetch Watch Providers (JustWatch)
                 $providers = $this->tmdbService->getWatchProviders($tmdbId);
                 $platforms = [];
-                // Check if FR region exists and has flatrate (streaming) providers
-                if (isset($providers['FR']['flatrate'])) {
-                    foreach ($providers['FR']['flatrate'] as $provider) {
+                $frData = $providers['FR'] ?? [];
+                
+                // 1. Streaming subscriptions (flatrate)
+                if (isset($frData['flatrate'])) {
+                    foreach ($frData['flatrate'] as $provider) {
                         $platforms[] = $provider['provider_name'];
                     }
                 }
+                
+                // 2. Free with ads
+                if (isset($frData['ads'])) {
+                    foreach ($frData['ads'] as $provider) {
+                        $name = $provider['provider_name'];
+                        if (!in_array($name, $platforms)) {
+                            $platforms[] = $name . ' (gratuit)';
+                        }
+                    }
+                }
+                
+                // 3. If no streaming, check rent/buy (VOD)
+                if (empty($platforms)) {
+                    $hasRentOrBuy = !empty($frData['rent']) || !empty($frData['buy']);
+                    if ($hasRentOrBuy) {
+                        $platforms[] = 'VOD (payant)';
+                    }
+                }
+                
+                // 4. Verification finale des plateformes et de la date de sortie
+                $isReleased = $movie->getReleaseDate() && $movie->getReleaseDate() <= new \DateTime();
+                
+                // On rejette le film s'il n'est pas encore sorti OU s'il n'a aucune plateforme VOD/Streaming
+                if (!$isReleased || empty($platforms)) {
+                    // Si le film existait déjà, on le supprime
+                    if ($movie->getId()) {
+                        $this->entityManager->remove($movie);
+                    }
+                    continue; // On passe au film suivant sans l'enregistrer
+                }
+                
                 $movie->setPlatforms($platforms);
+
+                // Fetch Trailer (Priority: FR Trailer > EN Trailer > Any Trailer > FR Teaser > EN Teaser > Any Teaser > Any video)
+                $videos = $this->tmdbService->getVideos($tmdbId);
+                $frTrailer = null;
+                $enTrailer = null;
+                $anyTrailer = null;
+                $frTeaser = null;
+                $enTeaser = null;
+                $anyTeaser = null;
+                $anyVideo = null;
+                
+                foreach ($videos as $video) {
+                    if ($video['site'] !== 'YouTube') continue;
+                    
+                    $lang = $video['iso_639_1'] ?? '';
+                    $type = $video['type'] ?? '';
+                    
+                    if ($type === 'Trailer') {
+                        if ($lang === 'fr' && !$frTrailer) $frTrailer = $video['key'];
+                        elseif ($lang === 'en' && !$enTrailer) $enTrailer = $video['key'];
+                        elseif (!$anyTrailer) $anyTrailer = $video['key'];
+                    } elseif ($type === 'Teaser') {
+                        if ($lang === 'fr' && !$frTeaser) $frTeaser = $video['key'];
+                        elseif ($lang === 'en' && !$enTeaser) $enTeaser = $video['key'];
+                        elseif (!$anyTeaser) $anyTeaser = $video['key'];
+                    } elseif (!$anyVideo) {
+                        $anyVideo = $video['key'];
+                    }
+                }
+                
+                $movie->setTrailerKey($frTrailer ?? $enTrailer ?? $anyTrailer ?? $frTeaser ?? $enTeaser ?? $anyTeaser ?? $anyVideo);
 
                 $this->entityManager->persist($movie);
                 $importedCount++;

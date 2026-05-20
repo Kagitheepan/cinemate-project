@@ -4,8 +4,8 @@ import Button from '../components/ui/Button';
 import { User, Mail, Save, Clock, Film, Tv, Play } from 'lucide-react';
 import api from '../services/api';
 
-const AVAILABLE_PLATFORMS = ['Netflix', 'Amazon Prime', 'Disney+', 'Canal+', 'Apple TV', 'HBO Max'];
-const AVAILABLE_GENRES = ['Action', 'Science Fiction', 'Adventure', 'Biopic', 'Animation', 'Drama', 'Horror', 'Thriller', 'Comedy', 'Fantasy'];
+const AVAILABLE_PLATFORMS = ['Netflix', 'Amazon Prime Video', 'Disney+', 'Canal+', 'Apple TV+', 'HBO Max', 'Paramount+'];
+const AVAILABLE_GENRES = ['Action', 'Aventure', 'Animation', 'Comédie', 'Crime', 'Documentaire', 'Drame', 'Familial', 'Fantastique', 'Histoire', 'Horreur', 'Musique', 'Mystère', 'Romance', 'Science-Fiction', 'Téléfilm', 'Thriller', 'Guerre', 'Western'];
 
 const Profile = () => {
     const { user, updateUser } = useAuth();

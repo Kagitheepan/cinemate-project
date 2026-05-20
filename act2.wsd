@@ -1,0 +1,40 @@
+@startuml
+!theme plain
+skinparam style strictuml
+skinparam TitleFontSize 20
+
+title Processus Frontend : Recherche de Films (MoviesPage.tsx)
+
+start
+
+:L'utilisateur accède à la Page des Films;
+:Récupérer les films globaux (useMovies);
+:Restaurer les états des filtres (sessionStorage);
+
+partition "Application Cumulative des Filtres" {
+  fork
+    :Saisir Mots-Clés\n(Filtre par Titre);
+  fork again
+    :Sélectionner un Genre\n(Menu déroulant);
+  fork again
+    :Sélectionner une Durée Max\n(Menu déroulant);
+  end fork
+}
+
+:Combiner les filtres (movies.filter);
+:Appliquer la pagination\n(Limiter à 'displayedCount');
+
+if (Résultats > 0 ?) then (Oui)
+  :Afficher les résultats (MovieGrid);
+  
+  if (Reste-t-il des films non affichés ?) then (Oui)
+    :Afficher le bouton "Voir plus de films";
+  else (Non)
+  endif
+  
+else (Non)
+  :Afficher "Aucun film ne correspond";
+endif
+
+stop
+@enduml

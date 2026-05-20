@@ -1,12 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Play, Plus, Share2, Star, Calendar, Clock, ChevronLeft, ChevronRight, User } from 'lucide-react';
+import { ArrowLeft, Play, Plus, Share2, Star, Calendar, Clock, ChevronLeft, ChevronRight, User, X } from 'lucide-react';
 import Button from '../components/ui/Button';
 import MovieCard from '../components/MovieCard';
 import { useMovies, type Movie } from '../context/MovieContext';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import AddEventModal, { type NewEvent } from '../components/AddEventModal';
+
+const getPlatformStyle = (platform: string) => {
+    const p = platform.toLowerCase();
+    if (p.includes('cinéma')) return 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white border-yellow-500';
+    if (p.includes('vod')) return 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white border-emerald-500';
+    if (p.includes('gratuit')) return 'bg-gradient-to-r from-green-500 to-lime-500 text-white border-green-400';
+    if (p.includes('netflix')) return 'bg-[#E50914] text-white border-[#E50914]';
+    if (p.includes('prime') || p.includes('amazon')) return 'bg-[#00A8E1] text-white border-[#00A8E1]';
+    if (p.includes('disney')) return 'bg-[#113CCF] text-white border-[#113CCF]';
+    if (p.includes('canal')) return 'bg-black text-white border-white/20';
+    if (p.includes('apple')) return 'bg-white text-black border-white';
+    if (p.includes('hbo') || p.includes('max')) return 'bg-[#002BE7] text-white border-[#002BE7]';
+    if (p.includes('paramount')) return 'bg-[#0064FF] text-white border-[#0064FF]';
+    if (p.includes('crunchyroll')) return 'bg-[#F47521] text-white border-[#F47521]';
+    return 'bg-neutral-800 text-gray-300 border-white/10';
+};
 
 const MovieDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -16,6 +32,7 @@ const MovieDetails = () => {
     const [movie, setMovie] = useState<Movie | undefined>(undefined);
     const [isLocalLoading, setIsLocalLoading] = useState(false);
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
     
     useEffect(() => {
         const loadMovieDetails = async () => {
@@ -86,7 +103,15 @@ const MovieDetails = () => {
         .filter(m => m.category === movie.category && m.id !== movie.id)
         .slice(0, 3);
 
-    const isInWatchlist = Array.isArray(user?.watchlist) ? user.watchlist.includes(movie.id) : false;
+    const watchlistData = user?.watchlist as unknown as { toWatch?: string[], watched?: string[] } | null;
+    const isObjectWatchlist = user?.watchlist && !Array.isArray(user.watchlist);
+    
+    let isInWatchlist = false;
+    if (isObjectWatchlist && watchlistData) {
+        isInWatchlist = !!(watchlistData.toWatch?.includes(movie.id) || watchlistData.watched?.includes(movie.id));
+    } else if (Array.isArray(user?.watchlist)) {
+        isInWatchlist = user.watchlist.includes(movie.id);
+    }
 
     const handleToggleWatchlist = async () => {
         if (!user) {
@@ -94,10 +119,25 @@ const MovieDetails = () => {
             return;
         }
 
-        const currentWatchlist = Array.isArray(user.watchlist) ? user.watchlist : [];
-        const newWatchlist = isInWatchlist 
-            ? currentWatchlist.filter(id => id !== movie.id)
-            : [...currentWatchlist, movie.id];
+        let newWatchlist: any;
+        if (isObjectWatchlist && watchlistData) {
+            if (isInWatchlist) {
+                newWatchlist = {
+                    toWatch: (watchlistData.toWatch || []).filter(id => id !== movie.id),
+                    watched: (watchlistData.watched || []).filter(id => id !== movie.id)
+                };
+            } else {
+                newWatchlist = {
+                    toWatch: [...(watchlistData.toWatch || []), movie.id],
+                    watched: watchlistData.watched || []
+                };
+            }
+        } else {
+            const currentArray = Array.isArray(user.watchlist) ? user.watchlist : [];
+            newWatchlist = isInWatchlist 
+                ? currentArray.filter(id => id !== movie.id)
+                : [...currentArray, movie.id];
+        }
             
         updateUser({ watchlist: newWatchlist });
         try {
@@ -165,13 +205,16 @@ const MovieDetails = () => {
                     {/* Right Column: Details */}
                     <div className="lg:col-span-2 space-y-8">
                         <div>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-purple-400 font-medium tracking-wider uppercase mb-3">
-                                <span className="px-3 py-1 bg-purple-500/10 rounded-full border border-purple-500/20">
-                                    {movie.category || 'Non classé'}
-                                </span>
-                                {movie.availableOn && movie.availableOn.length > 0 && (
-                                    <span className="text-gray-400 normal-case">
-                                        Disponible sur : <span className="text-white">{movie.availableOn.join(", ")}</span>
+                            <div className="flex flex-wrap items-center gap-2 text-sm text-purple-400 font-medium tracking-wider uppercase mb-3">
+                                {movie.genres && movie.genres.length > 0 ? (
+                                    movie.genres.map(genre => (
+                                        <span key={genre} className="px-3 py-1 bg-purple-500/10 rounded-full border border-purple-500/20">
+                                            {genre}
+                                        </span>
+                                    ))
+                                ) : (
+                                    <span className="px-3 py-1 bg-purple-500/10 rounded-full border border-purple-500/20">
+                                        {movie.category || 'Non classé'}
                                     </span>
                                 )}
                             </div>
@@ -202,14 +245,43 @@ const MovieDetails = () => {
                             <p className="text-lg text-gray-400 leading-relaxed max-w-2xl">
                                 {movie.description}
                             </p>
+
+                            {/* Streaming Platforms (JustWatch) */}
+                            {movie.availableOn && movie.availableOn.length > 0 && (
+                                <div className="pt-4">
+                                    <h3 className="text-sm text-gray-400 uppercase tracking-wider mb-3">Disponible en streaming sur</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {movie.availableOn.map((platform, idx) => {
+                                            const pStyle = getPlatformStyle(platform);
+                                            return (
+                                                <div key={idx} className={`px-4 py-2 rounded-lg border font-semibold text-sm ${pStyle} shadow-lg transition-transform hover:scale-105 flex items-center`}>
+                                                    {platform}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    <p className="text-xs text-gray-600 mt-3 italic">Données fournies par JustWatch</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Actions */}
                         <div className="flex flex-wrap gap-4">
-                            <Button size="lg" className="px-8 shadow-purple-500/25">
-                                <Play className="w-5 h-5 mr-2 fill-current" />
-                                Regarder
-                            </Button>
+                            {movie.trailerKey ? (
+                                <Button 
+                                    size="lg" 
+                                    className="px-8 shadow-purple-500/25"
+                                    onClick={() => setIsVideoModalOpen(true)}
+                                >
+                                    <Play className="w-5 h-5 mr-2 fill-current" />
+                                    Bande Annonce
+                                </Button>
+                            ) : (
+                                <Button size="lg" className="px-8 shadow-purple-500/25 opacity-50 cursor-not-allowed">
+                                    <Play className="w-5 h-5 mr-2 fill-current opacity-50" />
+                                    Bande Annonce (Indisponible)
+                                </Button>
+                            )}
                             <Button 
                                 variant={isInWatchlist ? "primary" : "secondary"} 
                                 size="lg"
@@ -320,6 +392,36 @@ const MovieDetails = () => {
                 onAddEvent={handleAddEvent}
                 preselectedMovieId={movie.id}
             />
+
+            {/* Video Modal */}
+            {isVideoModalOpen && movie.trailerKey && (
+                <div 
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-sm"
+                    onClick={() => setIsVideoModalOpen(false)}
+                >
+                    <div 
+                        className="relative w-full max-w-5xl mx-auto" 
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <button 
+                            onClick={() => setIsVideoModalOpen(false)}
+                            className="absolute -top-12 right-0 sm:-right-12 sm:top-0 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                        >
+                            <X className="w-6 h-6" />
+                        </button>
+                        
+                        <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10" style={{ paddingTop: '56.25%' }}>
+                            <iframe 
+                                src={`https://www.youtube.com/embed/${movie.trailerKey}?autoplay=1`} 
+                                title="Trailer"
+                                className="absolute top-0 left-0 w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -17,6 +17,7 @@ services:
       DATABASE_URL: "mysql://root:root@database:3306/cinemate_users?serverVersion=8.0&charset=utf8mb4"
       MONGODB_URI: "mongodb://root:root@mongo-db:27017"
       MONGODB_DB: "cinemate_movies"
+      JWT_COOKIE_SECURE: "false"
       PHP_CLI_SERVER_WORKERS: 4
       OMDB_API_KEY: "9713dcac"
 
@@ -56,7 +57,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo-data:/data/db
 

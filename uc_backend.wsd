@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "API JustWatch" as JustWatch
+actor "API TMDB" as TMDB
+
+package "Backend & API" {
+    usecase "Récup recommandations\nbasiques" as UC_RecBasics
+    usecase "Récupérer\ndisponibilité\nPlateformes" as UC_Plats
+    usecase "Récupérer infos films" as UC_Infos
+    usecase "Mettre à jour la BDD" as UC_UpdateDB
+}
+
+UC_Plats <-- JustWatch
+UC_Infos <-- TMDB
+UC_UpdateDB <-- TMDB
+
+UC_RecBasics ..> UC_Infos : <<include>>
+
+@enduml

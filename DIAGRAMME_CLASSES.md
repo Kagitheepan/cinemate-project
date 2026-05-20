@@ -1,0 +1,157 @@
+# Diagramme de Classes - Cinemate
+
+Ce fichier contient le code source PlantUML du diagramme de classes du projet. Vous pouvez le visualiser en utilisant l'extension PlantUML dans VS Code ou en copiant le code sur [PlantUML Online Server](https://www.plantuml.com/plantuml/uml/).
+
+```plantuml
+@startuml Cinemate_Detailed_Architecture
+
+' Configuration de l'apparence
+skinparam shadowing false
+skinparam RoundCorner 8
+skinparam class {
+    BackgroundColor #FFFFFF
+    ArrowColor #2C3E50
+    BorderColor #2C3E50
+}
+skinparam package {
+    BackgroundColor #F8F9FA
+}
+
+' --- COUCHE MODELE (ENTITÉS) ---
+
+package "App\\Entity (MySQL/PostgreSQL)" {
+    class Movie << (E,#FFAAAA) Entity >> {
+        - int id
+        - int tmdbId
+        - string title
+        - string description
+        - DateTimeInterface releaseDate
+        - string poster
+        - string backdrop
+        - string director
+        - float rating
+        - array genres
+        - array platforms
+        - array cast
+        - int runtime
+        + getId(): int
+        + getTmdbId(): int
+        + getTitle(): string
+        + getRuntime(): int
+        + setRuntime(int): self
+        ' ... getters/setters complets
+    }
+
+    class User << (E,#FFAAAA) Entity >> {
+        - int id
+        - string username
+        - string email
+        - array roles
+        - string password
+        - array platforms
+        - array favoriteGenres
+        - array watchlist
+        - array agenda
+        + getUserIdentifier(): string
+        + getRoles(): array
+        + getWatchlist(): array
+        + setWatchlist(array): self
+        + getAgenda(): array
+        + setAgenda(array): self
+    }
+}
+
+package "App\\Document (MongoDB)" {
+    class ConnectionLog << (D,#AAFFAA) Document >> {
+        - string id
+        - string username
+        - DateTimeInterface connectedAt
+        + getUsername(): string
+        + getConnectedAt(): DateTimeInterface
+    }
+}
+
+' --- COUCHE SERVICES (BUSINESS LOGIC) ---
+
+package "App\\Service" {
+    class TmdbService {
+        - string apiKey
+        - HttpClientInterface client
+        + getGenres(): array
+        + getPopularMovies(int page): array
+        + getMovieDetails(int movieId): array
+        + getCredits(int movieId): array
+        + getKeywords(int movieId): array
+        + getWatchProviders(int movieId): array
+    }
+
+    class OmdbService {
+        - string apiKey
+        + getRuntimeByTitle(string title, ?string year): ?int
+    }
+}
+
+' --- COUCHE ACCÈS DONNÉES ---
+
+package "App\\Repository" {
+    class MovieRepository {
+        + findOneByTmdbId(int id): ?Movie
+    }
+    class UserRepository {
+        + findOneByEmail(string email): ?User
+    }
+}
+
+' --- COUCHE CONTROLEURS (API) ---
+
+package "App\\Controller" {
+    class MovieController {
+        - EntityManagerInterface entityManager
+        + list(MovieRepository, Request): JsonResponse
+        + show(string id, MovieRepository): JsonResponse
+        - serializeMovie(Movie, bool): array
+    }
+
+    class RegistrationController {
+        + register(Request, UserPasswordHasherInterface, EntityManagerInterface): JsonResponse
+    }
+
+    class ProfileController {
+        + show(): JsonResponse
+        + update(Request, EntityManagerInterface): JsonResponse
+    }
+}
+
+' --- INTERFACES SYMFONY ---
+
+package "Symfony\\Security" {
+    interface UserInterface
+    interface PasswordAuthenticatedUserInterface
+}
+
+' --- RELATIONS ET CARDINALITÉS ---
+
+' Implémentations Sécurité
+User ..|> UserInterface
+User ..|> PasswordAuthenticatedUserInterface
+
+' Flux Applicatif
+MovieController --> MovieRepository : utilise
+MovieController ..> Movie : manipule
+ProfileController --> UserRepository : utilise
+RegistrationController ..> User : instancie & persiste
+
+' Services Externes
+TmdbService ..> Movie : fournit données (API)
+OmdbService ..> Movie : enrichit (Runtime)
+
+' Persistance
+MovieRepository "1" -- "0..*" Movie : gère
+UserRepository "1" -- "0..*" User : gère
+
+' Relations Logiques
+User "0..*" o-- "0..*" Movie : watchlist/agenda (référence IDs)
+User "1" -- "0..*" ConnectionLog : possède (via username)
+
+@enduml
+```

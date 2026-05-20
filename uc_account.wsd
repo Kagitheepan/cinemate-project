@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "User Non Connecté" as Guest
+actor "User Connecté" as User
+
+User -|> Guest
+
+package "Accès Compte" {
+    usecase "Authentifier" as UC_Auth
+    usecase "Connexion" as UC_Login
+    usecase "Inscription" as UC_Register
+}
+
+Guest --> UC_Auth
+
+UC_Auth ..> UC_Login : <<include>>
+UC_Auth ..> UC_Register : <<include>>
+
+@enduml

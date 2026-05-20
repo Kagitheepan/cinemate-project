@@ -21,11 +21,10 @@ export interface User {
 
 interface AuthContextType {
     user: User | null;
-    token: string | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (token: string, userData: User) => void;
-    logout: () => void;
+    login: (userData: User) => void;
+    logout: () => Promise<void>;
     updateUser: (userData: Partial<User>) => void;
 }
 
@@ -33,36 +32,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const initAuth = async () => {
-            if (token) {
-                try {
-                    // Fetch user profile if token exists
-                    const response = await api.get('/profile');
-                    setUser(response.data);
-                } catch (error) {
-                    console.error('Failed to fetch user profile:', error);
-                    logout();
-                }
+            try {
+                const response = await api.get('/profile');
+                setUser(response.data);
+            } catch (error) {
+                setUser(null);
             }
             setIsLoading(false);
         };
 
         initAuth();
-    }, [token]);
+    }, []);
 
-    const login = (newToken: string, userData: User) => {
-        localStorage.setItem('token', newToken);
-        setToken(newToken);
+    const login = (userData: User) => {
         setUser(userData);
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        setToken(null);
+    const logout = async () => {
+        try {
+            await api.post('/logout');
+        } catch (error) {
+            console.error('Failed to clear auth cookie:', error);
+        }
         setUser(null);
     };
 
@@ -75,7 +70,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return (
         <AuthContext.Provider value={{
             user,
-            token,
             isAuthenticated: !!user,
             isLoading,
             login,

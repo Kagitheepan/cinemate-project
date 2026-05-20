@@ -20,7 +20,7 @@ const Button = ({
     ...props
 }: ButtonProps) => {
     const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-purple-500/50';
-    
+
     const variants: Record<ButtonVariant, string> = {
         primary: 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/20',
         secondary: 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10',
@@ -46,3 +46,4 @@ const Button = ({
 };
 
 export default Button;
+

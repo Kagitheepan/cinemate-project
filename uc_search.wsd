@@ -1,0 +1,34 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "User Non Connecté" as Guest
+actor "User Connecté" as User
+
+User -|> Guest
+
+package "Découverte et Recherche" {
+    usecase "Consulter Page d'accueil" as UC_Home
+    usecase "Saisir le temps disponible" as UC_Time
+    usecase "Rechercher un film" as UC_Search
+    
+    usecase "Recherche par genre" as UC_SearchGenre
+    usecase "Recherche par mots clés" as UC_SearchKeywords
+    usecase "Recherche par casting" as UC_SearchCast
+}
+
+usecase "Récupérer recommandations basiques" as UC_RecBasics
+usecase "Récupérer infos films" as UC_Infos
+
+Guest --> UC_Home
+Guest --> UC_Time
+Guest --> UC_Search
+
+UC_Home ..> UC_RecBasics : <<include>>
+
+UC_Search ..> UC_SearchGenre : <<include>>
+UC_Search ..> UC_SearchKeywords : <<include>>
+UC_Search ..> UC_SearchCast : <<include>>
+UC_Search ..> UC_Infos : <<include>>
+
+@enduml

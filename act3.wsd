@@ -1,0 +1,31 @@
+@startuml
+!theme plain
+skinparam style strictuml
+skinparam TitleFontSize 20
+
+title Processus Frontend : Arrivée sur le site (Home.tsx)
+
+start
+
+:L'utilisateur accède à la page d'accueil;
+:Montage du composant Home;
+
+:Vérification du cache (sessionStorage : hasSeenTimeModal);
+if (Modale déjà vue ?) then (Non)
+  :Afficher la "TimeModal";
+  :L'utilisateur saisit son temps disponible;
+  :Mettre à jour 'maxDuration' et fermer la modale;
+else (Oui)
+  :Récupérer 'maxDuration' depuis le sessionStorage;
+endif
+
+:Appliquer le filtre de durée sur les films du Contexte;
+
+if (Des films correspondent ?) then (Oui)
+  :Afficher la grille de résultats (MovieGrid);
+else (Non)
+  :Afficher le message "Aucun film ne correspond";
+endif
+
+stop
+@enduml

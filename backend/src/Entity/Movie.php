@@ -43,6 +43,9 @@ class Movie
     #[ORM\Column(nullable: true)]
     private ?float $rating = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $trailerKey = null;
+
     #[ORM\Column(type: Types::JSON)]
     private array $genres = [];
 
@@ -200,6 +203,18 @@ class Movie
     public function setRuntime(?int $runtime): static
     {
         $this->runtime = $runtime;
+
+        return $this;
+    }
+
+    public function getTrailerKey(): ?string
+    {
+        return $this->trailerKey;
+    }
+
+    public function setTrailerKey(?string $trailerKey): static
+    {
+        $this->trailerKey = $trailerKey;
 
         return $this;
     }

@@ -1,0 +1,38 @@
+@startuml
+!theme plain
+skinparam style strictuml
+
+start
+
+:Ouvrir la modale d'authentification;
+:Sélectionner le mode d'authentification;
+
+if (Mode sélectionné ?) then ([Connexion])
+  repeat
+    :Saisir les identifiants de connexion;
+    :Soumettre la requête de connexion;
+  backward :Afficher un message d'erreur;
+  repeat while (Identifiants valides ?) is ([Non])
+  ->[Oui];
+  
+  :Récupérer le profil utilisateur;
+  :Mettre à jour le contexte global;
+  :Fermer la modale;
+
+else ([Inscription])
+  repeat
+    :Saisir les informations d'inscription;
+    :Soumettre la requête d'inscription;
+  backward :Afficher un message d'erreur;
+  repeat while (Informations valides ?) is ([Non])
+  ->[Oui];
+  
+  :Connecter automatiquement l'utilisateur;
+  :Récupérer le profil utilisateur;
+  :Mettre à jour le contexte global;
+  :Fermer la modale;
+
+endif
+
+stop
+@enduml

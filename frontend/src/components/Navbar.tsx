@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import AuthModal from './AuthModal';
 import { useAuth } from '../context/AuthContext';
 
+import NotificationBell from './NotificationBell';
+
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -27,7 +29,8 @@ const Navbar = () => {
     if (!isAuthenticated) {
         navLinks.push({ name: 'Inscription/Connexion', action: () => setIsAuthModalOpen(true) });
     } else {
-        navLinks.push({ name: 'Profil', href: '#' });
+        navLinks.splice(1, 0, { name: 'Pour Vous', href: '/recommendations' }); // Insère "Pour Vous" après "Ma Watchlist"
+        navLinks.push({ name: 'Profil', href: '/profile' });
     }
 
     return (
@@ -70,7 +73,8 @@ const Navbar = () => {
 
                                 {isAuthenticated && user && (
                                     <div className="flex items-center gap-4 ml-4 pl-4 border-l border-white/10">
-                                        <div className="flex items-center gap-2 text-purple-400">
+                                        <NotificationBell />
+                                        <div className="flex items-center gap-2 text-purple-400 border-l border-white/10 pl-4">
                                             <UserIcon size={18} />
                                             <span className="text-sm font-medium">{user.username}</span>
                                         </div>

@@ -1,0 +1,51 @@
+@startuml
+!theme plain
+skinparam style strictuml
+skinparam TitleFontSize 20
+
+title Processus Frontend : Chargement et Affichage de la Fiche du Film (MovieDetails.tsx)
+
+start
+
+:L'utilisateur accède à la page du film\n(Route : /movies/:id);
+:Extraction de l'ID du film (useParams);
+
+partition "Récupération des données (useEffect)" {
+  :Vérifier le contexte local (getMovie(id));
+  
+  if (Film présent en cache avec détails ?) then (Oui)
+    :Afficher immédiatement les données;
+  else (Non ou partiel)
+    :Activer le loader local\n(setIsLocalLoading = true);
+  endif
+
+  :Requête asynchrone pour les détails complets\n(fetchMovieDetails(id));
+}
+
+if (Le film existe ?) then (Oui)
+  :Mettre à jour le state (setMovie)\net désactiver le loader;
+  
+  partition "Rendu de l'Interface Utilisateur" {
+    fork
+      :Afficher le Poster\n(movie.imageUrl);
+    fork again
+      :Afficher Infos Générales\n(Titre, Catégorie, Année, Durée);
+    fork again
+      :Afficher le Synopsis\n(movie.description);
+    fork again
+      :Afficher le Casting & Équipe\n(movie.cast, movie.director);
+    fork again
+      :Afficher la Note\n(movie.rating);
+    fork again
+      :Afficher Boutons d'Action\n(Watchlist, Planifier, etc.);
+    end fork
+  }
+
+  :Calculer et Afficher les Recommandations\n(Films de la même catégorie);
+
+else (Non)
+  :Afficher Écran d'Erreur\n"Film non trouvé";
+endif
+
+stop
+@enduml

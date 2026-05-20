@@ -7,6 +7,9 @@ import MovieDetails from './pages/MovieDetails';
 import Watchlist from './pages/Watchlist';
 import CalendarPage from './pages/CalendarPage';
 import Profile from './pages/Profile';
+import Recommendations from './pages/Recommendations';
+import CookieBanner from './components/CookieBanner';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 function App() {
   return (
@@ -20,9 +23,12 @@ function App() {
             <Route path="/watchlist" element={<Watchlist />} />
             <Route path="/agenda" element={<CalendarPage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/recommendations" element={<Recommendations />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
         </Routes>
 
         <Footer />
+        <CookieBanner />
     </div>
   )
 }

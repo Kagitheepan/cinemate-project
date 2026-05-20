@@ -1,0 +1,31 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "User Non Connecté" as Guest
+actor "User Connecté" as User
+
+User -|> Guest
+
+package "Fiche Film" {
+    usecase "Consulter la fiche d'un film" as UC_ViewMovie
+    
+    usecase "Note TMDB" as UC_Note
+    usecase "Casting" as UC_Cast
+    usecase "Synopsis" as UC_Synopsis
+    usecase "Bande Annonce" as UC_Trailer
+}
+
+usecase "Récupérer disponibilité Plateformes" as UC_Plats
+usecase "Récupérer infos films" as UC_Infos
+
+Guest --> UC_ViewMovie
+
+UC_ViewMovie ..> UC_Note : <<include>>
+UC_ViewMovie ..> UC_Cast : <<include>>
+UC_ViewMovie ..> UC_Synopsis : <<include>>
+UC_ViewMovie ..> UC_Trailer : <<include>>
+UC_ViewMovie ..> UC_Plats : <<include>>
+UC_ViewMovie ..> UC_Infos : <<include>>
+
+@enduml
