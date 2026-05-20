@@ -110,6 +110,7 @@ class MovieControllerTest extends TestCase
             'director' => 'Lana Wachowski',
             'cast' => [['name' => 'Keanu Reeves', 'role' => 'Neo']],
             'availableOn' => ['Netflix'],
+            'trailerKey' => null,
         ], $payload);
     }
 }

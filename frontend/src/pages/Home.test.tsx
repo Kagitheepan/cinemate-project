@@ -75,7 +75,7 @@ describe('Home - recherche et filtres', () => {
         const user = userEvent.setup();
         renderHome();
 
-        await user.type(screen.getByPlaceholderText('Rechercher un film...'), 'matrix');
+        await user.type(screen.getByPlaceholderText('Titre, acteur, réalisateur...'), 'matrix');
 
         expect(screen.getByRole('heading', { name: '1 résultat' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Matrix' })).toBeInTheDocument();

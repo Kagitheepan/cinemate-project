@@ -96,14 +96,15 @@ describe('MovieDetails - affichage de la page film', () => {
 
         expect(screen.getByAltText('Matrix')).toHaveAttribute('src', '/matrix.jpg');
         expect(screen.getByText('Science-fiction')).toBeInTheDocument();
-        expect(screen.getByText('Disponible sur :')).toBeInTheDocument();
-        expect(screen.getByText('Netflix, Prime Video')).toBeInTheDocument();
+        expect(screen.getByText('Disponible en streaming sur')).toBeInTheDocument();
+        expect(screen.getByText('Netflix')).toBeInTheDocument();
+        expect(screen.getByText('Prime Video')).toBeInTheDocument();
         expect(screen.getByText('8.7')).toBeInTheDocument();
         expect(screen.getByText('1999')).toBeInTheDocument();
         expect(screen.getByText('2h 16m')).toBeInTheDocument();
         expect(screen.getByText(mainMovie.description)).toBeInTheDocument();
 
-        expect(screen.getByRole('button', { name: /Regarder/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Bande Annonce/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Watchlist/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Planifier/i })).toBeInTheDocument();
 
