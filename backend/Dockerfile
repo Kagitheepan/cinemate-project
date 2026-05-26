@@ -27,9 +27,10 @@ COPY . /app
 # 4.  Expose le port 8000 (Port par défaut du serveur Symfony CLI)
 EXPOSE 8000
 
-# 5. Commande de démarrage : Installation optimisée + Génération JWT + Migrations + Lancement serveur
-CMD bash -c "composer install --no-interaction --optimize-autoloader && \
+# 5. Commande de démarrage : Installation sans scripts + Génération JWT + Cache Clear + Migrations + Lancement serveur
+CMD bash -c "composer install --no-interaction --optimize-autoloader --no-scripts && \
              php bin/console lexik:jwt:generate-keypair --skip-if-exists && \
+             php bin/console cache:clear && \
              php bin/console doctrine:migrations:migrate --no-interaction && \
              echo 'Starting PHP Server...' && \
              php -S 0.0.0.0:8000 -t public"
