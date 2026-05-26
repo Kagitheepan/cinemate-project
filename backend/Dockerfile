@@ -24,6 +24,10 @@ WORKDIR /app
 # Copie de tous les fichiers du projet (backend) dans le conteneur
 COPY . /app
 
+# S'assure que le fichier .env existe (même vide) pour éviter l'erreur Dotenv\Exception\PathException
+# si le fichier a été ignoré via .gitignore lors du push sur GitHub.
+RUN touch .env
+
 # 4.  Expose le port 8000 (Port par défaut du serveur Symfony CLI)
 EXPOSE 8000
 
