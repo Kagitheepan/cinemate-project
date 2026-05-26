@@ -1,16 +1,13 @@
 # backend/Dockerfile
 FROM php:8.4-cli
-# 1. Installation des dépendances système (git, zip, lib pour mongo/mysql)
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    libzip-dev \
-    libicu-dev \
-    libssl-dev \
-    && docker-php-ext-install pdo pdo_mysql zip intl
+# 1. Installation des outils de base indispensables (git, unzip pour composer)
+RUN apt-get update && apt-get install -y git unzip
 
-# 2. Installation de l'extension MongoDB 
-RUN pecl install mongodb && docker-php-ext-enable mongodb
+# 2. Installation ultra-optimisée des extensions PHP (pdo_mysql, zip, intl, mongodb)
+# On utilise le script officiel recommandé par la communauté pour accélérer le build et réduire l'usage mémoire.
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions && \
+    install-php-extensions pdo pdo_mysql zip intl mongodb
 
 # Activer la compression GZIP globale pour PHP et OPcache pour le serveur CLI
 RUN echo "zlib.output_compression = On" >> /usr/local/etc/php/conf.d/optimizations.ini && \
