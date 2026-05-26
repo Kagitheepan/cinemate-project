@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2.32.0
+        uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
           extensions: ctype, iconv, mbstring, mongodb
