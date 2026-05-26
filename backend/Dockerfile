@@ -27,5 +27,9 @@ WORKDIR /app
 # 4.  Expose le port 8000 (Port par défaut du serveur Symfony CLI)
 EXPOSE 8000
 
-# 5. Commande de démarrage : Installation des dépendances + Lancement serveur
-CMD bash -c "composer install --no-interaction && echo 'Starting PHP Server...' && php -S 0.0.0.0:8000 -t public || echo 'Server failed'; tail -f /dev/null"
+# 5. Commande de démarrage : Installation optimisée + Génération JWT + Migrations + Lancement serveur
+CMD bash -c "composer install --no-interaction --optimize-autoloader && \
+             php bin/console lexik:jwt:generate-keypair --skip-if-exists && \
+             php bin/console doctrine:migrations:migrate --no-interaction && \
+             echo 'Starting PHP Server...' && \
+             php -S 0.0.0.0:8000 -t public"
