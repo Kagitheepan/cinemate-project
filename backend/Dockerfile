@@ -21,6 +21,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
+# Copie de tous les fichiers du projet (backend) dans le conteneur
+COPY . /app
+
 # 4.  Expose le port 8000 (Port par défaut du serveur Symfony CLI)
 EXPOSE 8000
 
