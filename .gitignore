@@ -8,7 +8,6 @@ Thumbs.db
 # --- DOCKER & ENVIRONNEMENT (Sécurité) ---
 # On ignore les fichiers de surcharge locale et les variables d'env réelles
 docker-compose.override.yml
-.env
 .env.local
 .env.*.local
 
