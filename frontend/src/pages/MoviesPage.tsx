@@ -73,7 +73,7 @@ const MoviesPage = () => {
                         <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
                             Catalogue complet
                         </h2>
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-sm text-white mt-1">
                             {filteredMovies.length} film{filteredMovies.length > 1 ? 's' : ''} trouvé{filteredMovies.length > 1 ? 's' : ''}
                         </p>
                     </div>
@@ -83,6 +83,7 @@ const MoviesPage = () => {
                         <input 
                             type="text" 
                             placeholder="Titre, acteur, réalisateur..."
+                            aria-label="Rechercher un film"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="bg-white/5 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-48"
@@ -90,6 +91,7 @@ const MoviesPage = () => {
                         
                         <select 
                             value={selectedGenre}
+                            aria-label="Filtrer par genre"
                             onChange={(e) => setSelectedGenre(e.target.value)}
                             className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
                         >
@@ -101,6 +103,7 @@ const MoviesPage = () => {
 
                         <select 
                             value={maxDuration || ''}
+                            aria-label="Filtrer par durée"
                             onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
                             className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
                         >
@@ -140,7 +143,7 @@ const MoviesPage = () => {
                     </>
                 ) : (
                     <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
-                        <p className="text-xl text-gray-400 font-medium">Aucun film ne correspond à vos critères.</p>
+                        <p className="text-xl text-white font-medium">Aucun film ne correspond à vos critères.</p>
                     </div>
                 )}
             </div>

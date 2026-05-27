@@ -105,7 +105,7 @@ const Home = () => {
                         Découvrez votre prochaine <br/> <span className="text-purple-400">obsession cinématographique</span>
                     </h1>
                     
-                    <p className="text-lg text-gray-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-lg text-white mb-10 max-w-2xl mx-auto font-light leading-relaxed">
                         Explorez des milliers de films et séries, créez votre watchlist et partagez vos favoris avec la communauté.
                     </p>
 
@@ -113,6 +113,7 @@ const Home = () => {
                         <input 
                             type="text" 
                             placeholder="Titre, acteur, réalisateur..."
+                            aria-label="Rechercher un film"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="bg-white/5 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
@@ -120,6 +121,7 @@ const Home = () => {
                         
                         <select 
                             value={selectedGenre}
+                            aria-label="Filtrer par genre"
                             onChange={(e) => setSelectedGenre(e.target.value)}
                             className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
@@ -131,6 +133,7 @@ const Home = () => {
 
                         <select 
                             value={maxDuration || ''}
+                            aria-label="Filtrer par durée"
                             onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
                             className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
@@ -186,7 +189,7 @@ const Home = () => {
                        <MovieGrid movies={displayedMovies} />
                    ) : (
                        <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
-                           <p className="text-xl text-gray-400 font-medium">Aucun film ne correspond à votre recherche.</p>
+                           <p className="text-xl text-white font-medium">Aucun film ne correspond à votre recherche.</p>
                            <button 
                                 onClick={() => { setMaxDuration(null); setSearchQuery(''); setSelectedGenre(''); }}
                                 className="mt-4 text-purple-400 hover:text-white underline"

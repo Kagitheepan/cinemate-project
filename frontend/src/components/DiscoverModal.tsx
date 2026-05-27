@@ -109,6 +109,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                 <label className="block text-sm font-medium text-gray-300 mb-2">Genre</label>
                                 <select 
                                     value={selectedGenre}
+                                    aria-label="Filtrer par genre"
                                     onChange={(e) => setSelectedGenre(e.target.value)}
                                     className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
                                 >
@@ -123,6 +124,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                 <label className="block text-sm font-medium text-gray-300 mb-2">Durée maximum</label>
                                 <select 
                                     value={maxDuration || ''}
+                                    aria-label="Filtrer par durée maximum"
                                     onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
                                     className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
                                 >
@@ -143,7 +145,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                             className={`flex-1 py-3 rounded-lg border text-sm font-medium transition-all ${
                                                 count === num 
                                                     ? 'bg-purple-600 border-purple-500 text-white' 
-                                                    : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:text-white'
+                                                    : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
                                             }`}
                                         >
                                             {num}
@@ -181,7 +183,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                             <h3 className="font-bold text-white group-hover:text-purple-400 transition-colors line-clamp-1">
                                                 {movie.title}
                                             </h3>
-                                            <div className="flex items-center text-xs text-gray-400 mt-2 space-x-3">
+                                            <div className="flex items-center text-xs text-white mt-2 space-x-3">
                                                 <span className="flex items-center">
                                                     <Calendar className="w-3 h-3 mr-1" />
                                                     {movie.year}
@@ -191,7 +193,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                                     {movie.duration ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` : 'N/A'}
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-gray-500 mt-2 line-clamp-2">
+                                            <p className="text-xs text-white mt-2 line-clamp-2">
                                                 {movie.description}
                                             </p>
                                         </div>
@@ -199,7 +201,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                 ))
                             ) : (
                                 <div className="text-center py-10">
-                                    <p className="text-gray-400">Aucun film ne correspond à vos critères.</p>
+                                    <p className="text-white">Aucun film ne correspond à vos critères.</p>
                                 </div>
                             )}
                         </div>

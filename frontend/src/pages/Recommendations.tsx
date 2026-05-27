@@ -46,7 +46,7 @@ const Recommendations = () => {
             <div className="flex-grow pt-24 pb-12 flex flex-col items-center justify-center min-h-screen text-center">
                 <Sparkles size={48} className="text-purple-500 mb-4" />
                 <h1 className="text-3xl font-bold mb-2">Nos Recommandations</h1>
-                <p className="text-gray-400 max-w-md">Connectez-vous et remplissez votre profil pour obtenir des suggestions 100% personnalisées.</p>
+                <p className="text-white max-w-md">Connectez-vous et remplissez votre profil pour obtenir des suggestions 100% personnalisées.</p>
             </div>
         );
     }
@@ -74,7 +74,7 @@ const Recommendations = () => {
                         <Sparkles className="text-purple-500" size={36} />
                         Recommandé Pour Vous
                     </h1>
-                    <p className="text-lg text-gray-400 max-w-2xl mx-auto font-light leading-relaxed mb-8">
+                    <p className="text-lg text-white max-w-2xl mx-auto font-light leading-relaxed mb-8">
                         Basé sur votre historique et vos plateformes favorites, voici notre sélection sur-mesure.
                     </p>
 
@@ -83,15 +83,17 @@ const Recommendations = () => {
                         <input 
                             type="text" 
                             placeholder="Filtrer (Titre, acteur...)"
+                            aria-label="Rechercher un film"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
+                            className="bg-white/5 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
                         />
                         
                         <select 
                             value={selectedGenre}
+                            aria-label="Filtrer par genre"
                             onChange={(e) => setSelectedGenre(e.target.value)}
-                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
                             <option value="">Tous les genres</option>
                             {allGenres.map(genre => (
@@ -101,8 +103,9 @@ const Recommendations = () => {
 
                         <select 
                             value={maxDuration || ''}
+                            aria-label="Filtrer par durée"
                             onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
-                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
                             <option value="">Toutes durées</option>
                             <option value="90">- de 1h30</option>
@@ -121,7 +124,7 @@ const Recommendations = () => {
                        <MovieGrid movies={filteredMovies} />
                    ) : (
                        <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
-                           <p className="text-xl text-gray-400 font-medium">Aucun film de la sélection ne correspond à vos filtres actuels.</p>
+                           <p className="text-xl text-white font-medium">Aucun film de la sélection ne correspond à vos filtres actuels.</p>
                            <button 
                                 onClick={() => { setMaxDuration(null); setSearchQuery(''); setSelectedGenre(''); }}
                                 className="mt-4 text-purple-400 hover:text-white underline"
