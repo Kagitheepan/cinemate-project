@@ -13,11 +13,11 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
     const { login } = useAuth();
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
-    
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
+
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
@@ -51,7 +51,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                     email,
                     password
                 });
-                
+
                 // Auto-login after register
                 await api.post('/login_check', {
                     username,
@@ -120,7 +120,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                             required
                         />
                     </div>
-                    
+
                     {!isLogin && (
                         <div className="relative group animate-in fade-in slide-in-from-top-2">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-400 transition-colors" />
@@ -145,7 +145,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                             className="w-full bg-black/20 border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                             required
                         />
-                         <button
+                        <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
@@ -154,9 +154,9 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                         </button>
                     </div>
 
-                    <Button 
-                        type="submit" 
-                        fullWidth 
+                    <Button
+                        type="submit"
+                        fullWidth
                         className="mt-6 py-3 text-lg font-semibold shadow-purple-500/30"
                         disabled={loading}
                     >
