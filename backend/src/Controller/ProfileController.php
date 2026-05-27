@@ -88,7 +88,21 @@ class ProfileController extends AbstractController
             return $this->json(['message' => 'User not found'], 404);
         }
 
-        $user->setDeletedAt(new \DateTime());
+        // Create a DeletedUser record
+        $deletedUser = new \App\Entity\DeletedUser();
+        $deletedUser->setOriginalId($user->getId());
+        $deletedUser->setUsername($user->getUsername());
+        $deletedUser->setEmail($user->getEmail());
+        $deletedUser->setDeletedAt(new \DateTime());
+
+        // We could also store more data if we added those columns to DeletedUser,
+        // but for now we'll stick to the requested basic info.
+
+        $entityManager->persist($deletedUser);
+        
+        // Hard delete the original User
+        $entityManager->remove($user);
+        
         $entityManager->flush();
 
         return $this->json(['message' => 'Account deleted successfully']);
