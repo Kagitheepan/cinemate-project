@@ -77,4 +77,20 @@ class ProfileController extends AbstractController
             ]
         ]);
     }
+
+    #[Route('', name: 'api_profile_delete', methods: ['DELETE'])]
+    public function delete(EntityManagerInterface $entityManager): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            return $this->json(['message' => 'User not found'], 404);
+        }
+
+        $user->setDeletedAt(new \DateTime());
+        $entityManager->flush();
+
+        return $this->json(['message' => 'Account deleted successfully']);
+    }
 }

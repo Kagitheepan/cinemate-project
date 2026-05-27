@@ -1,8 +1,9 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { useAuth } from '../context/AuthContext';
 import Button from '../components/ui/Button';
-import { User, Mail, Save, Clock, Film, Tv, Play } from 'lucide-react';
+import { User, Mail, Save, Clock, Film, Tv, Play, AlertTriangle } from 'lucide-react';
 import api from '../services/api';
+import ConfirmModal from '../components/ConfirmModal';
 
 const AVAILABLE_PLATFORMS = ['Netflix', 'Amazon Prime Video', 'Disney+', 'Canal+', 'Apple TV+', 'HBO Max', 'Paramount+'];
 const AVAILABLE_GENRES = ['Action', 'Aventure', 'Animation', 'Comédie', 'Crime', 'Documentaire', 'Drame', 'Familial', 'Fantastique', 'Histoire', 'Horreur', 'Musique', 'Mystère', 'Romance', 'Science-Fiction', 'Téléfilm', 'Thriller', 'Guerre', 'Western'];
@@ -14,6 +15,8 @@ const Profile = () => {
     const [averageTime, setAverageTime] = useState<number | ''>('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const { logout } = useAuth();
 
     useEffect(() => {
         if (user) {
@@ -67,6 +70,16 @@ const Profile = () => {
             setMessage({ type: 'error', text: 'Erreur lors de la mise à jour.' });
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleDeleteAccount = async () => {
+        try {
+            await api.delete('/profile');
+            logout(); // Will clear state and redirect
+        } catch (error) {
+            console.error(error);
+            setMessage({ type: 'error', text: 'Erreur lors de la suppression du compte.' });
         }
     };
 
@@ -210,7 +223,36 @@ const Profile = () => {
                         </form>
                     </div>
                 </div>
+
+                {/* Danger Zone */}
+                <div className="mt-8 bg-red-950/20 border border-red-900/30 rounded-xl p-6 md:p-8">
+                    <h3 className="text-xl font-bold text-red-400 mb-2 flex items-center gap-2">
+                        <AlertTriangle size={24} />
+                        Zone Dangereuse
+                    </h3>
+                    <p className="text-gray-400 mb-6 max-w-2xl">
+                        La suppression de votre compte entraînera la perte définitive de votre accès. 
+                        Vos données seront conservées en base (suppression logique) mais vous ne pourrez plus vous connecter.
+                    </p>
+                    <button
+                        onClick={() => setIsDeleteModalOpen(true)}
+                        className="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors border border-red-500 shadow-lg shadow-red-900/20"
+                    >
+                        Supprimer mon compte
+                    </button>
+                </div>
             </div>
+
+            <ConfirmModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDeleteAccount}
+                title="Suppression du compte"
+                message="Êtes-vous sûr de vouloir supprimer votre compte ? Cette action vous empêchera de vous reconnecter."
+                confirmText="Oui, supprimer mon compte"
+                cancelText="Annuler"
+                isDanger={true}
+            />
         </div>
     );
 };

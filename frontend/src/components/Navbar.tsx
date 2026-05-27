@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Menu, X, User as UserIcon, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import AuthModal from './AuthModal';
+import ConfirmModal from './ConfirmModal';
 import { useAuth } from '../context/AuthContext';
 
 import NotificationBell from './NotificationBell';
@@ -9,6 +10,7 @@ import NotificationBell from './NotificationBell';
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     const { isAuthenticated, user, logout } = useAuth();
 
     const toggleMenu = () => setIsOpen(!isOpen);
@@ -80,7 +82,7 @@ const Navbar = () => {
                                             <span className="text-sm font-medium">{user.username}</span>
                                         </div>
                                         <button
-                                            onClick={() => logout()}
+                                            onClick={() => setIsLogoutModalOpen(true)}
                                             className="text-gray-400 hover:text-red-400 p-2 rounded-md transition-colors"
                                             title="Se déconnecter"
                                         >
@@ -140,8 +142,8 @@ const Navbar = () => {
                                     </div>
                                     <button
                                         onClick={() => {
-                                            logout();
                                             setIsOpen(false);
+                                            setIsLogoutModalOpen(true);
                                         }}
                                         className="w-full text-left text-red-400 hover:bg-white/10 block px-3 py-2 rounded-md text-base font-medium flex items-center gap-2"
                                     >
@@ -156,6 +158,15 @@ const Navbar = () => {
             </nav>
 
             <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+            
+            <ConfirmModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={logout}
+                title="Déconnexion"
+                message="Êtes-vous sûr de vouloir vous déconnecter de votre compte ?"
+                confirmText="Se déconnecter"
+            />
         </>
     );
 };
