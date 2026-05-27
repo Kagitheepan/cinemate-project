@@ -21,7 +21,7 @@ const getPlatformStyle = (platform: string) => {
     if (p.includes('hbo') || p.includes('max')) return 'bg-[#002BE7] text-white border-[#002BE7]';
     if (p.includes('paramount')) return 'bg-[#0064FF] text-white border-[#0064FF]';
     if (p.includes('crunchyroll')) return 'bg-[#F47521] text-white border-[#F47521]';
-    return 'bg-neutral-800 text-gray-300 border-white/10';
+    return 'bg-gray-200 dark:bg-neutral-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-white/10';
 };
 
 const MovieDetails = () => {

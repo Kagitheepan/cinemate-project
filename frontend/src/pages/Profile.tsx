@@ -140,7 +140,7 @@ const Profile = () => {
                         <form onSubmit={handleSubmit} className="bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-xl p-8 shadow-lg">
                             {message && (
                                 <div className={`mb-6 p-4 rounded-lg flex items-center ${
-                                    message.type === 'success' ? 'bg-green-500/20 text-green-200 border border-green-500/30' : 'bg-red-500/20 text-red-200 border border-red-500/30'
+                                    message.type === 'success' ? 'bg-green-50 dark:bg-green-500/20 text-green-700 dark:text-green-200 border border-green-300 dark:border-green-500/30' : 'bg-red-50 dark:bg-red-500/20 text-red-700 dark:text-red-200 border border-red-300 dark:border-red-500/30'
                                 }`}>
                                     {message.text}
                                 </div>

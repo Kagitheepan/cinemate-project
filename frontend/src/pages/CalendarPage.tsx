@@ -155,7 +155,7 @@ const CalendarPage = () => {
                                 className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all ${
                                     view === 'calendar' 
                                         ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/20' 
-                                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
                                 }`}
                             >
                                 <CalendarIcon size={16} className="mr-2" />
@@ -166,7 +166,7 @@ const CalendarPage = () => {
                                 className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all ${
                                     view === 'list' 
                                         ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/20' 
-                                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
                                 }`}
                             >
                                 <List size={16} className="mr-2" />
@@ -253,7 +253,7 @@ const CalendarPage = () => {
                                             {dayEvents.map(event => (
                                                 <div 
                                                     key={event.id}
-                                                    className={`text-xs p-1.5 rounded-md truncate text-white ${event.color} bg-opacity-20 border border-black/5 dark:border-white/5 hover:bg-opacity-30 cursor-pointer transition-all group/event pr-5 relative`}
+                                                    className={`text-xs p-1.5 rounded-md truncate text-gray-900 dark:text-white ${event.color} bg-opacity-20 border border-black/5 dark:border-white/5 hover:bg-opacity-30 cursor-pointer transition-all group/event pr-5 relative`}
                                                     title={event.title}
                                                 >
                                                     <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${event.color}`}></span>

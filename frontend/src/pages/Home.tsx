@@ -117,7 +117,7 @@ const Home = () => {
                             aria-label="Rechercher un film"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/80 dark:bg-white/5 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
+                            className="bg-white dark:bg-white/5 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
                         />
                         
                         <select 
@@ -163,7 +163,7 @@ const Home = () => {
                 />
 
                 <section className="mt-12">
-                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-black/5 dark:border-white/5">
+                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-black/10 dark:border-white/5">
                         <div className="flex items-center gap-4">
                             <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
                                 {isFiltering ? `${filteredMovies.length} résultat${filteredMovies.length > 1 ? 's' : ''}` : 'Tendances du moment'}
@@ -184,7 +184,7 @@ const Home = () => {
                    
                    {isLoading ? (
                        <div className="flex justify-center py-20">
-                           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+                           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 dark:border-purple-500"></div>
                        </div>
                    ) : displayedMovies.length > 0 ? (
                        <>
@@ -203,11 +203,11 @@ const Home = () => {
                            )}
                        </>
                    ) : (
-                       <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
-                           <p className="text-xl text-white font-medium">Aucun film ne correspond à votre recherche.</p>
+                       <div className="text-center py-20 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none">
+                           <p className="text-xl text-gray-900 dark:text-white font-medium">Aucun film ne correspond à votre recherche.</p>
                            <button 
                                 onClick={() => { setMaxDuration(null); setSearchQuery(''); setSelectedGenre(''); }}
-                                className="mt-4 text-purple-400 hover:text-white underline"
+                                className="mt-4 text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-white underline"
                            >
                                Voir tous les films
                            </button>

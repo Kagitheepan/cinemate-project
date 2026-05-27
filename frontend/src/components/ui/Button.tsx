@@ -23,9 +23,9 @@ const Button = ({
 
     const variants: Record<ButtonVariant, string> = {
         primary: 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/20',
-        secondary: 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10',
-        outline: 'border-2 border-purple-500 text-purple-400 hover:bg-purple-500/10',
-        ghost: 'text-gray-400 hover:text-white hover:bg-white/5',
+        secondary: 'bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-gray-900 dark:text-white backdrop-blur-md border border-black/10 dark:border-white/10',
+        outline: 'border-2 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-500/10',
+        ghost: 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5',
         destructive: 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20'
     };
 

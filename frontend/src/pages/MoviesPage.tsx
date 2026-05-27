@@ -58,22 +58,22 @@ const MoviesPage = () => {
 
     if (isLoading) {
         return (
-             <div className="flex-grow pt-32 pb-12 min-h-screen flex items-center justify-center">
-                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+             <div className="flex-grow pt-32 pb-12 min-h-screen flex items-center justify-center bg-gray-50 dark:bg-neutral-950 transition-colors duration-300">
+                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 dark:border-purple-500"></div>
              </div>
         );
     }
 
     return (
-        <div className="flex-grow pt-32 pb-12 transition-all duration-500 ease-in-out min-h-screen">
+        <div className="flex-grow pt-32 pb-12 bg-gray-50 dark:bg-neutral-950 transition-colors duration-300 min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 pb-4 border-b border-white/5 gap-4">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 pb-4 border-b border-black/10 dark:border-white/5 gap-4">
                     <div>
-                        <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                        <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
                             Catalogue complet
                         </h2>
-                        <p className="text-sm text-white mt-1">
+                        <p className="text-sm text-gray-700 dark:text-white mt-1">
                             {filteredMovies.length} film{filteredMovies.length > 1 ? 's' : ''} trouvé{filteredMovies.length > 1 ? 's' : ''}
                         </p>
                     </div>
@@ -86,14 +86,14 @@ const MoviesPage = () => {
                             aria-label="Rechercher un film"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/5 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-48"
+                            className="bg-white dark:bg-white/5 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-48"
                         />
                         
                         <select 
                             value={selectedGenre}
                             aria-label="Filtrer par genre"
                             onChange={(e) => setSelectedGenre(e.target.value)}
-                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
+                            className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
                         >
                             <option value="">Tous les genres</option>
                             {allGenres.map(genre => (
@@ -105,7 +105,7 @@ const MoviesPage = () => {
                             value={maxDuration || ''}
                             aria-label="Filtrer par durée"
                             onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
-                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
+                            className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
                         >
                             <option value="">Toutes durées</option>
                             <option value="90">- de 1h30</option>
@@ -116,7 +116,7 @@ const MoviesPage = () => {
                         {(searchQuery || selectedGenre || maxDuration) && (
                             <button 
                                 onClick={() => { setSearchQuery(''); setSelectedGenre(''); setMaxDuration(null); }}
-                                className="text-xs text-purple-400 hover:text-white px-2 py-2"
+                                className="text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-white px-2 py-2"
                                 title="Réinitialiser les filtres"
                             >
                                 ✕ Effacer
@@ -142,8 +142,8 @@ const MoviesPage = () => {
                         )}
                     </>
                 ) : (
-                    <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
-                        <p className="text-xl text-white font-medium">Aucun film ne correspond à vos critères.</p>
+                    <div className="text-center py-20 bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none">
+                        <p className="text-xl text-gray-900 dark:text-white font-medium">Aucun film ne correspond à vos critères.</p>
                     </div>
                 )}
             </div>
