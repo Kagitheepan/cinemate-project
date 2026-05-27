@@ -13,7 +13,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 
 function App() {
   return (
-    <div className="min-h-screen bg-neutral-950 font-sans text-white selection:bg-purple-500/30 flex flex-col">
+    <div className="min-h-screen bg-gray-50 text-neutral-900 dark:bg-neutral-950 dark:text-white font-sans selection:bg-purple-500/30 flex flex-col transition-colors duration-300">
         <Navbar />
         
         <Routes>

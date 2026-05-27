@@ -1,0 +1,2008 @@
+<h1>CINEMATE</h1>
+<h2>Application Web de Recommandation de Films selon le Temps Disponible</h2>
+<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<h3>DOSSIER DE PROJET</h3>
+<h4>Titre Professionnel CDA — Concepteur Développeur d'Applications — Niveau 6</h4>
+<p>━━━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p><strong>Kagitheepan SRITHARAN</strong></p>
+<p>Année 2025 – 2026</p>
+<hr>
+<p>Cinemate — Dossier de Projet | Kagitheepan SRITHARAN | 2025-2026</p>
+<hr>
+<h2>Sommaire</h2>
+<ol>
+<li><a href="#1-tableau-des-comp%C3%A9tences--titre-professionnel-cda-niveau-6">Tableau des Compétences — Titre Professionnel CDA Niveau 6</a></li>
+<li><a href="#2-liste-des-comp%C3%A9tences-mises-en-%C5%93uvre">Liste des Compétences Mises en Œuvre</a></li>
+<li><a href="#3-cahier-des-charges--expression-des-besoins">Cahier des Charges / Expression des Besoins</a></li>
+<li><a href="#4-gestion-de-projet">Gestion de Projet</a></li>
+<li><a href="#5-sp%C3%A9cifications-fonctionnelles">Spécifications Fonctionnelles</a></li>
+<li><a href="#6-maquettes-et-encha%C3%AEnement-des-maquettes">Maquettes et Enchaînement des Maquettes</a></li>
+<li><a href="#7-mod%C3%A8le-de-base-de-donn%C3%A9es">Modèle de Base de Données</a></li>
+<li><a href="#8-script-de-cr%C3%A9ation-de-la-base-de-donn%C3%A9es">Script de Création de la Base de Données</a></li>
+<li><a href="#9-diagrammes-uml">Diagrammes UML</a></li>
+<li><a href="#10-sp%C3%A9cifications-techniques">Spécifications Techniques</a></li>
+<li><a href="#11-r%C3%A9alisations--recommandation-personnalis%C3%A9e-fonctionnalit%C3%A9-principale">Réalisations — Recommandation Personnalisée (Fonctionnalité Principale)</a></li>
+<li><a href="#12-extraits-de-code-des-composants-m%C3%A9tier">Extraits de Code des Composants Métier</a></li>
+<li><a href="#13-d%C3%A9ploiement">Déploiement</a></li>
+<li><a href="#14-plan-de-tests">Plan de Tests</a></li>
+<li><a href="#15-pr%C3%A9sentation-des-%C3%A9l%C3%A9ments-de-s%C3%A9curit%C3%A9">Présentation des Éléments de Sécurité</a></li>
+<li><a href="#16-veille-technologique--react--typescript">Veille Technologique — React &amp; TypeScript</a></li>
+</ol>
+<ul>
+<li><a href="#annexe-a--captures-d%C3%A9cran-de-lapplication">Annexe A — Captures d'écran de l'application</a></li>
+<li><a href="#annexe-b--configuration-docker-compose">Annexe B — Configuration Docker Compose</a></li>
+<li><a href="#annexe-c--pipeline-cicd-github-actions">Annexe C — Pipeline CI/CD GitHub Actions</a></li>
+<li><a href="#annexe-d--liens-utiles">Annexe D — Liens utiles</a></li>
+<li><a href="#annexe-e--diagrammes-uml">Annexe E — Diagrammes UML</a></li>
+</ul>
+<hr>
+<h2>1. Tableau des Compétences — Titre Professionnel CDA Niveau 6</h2>
+<p>Référentiel Emploi Activités Compétences — Concepteur Développeur d'Applications — REAC TP-01281 v04</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Bloc</th>
+<th style="text-align:left">Compétence</th>
+<th style="text-align:left">Mise en œuvre dans Cinemate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>AT1</strong> — Développer une application sécurisée</td>
+<td style="text-align:left">C1 — Installer et configurer son environnement de travail</td>
+<td style="text-align:left">Docker Compose (5 services), Vite, Symfony 7.4 CLI</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C2 — Développer des interfaces utilisateur</td>
+<td style="text-align:left">React 19, TypeScript, Tailwind CSS 4, composants réactifs</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C3 — Développer des composants métier</td>
+<td style="text-align:left">Contrôleurs Symfony REST, algorithme de recommandation hybride</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C4 — Contribuer à la gestion d'un projet informatique</td>
+<td style="text-align:left">Git/GitHub, GitHub Actions CI/CD, documentation technique</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>AT2</strong> — Concevoir et développer une application sécurisée organisée en couches</td>
+<td style="text-align:left">C5 — Analyser les besoins et maquetter une application</td>
+<td style="text-align:left">Cahier des charges, maquettes, diagrammes UML (PlantUML)</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C6 — Définir l'architecture logicielle d'une application</td>
+<td style="text-align:left">Architecture 3-tiers découplée, API REST, base hybride SQL/NoSQL</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C7 — Concevoir et mettre en place une base de données relationnelle</td>
+<td style="text-align:left">MySQL 8.0 (Doctrine ORM), MongoDB 6.0 (Doctrine ODM)</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C8 — Développer des composants d'accès aux données SQL et NoSQL</td>
+<td style="text-align:left">Repositories Doctrine, requêtes DBAL optimisées, DocumentManager MongoDB</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>AT3</strong> — Préparer le déploiement d'une application sécurisée</td>
+<td style="text-align:left">C9 — Préparer et exécuter les plans de tests</td>
+<td style="text-align:left">Jest (14 tests frontend), PHPUnit (9 tests backend), GitHub Actions CI</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C10 — Préparer et exécuter le déploiement d'une application</td>
+<td style="text-align:left">Docker, docker-compose, pipeline CI/CD automatisé</td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left">C11 — Planifier et mettre en œuvre une veille technologique</td>
+<td style="text-align:left">Veille React 19 / TypeScript, Hooks, Context API, Axios interceptors</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>2. Liste des Compétences Mises en Œuvre</h2>
+<h3>2.1 Compétences techniques frontend</h3>
+<ul>
+<li>Développement d'une SPA (Single Page Application) avec <strong>React 19</strong> et <strong>TypeScript</strong></li>
+<li>Scaffolding et serveur de développement avec <strong>Vite</strong></li>
+<li>Gestion du routing côté client avec <strong>React Router DOM v7</strong></li>
+<li>Gestion de l'état global via <strong>Context API</strong> (AuthContext, MovieContext)</li>
+<li>Appels API REST asynchrones avec <strong>Axios</strong> et intercepteurs automatiques (JWT, consentement RGPD)</li>
+<li>Intégration d'un système de <strong>Drag &amp; Drop</strong> interactif avec <strong>@dnd-kit</strong></li>
+<li>Conception d'interfaces responsive et modernes avec <strong>Tailwind CSS 4</strong></li>
+<li>Utilisation d'icônes SVG optimisées avec <strong>Lucide React</strong></li>
+</ul>
+<h3>2.2 Compétences techniques backend</h3>
+<ul>
+<li>Développement d'une <strong>API REST</strong> complète avec <strong>Symfony 7.4</strong> et <strong>PHP 8.3</strong></li>
+<li>Authentification stateless via <strong>JSON Web Token (JWT)</strong> avec <code>lexik/jwt-authentication-bundle</code></li>
+<li>Persistance relationnelle via <strong>Doctrine ORM</strong> (MySQL) avec migrations automatisées</li>
+<li>Persistance documentaire via <strong>Doctrine ODM</strong> (MongoDB) pour les logs et consentements</li>
+<li>Pipeline d'ingestion de données externes (API TMDB et OMDb) via <strong>commandes Symfony Console</strong></li>
+<li>Hachage sécurisé des mots de passe avec <strong>bcrypt</strong> (algorithme <code>auto</code>)</li>
+<li>Système de notifications in-app et envoi d'<strong>emails transactionnels</strong> (Symfony Mailer)</li>
+<li>Gestion des en-têtes <strong>CORS</strong> pour les échanges cross-origin (<code>nelmio/cors-bundle</code>)</li>
+</ul>
+<h3>2.3 Compétences base de données</h3>
+<ul>
+<li>Conception d'un modèle de données <strong>hybride</strong> (SQL pour les données relationnelles, NoSQL pour les logs)</li>
+<li>Création et gestion de tables MySQL avec clés étrangères, index uniques et colonnes JSON</li>
+<li>Mapping Object-Document MongoDB avec attributs PHP 8 natifs</li>
+<li>Migrations de schéma automatisées via <code>doctrine/migrations</code></li>
+</ul>
+<h3>2.4 Compétences DevOps et déploiement</h3>
+<ul>
+<li>Conteneurisation avec <strong>Docker</strong> (rédaction de Dockerfile pour PHP et Node)</li>
+<li>Orchestration de <strong>5 conteneurs</strong> avec <strong>Docker Compose</strong> (backend, frontend, MySQL, MongoDB, phpMyAdmin)</li>
+<li>Pipeline <strong>CI/CD</strong> automatisé avec <strong>GitHub Actions</strong> (lint, tests, build)</li>
+<li>Gestion de variables d'environnement pour les différents contextes (dev, test, prod)</li>
+<li>Versionnement du code avec <strong>Git</strong> et <strong>GitHub</strong></li>
+</ul>
+<h3>2.5 Compétences conception et documentation</h3>
+<ul>
+<li>Modélisation UML : diagrammes de cas d'utilisation, d'activité (PlantUML <code>.wsd</code>)</li>
+<li>Rédaction de documentation technique détaillée</li>
+<li>Rédaction d'un cahier des charges fonctionnel</li>
+</ul>
+<hr>
+<h2>3. Cahier des Charges / Expression des Besoins</h2>
+<h3>3.1 Présentation du projet</h3>
+<p><strong>Cinemate</strong> est une application web conçue pour répondre à un besoin courant : <strong>choisir rapidement un film adapté au temps réellement disponible</strong>. Beaucoup d'utilisateurs disposent de créneaux limités (pause, soirée courte, transports) et perdent du temps à parcourir des catalogues sans savoir si un film rentre dans leur planning.</p>
+<p>L'application permet de <strong>filtrer et recommander des films en fonction de la durée disponible</strong>, tout en tenant compte de critères complémentaires (genre, humeur, popularité, plateformes de streaming). Elle vise à optimiser le temps de décision, améliorer l'expérience utilisateur et réduire la frustration liée au choix excessif sur les plateformes de streaming.</p>
+<h3>3.2 Identification du projet</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Champ</th>
+<th style="text-align:left">Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Nom du projet</td>
+<td style="text-align:left">Cinemate</td>
+</tr>
+<tr>
+<td style="text-align:left">Type</td>
+<td style="text-align:left">Application web full-stack</td>
+</tr>
+<tr>
+<td style="text-align:left">Auteur</td>
+<td style="text-align:left">Kagitheepan SRITHARAN</td>
+</tr>
+<tr>
+<td style="text-align:left">Formation</td>
+<td style="text-align:left">Titre Professionnel CDA — Niveau 6</td>
+</tr>
+<tr>
+<td style="text-align:left">Dépôt GitHub</td>
+<td style="text-align:left">https://github.com/Kagitheepan/cinemate-project</td>
+</tr>
+<tr>
+<td style="text-align:left">Statut</td>
+<td style="text-align:left">Fonctionnel en local (Docker)</td>
+</tr>
+</tbody>
+</table>
+<h3>3.3 Besoins fonctionnels</h3>
+<h4>3.3.1 Authentification</h4>
+<ul>
+<li>Inscription avec email, username et mot de passe (hashé bcrypt)</li>
+<li>Connexion et déconnexion sécurisées via JWT</li>
+<li>Persistance de la session via token Bearer dans les headers HTTP</li>
+</ul>
+<h4>3.3.2 Catalogue et exploration des films</h4>
+<ul>
+<li>Importation automatisée du catalogue depuis l'API <strong>TMDB</strong> (films populaires, 7 dernières années, disponibles en streaming en France)</li>
+<li>Enrichissement des données (casting, réalisateur, bande-annonce, plateformes de streaming, durée via TMDB + fallback OMDb)</li>
+<li>Recherche par titre, acteur ou réalisateur avec filtres combinés (genre, durée)</li>
+<li>Affichage des détails complets d'un film (synopsis, casting, plateformes, bande-annonce YouTube)</li>
+</ul>
+<h4>3.3.3 Watchlist interactive</h4>
+<ul>
+<li>Ajout / retrait de films dans une liste « À voir » et « Vus »</li>
+<li>Déplacement interactif entre les colonnes par <strong>Drag &amp; Drop</strong> (<code>@dnd-kit</code>) ou boutons dédiés</li>
+<li>Boutons « Tout vider » par colonne avec confirmation</li>
+<li>Recherche et ajout de films depuis une modale intégrée</li>
+</ul>
+<h4>3.3.4 Recommandations personnalisées</h4>
+<ul>
+<li>Moteur de scoring hybride basé sur : genres favoris du profil (+3 pts), genres implicites de la watchlist (+2 pts), plateformes communes (+5 pts), note TMDB (bonus)</li>
+<li>Exclusion automatique des films déjà présents dans la watchlist</li>
+<li>Filtres complémentaires sur la page de recommandations (titre, genre, durée)</li>
+</ul>
+<h4>3.3.5 Agenda de visionnage et rappels</h4>
+<ul>
+<li>Planification de créneaux horaires pour regarder un film spécifique (calendrier interactif)</li>
+<li>Système de notifications in-app avec cloche dans la barre de navigation</li>
+<li>Envoi d'emails de rappel automatiques (24h avant) via commande Symfony Console planifiée</li>
+</ul>
+<h4>3.3.6 Découvrir un film (Roulette)</h4>
+<ul>
+<li>Modale interactive permettant de filtrer par genre, durée maximum et nombre de propositions</li>
+<li>Animation « Machine à sous » avec flou progressif et révélation du résultat</li>
+</ul>
+<h4>3.3.7 Conformité RGPD</h4>
+<ul>
+<li>Bandeau de consentement aux cookies (accepter / refuser)</li>
+<li>Persistance du consentement dans MongoDB avec version de politique</li>
+<li>Conditionnement des logs de connexion au consentement explicite de l'utilisateur</li>
+<li>Page « Politique de confidentialité » accessible publiquement</li>
+</ul>
+<h3>3.4 Besoins non fonctionnels</h3>
+<ul>
+<li><strong>Sécurité</strong> : JWT stateless, bcrypt, CORS configuré, vérification d'authentification sur toutes les routes sensibles</li>
+<li><strong>Performance</strong> : Cache serveur (fichier JSON + ETag HTTP 304), requêtes DBAL brutes pour le listing, OPcache PHP</li>
+<li><strong>Disponibilité</strong> : Environnement conteneurisé et reproductible via Docker</li>
+<li><strong>Compatibilité</strong> : Responsive, navigateurs modernes, Tailwind CSS pour l'adaptabilité mobile/desktop</li>
+</ul>
+<hr>
+<h2>4. Gestion de Projet</h2>
+<h3>4.1 Planning et suivi</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Phase</th>
+<th style="text-align:left">Tâches</th>
+<th style="text-align:left">Durée</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Phase 1</td>
+<td style="text-align:left">Conception : cahier des charges, diagrammes UML, maquettes</td>
+<td style="text-align:left">2 semaines</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 2</td>
+<td style="text-align:left">Développement backend Symfony : API REST, auth JWT, CRUD, import TMDB</td>
+<td style="text-align:left">3 semaines</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 3</td>
+<td style="text-align:left">Développement frontend React : pages, composants, routing</td>
+<td style="text-align:left">3 semaines</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 4</td>
+<td style="text-align:left">Moteur de recommandation, RGPD, notifications, tests</td>
+<td style="text-align:left">2 semaines</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 5</td>
+<td style="text-align:left">Conteneurisation Docker, pipeline CI/CD GitHub Actions</td>
+<td style="text-align:left">1 semaine</td>
+</tr>
+<tr>
+<td style="text-align:left">Phase 6</td>
+<td style="text-align:left">Préparation titre CDA (dossier, diagrammes, révisions)</td>
+<td style="text-align:left">Novembre 2025 — Juin 2026</td>
+</tr>
+</tbody>
+</table>
+<h3>4.2 Environnement humain</h3>
+<p>Ce projet a été réalisé de manière individuelle. En tant qu'unique développeur, j'ai pris en charge l'intégralité du cycle de développement : conception, développement frontend et backend, intégration, tests et déploiement.</p>
+<h3>4.3 Environnement technique</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Outil</th>
+<th style="text-align:left">Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Visual Studio Code</td>
+<td style="text-align:left">Éditeur de code principal</td>
+</tr>
+<tr>
+<td style="text-align:left">Git + GitHub</td>
+<td style="text-align:left">Versionnement et hébergement du code source</td>
+</tr>
+<tr>
+<td style="text-align:left">Docker Desktop</td>
+<td style="text-align:left">Conteneurisation et environnement local</td>
+</tr>
+<tr>
+<td style="text-align:left">phpMyAdmin</td>
+<td style="text-align:left">Interface graphique pour explorer et modifier la base de données MySQL</td>
+</tr>
+<tr>
+<td style="text-align:left">MongoDB Compass / Extension VS Code</td>
+<td style="text-align:left">Interface pour explorer la base MongoDB</td>
+</tr>
+<tr>
+<td style="text-align:left">GitHub Actions</td>
+<td style="text-align:left">Pipeline CI/CD automatisé (tests + build)</td>
+</tr>
+<tr>
+<td style="text-align:left">PlantUML</td>
+<td style="text-align:left">Création des diagrammes UML (fichiers <code>.wsd</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3>4.4 Objectifs de qualité</h3>
+<ul>
+<li>Code versionné avec des commits descriptifs et réguliers</li>
+<li>Séparation claire frontend / backend (architecture découplée)</li>
+<li>Sécurisation de toutes les routes sensibles côté serveur</li>
+<li>Tests automatisés exécutés à chaque push via GitHub Actions</li>
+<li>Documentation des choix techniques dans le dossier de projet</li>
+</ul>
+<hr>
+<h2>5. Spécifications Fonctionnelles</h2>
+<h3>5.1 Architecture logicielle</h3>
+<p>L'application suit une architecture client-serveur découplée en trois tiers avec une base de données hybride :</p>
+<ul>
+<li><strong>Tier 1 — Présentation</strong> : React 19 (SPA) + TypeScript + Tailwind CSS 4, servi par Vite (dev) ou Nginx (prod)</li>
+<li><strong>Tier 2 — Logique métier</strong> : PHP 8.3 / Symfony 7.4 (API REST stateless)</li>
+<li><strong>Tier 3 — Données</strong> :
+<ul>
+<li><strong>MySQL 8.0</strong> (Doctrine ORM) : Utilisateurs, Films, Notifications</li>
+<li><strong>MongoDB 6.0</strong> (Doctrine ODM) : Logs de connexion, Consentements RGPD</li>
+</ul>
+</li>
+</ul>
+<h3>5.2 Structure des dossiers</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Dossier / Fichier</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>frontend/src/pages/</code></td>
+<td style="text-align:left">Pages React (Home, Movies, MovieDetails, Watchlist, Calendar, Profile, Recommendations, PrivacyPolicy)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>frontend/src/components/</code></td>
+<td style="text-align:left">Composants réutilisables (Navbar, AuthModal, DiscoverModal, CookieBanner, NotificationBell, MovieCard, TimeModal, AddEventModal)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>frontend/src/context/AuthContext.tsx</code></td>
+<td style="text-align:left">Gestion globale de la session utilisateur et du token JWT</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>frontend/src/context/MovieContext.tsx</code></td>
+<td style="text-align:left">Gestion globale du catalogue de films et du cache de données</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>frontend/src/services/api.ts</code></td>
+<td style="text-align:left">Service Axios centralisé avec intercepteurs (JWT, consentement RGPD, gestion des 401)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>backend/src/Controller/</code></td>
+<td style="text-align:left">Contrôleurs REST Symfony (Movie, Profile, Registration, Notification, Privacy, Auth)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>backend/src/Entity/</code></td>
+<td style="text-align:left">Entités Doctrine ORM : User, Movie, Notification</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>backend/src/Document/</code></td>
+<td style="text-align:left">Documents Doctrine ODM : ConnectionLog, CookieConsent</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>backend/src/Command/</code></td>
+<td style="text-align:left">Commandes CLI : ImportMoviesCommand, SendRemindersCommand</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>backend/src/Service/</code></td>
+<td style="text-align:left">Services métier : TmdbService, OmdbService</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>backend/src/EventSubscriber/</code></td>
+<td style="text-align:left">Subscriber Symfony : LoginSubscriber (logs conditionnels RGPD)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>docker-compose.yml</code></td>
+<td style="text-align:left">Configuration Docker Compose (5 conteneurs)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>.github/workflows/ci.yml</code></td>
+<td style="text-align:left">Pipeline CI/CD GitHub Actions</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 Routes de l'application (Frontend)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Route</th>
+<th style="text-align:left">Page</th>
+<th style="text-align:left">Accès</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>/</code></td>
+<td style="text-align:left">Page d'accueil avec filtres de recherche et roulette</td>
+<td style="text-align:left">Public</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>/movies</code></td>
+<td style="text-align:left">Catalogue paginé avec filtres (genre, durée, recherche)</td>
+<td style="text-align:left">Public</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>/movie/:id</code></td>
+<td style="text-align:left">Détails d'un film (casting, plateformes, BA, recommandations similaires)</td>
+<td style="text-align:left">Public</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>/watchlist</code></td>
+<td style="text-align:left">Gestion de la liste « À voir » et « Vus » (Drag &amp; Drop)</td>
+<td style="text-align:left">Connecté</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>/agenda</code></td>
+<td style="text-align:left">Calendrier de planification de visionnage</td>
+<td style="text-align:left">Connecté</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>/profile</code></td>
+<td style="text-align:left">Préférences utilisateur (genres, plateformes)</td>
+<td style="text-align:left">Connecté</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>/recommendations</code></td>
+<td style="text-align:left">Suggestions personnalisées basées sur le profil et la watchlist</td>
+<td style="text-align:left">Connecté</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>/privacy</code></td>
+<td style="text-align:left">Page de politique de confidentialité</td>
+<td style="text-align:left">Public</td>
+</tr>
+</tbody>
+</table>
+<h3>5.4 Endpoints de l'API (Backend)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Méthode</th>
+<th style="text-align:left">Route</th>
+<th style="text-align:left">Description</th>
+<th style="text-align:left">Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>POST</code></td>
+<td style="text-align:left"><code>/api/register</code></td>
+<td style="text-align:left">Inscription utilisateur</td>
+<td style="text-align:left">Non</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>POST</code></td>
+<td style="text-align:left"><code>/api/login_check</code></td>
+<td style="text-align:left">Authentification JWT</td>
+<td style="text-align:left">Non</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>POST</code></td>
+<td style="text-align:left"><code>/api/privacy/consent</code></td>
+<td style="text-align:left">Enregistrement du consentement RGPD</td>
+<td style="text-align:left">Non</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GET</code></td>
+<td style="text-align:left"><code>/api/movies</code></td>
+<td style="text-align:left">Liste des films (cache + ETag)</td>
+<td style="text-align:left">Non</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GET</code></td>
+<td style="text-align:left"><code>/api/movies/{id}</code></td>
+<td style="text-align:left">Détails complets d'un film</td>
+<td style="text-align:left">Non</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GET</code></td>
+<td style="text-align:left"><code>/api/movies/recommendations/for-you</code></td>
+<td style="text-align:left">Recommandations personnalisées</td>
+<td style="text-align:left">Oui</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GET</code></td>
+<td style="text-align:left"><code>/api/profile</code></td>
+<td style="text-align:left">Profil de l'utilisateur connecté</td>
+<td style="text-align:left">Oui</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PUT/PATCH</code></td>
+<td style="text-align:left"><code>/api/profile</code></td>
+<td style="text-align:left">Mise à jour du profil (watchlist, agenda, préférences)</td>
+<td style="text-align:left">Oui</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>GET</code></td>
+<td style="text-align:left"><code>/api/notifications</code></td>
+<td style="text-align:left">Liste des notifications</td>
+<td style="text-align:left">Oui</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PATCH</code></td>
+<td style="text-align:left"><code>/api/notifications/read/{id}</code></td>
+<td style="text-align:left">Marquer une notification comme lue</td>
+<td style="text-align:left">Oui</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>PATCH</code></td>
+<td style="text-align:left"><code>/api/notifications/read-all</code></td>
+<td style="text-align:left">Marquer toutes les notifications comme lues</td>
+<td style="text-align:left">Oui</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>6. Maquettes et Enchaînement des Maquettes</h2>
+<h3>6.1 Parcours utilisateur non connecté</h3>
+<pre><code>Page d'accueil (/) → Clic &quot;Se connecter&quot; → Modale d'authentification → Connexion → Accueil connecté
+Page d'accueil (/) → Clic &quot;Inscription&quot; → Formulaire d'inscription → Connexion → Accueil connecté
+Page d'accueil (/) → Catalogue (/movies) → Détails d'un film (/movie/:id)
+</code></pre>
+<h3>6.2 Parcours utilisateur connecté</h3>
+<pre><code>Accueil connecté → Catalogue → Fiche film → Ajouter à la Watchlist → Watchlist (/watchlist)
+Accueil connecté → Watchlist → Drag &amp; Drop vers &quot;Vus&quot;
+Accueil connecté → Fiche film → Planifier → Agenda (/agenda)
+Accueil connecté → Recommandations (/recommendations) → Fiche film
+Accueil connecté → Profil (/profile) → Modifier genres / plateformes
+Accueil connecté → Bouton &quot;Découvrir un film&quot; → Modale Roulette → Fiche film
+Accueil connecté → Déconnexion → Accueil public
+</code></pre>
+<hr>
+<h2>7. Modèle de Base de Données</h2>
+<h3>7.1 Architecture Hybride SQL / NoSQL</h3>
+<p>Cinemate implémente une architecture de stockage hybride pour dissocier les transactions relationnelles structurées et les écritures volumétriques non structurées :</p>
+<ul>
+<li><strong>MySQL (Doctrine ORM)</strong> : Données transactionnelles avec relations fortes (utilisateurs, films, notifications)</li>
+<li><strong>MongoDB (Doctrine ODM)</strong> : Données d'audit et de conformité à forte écriture sans contraintes relationnelles (logs de connexion, consentements cookies)</li>
+</ul>
+<h3>7.2 Tables SQL (MySQL) — Description détaillée</h3>
+<h4>Table : <code>user</code></h4>
+<p>Stocke les comptes utilisateurs de l'application avec leurs préférences et données personnelles.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Colonne</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Contraintes</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>id</code></td>
+<td style="text-align:left">INT</td>
+<td style="text-align:left">PK, AUTO_INCREMENT, NOT NULL</td>
+<td style="text-align:left">Identifiant unique de l'utilisateur</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>username</code></td>
+<td style="text-align:left">VARCHAR(180)</td>
+<td style="text-align:left">NOT NULL, UNIQUE</td>
+<td style="text-align:left">Nom d'utilisateur unique</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>email</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NOT NULL, UNIQUE</td>
+<td style="text-align:left">Adresse email (utilisée à l'inscription)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>password</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Mot de passe hashé (bcrypt)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>roles</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Rôles Symfony (ex: <code>[&quot;ROLE_USER&quot;]</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>platforms</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Plateformes SVOD de l'utilisateur (ex: <code>[&quot;Netflix&quot;, &quot;Disney+&quot;]</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>favorite_genres</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Genres favoris (ex: <code>[&quot;Action&quot;, &quot;Science-fiction&quot;]</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>watchlist</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Structure <code>{toWatch: [...], watched: [...]}</code> avec les IDs films</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>agenda</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Événements de visionnage planifiés</td>
+</tr>
+</tbody>
+</table>
+<h4>Table : <code>movie</code></h4>
+<p>Stocke les films importés depuis l'API TMDB. Chaque film est identifié par son <code>tmdb_id</code> unique.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Colonne</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Contraintes</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>id</code></td>
+<td style="text-align:left">INT</td>
+<td style="text-align:left">PK, AUTO_INCREMENT, NOT NULL</td>
+<td style="text-align:left">Identifiant interne unique</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>tmdb_id</code></td>
+<td style="text-align:left">INT</td>
+<td style="text-align:left">NOT NULL, UNIQUE</td>
+<td style="text-align:left">Identifiant TMDB du film</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>title</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Titre du film (en français)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>description</code></td>
+<td style="text-align:left">TEXT</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Synopsis du film</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>release_date</code></td>
+<td style="text-align:left">DATE</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Date de sortie</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>poster</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Chemin de l'affiche TMDB</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>backdrop</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Chemin de l'image de fond TMDB</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>director</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Nom du réalisateur</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>rating</code></td>
+<td style="text-align:left">FLOAT</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Note moyenne TMDB (sur 10)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>trailer_key</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Clé YouTube de la bande-annonce (priorité FR &gt; EN &gt; Teaser)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>genres</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Liste des genres (ex: <code>[&quot;Action&quot;, &quot;Science-fiction&quot;]</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>platforms</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Plateformes de streaming disponibles en France</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>cast</code></td>
+<td style="text-align:left">JSON</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Top 5 acteurs avec nom, rôle et photo</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>runtime</code></td>
+<td style="text-align:left">INT</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Durée en minutes (TMDB + fallback OMDb)</td>
+</tr>
+</tbody>
+</table>
+<h4>Table : <code>notification</code></h4>
+<p>Stocke les notifications de rappel envoyées aux utilisateurs pour les événements de leur agenda.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Colonne</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Contraintes</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>id</code></td>
+<td style="text-align:left">INT</td>
+<td style="text-align:left">PK, AUTO_INCREMENT, NOT NULL</td>
+<td style="text-align:left">Identifiant unique</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>user_id</code></td>
+<td style="text-align:left">INT</td>
+<td style="text-align:left">FK → user(id), NOT NULL</td>
+<td style="text-align:left">Destinataire de la notification</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>message</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Contenu de la notification</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>type</code></td>
+<td style="text-align:left">VARCHAR(50)</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Type : 'reminder', 'info', 'alert'</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>is_read</code></td>
+<td style="text-align:left">BOOLEAN</td>
+<td style="text-align:left">DEFAULT false</td>
+<td style="text-align:left">Statut de lecture</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>email_sent</code></td>
+<td style="text-align:left">BOOLEAN</td>
+<td style="text-align:left">DEFAULT false</td>
+<td style="text-align:left">Email de rappel envoyé</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>movie_id</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">ID du film concerné</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>event_id</code></td>
+<td style="text-align:left">VARCHAR(255)</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">ID de l'événement d'agenda</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>created_at</code></td>
+<td style="text-align:left">DATETIME</td>
+<td style="text-align:left">NOT NULL</td>
+<td style="text-align:left">Date de création</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>event_date</code></td>
+<td style="text-align:left">DATETIME</td>
+<td style="text-align:left">NULL</td>
+<td style="text-align:left">Date de l'événement planifié</td>
+</tr>
+</tbody>
+</table>
+<h3>7.3 Collections MongoDB — Description détaillée</h3>
+<h4>Collection : <code>connection_logs</code></h4>
+<p>Enregistre l'historique de connexion des utilisateurs <strong>uniquement si le consentement RGPD a été explicitement donné</strong>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Champ</th>
+<th style="text-align:left">Type BSON</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>_id</code></td>
+<td style="text-align:left">ObjectId</td>
+<td style="text-align:left">Identifiant MongoDB auto-généré</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>username</code></td>
+<td style="text-align:left">string</td>
+<td style="text-align:left">Nom d'utilisateur qui s'est connecté</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>connectedAt</code></td>
+<td style="text-align:left">date</td>
+<td style="text-align:left">Date et heure de connexion</td>
+</tr>
+</tbody>
+</table>
+<h4>Collection : <code>cookie_consents</code></h4>
+<p>Conserve la trace formelle des choix de consentement cookies, répondant à l'obligation de preuve exigée par la CNIL / RGPD.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Champ</th>
+<th style="text-align:left">Type BSON</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>_id</code></td>
+<td style="text-align:left">ObjectId</td>
+<td style="text-align:left">Identifiant MongoDB auto-généré</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>consentId</code></td>
+<td style="text-align:left">string</td>
+<td style="text-align:left">Identifiant unique du consentement (stocké dans un cookie HTTP)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>choice</code></td>
+<td style="text-align:left">string</td>
+<td style="text-align:left">'accepted' ou 'refused'</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>username</code></td>
+<td style="text-align:left">string (nullable)</td>
+<td style="text-align:left">Nom d'utilisateur (si connecté au moment du choix)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>decidedAt</code></td>
+<td style="text-align:left">date</td>
+<td style="text-align:left">Date et heure du choix</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>policyVersion</code></td>
+<td style="text-align:left">string</td>
+<td style="text-align:left">Version de la politique de confidentialité (ex: '2026-05-18')</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>8. Script de Création de la Base de Données</h2>
+<h3>8.1 Migrations Doctrine (MySQL)</h3>
+<p>Le schéma MySQL est géré automatiquement par Doctrine ORM via le mécanisme de migrations. Le schéma est dérivé des attributs PHP 8 (<code>#[ORM\Column]</code>, <code>#[ORM\Entity]</code>, etc.) définis dans les entités.</p>
+<p><strong>Génération et exécution du schéma :</strong></p>
+<pre><code class="language-bash"># Générer une migration à partir des changements dans les entités
+docker exec cinemate-back php bin/console doctrine:migrations:diff
+
+# Exécuter les migrations en attente
+docker exec cinemate-back php bin/console doctrine:migrations:migrate
+
+# OU forcer la mise à jour du schéma directement (développement)
+docker exec cinemate-back php bin/console doctrine:schema:update --force
+</code></pre>
+<p><strong>Exemple de migration — Ajout de la colonne <code>trailer_key</code> :</strong></p>
+<pre><code class="language-php">&lt;?php
+// backend/migrations/Version20260513074600.php
+
+final class Version20260513074600 extends AbstractMigration
+{
+    public function up(Schema $schema): void
+    {
+        $this-&gt;addSql('ALTER TABLE movie ADD trailer_key VARCHAR(255) DEFAULT NULL');
+    }
+
+    public function down(Schema $schema): void
+    {
+        $this-&gt;addSql('ALTER TABLE movie DROP trailer_key');
+    }
+}
+</code></pre>
+<h3>8.2 Schéma MongoDB (Doctrine ODM)</h3>
+<p>Le schéma MongoDB est défini par les attributs PHP 8 dans les classes <code>Document</code>. Les index sont créés via la commande :</p>
+<pre><code class="language-bash">docker exec cinemate-back php bin/console doctrine:mongodb:schema:update
+</code></pre>
+<p><strong>Mapping du document ConnectionLog :</strong></p>
+<pre><code class="language-php">&lt;?php
+// backend/src/Document/ConnectionLog.php
+
+#[MongoDB\Document(collection: &quot;connection_logs&quot;)]
+class ConnectionLog
+{
+    #[MongoDB\Id]
+    private ?string $id = null;
+
+    #[MongoDB\Field(type: &quot;string&quot;)]
+    private ?string $username = null;
+
+    #[MongoDB\Field(type: &quot;date&quot;)]
+    private ?DateTimeInterface $connectedAt = null;
+}
+</code></pre>
+<hr>
+<h2>9. Diagrammes UML</h2>
+<p>L'ensemble des diagrammes UML est réalisé en <strong>PlantUML</strong> (fichiers <code>.wsd</code> à la racine du projet). Voir Annexe E.</p>
+<h3>9.1 Diagrammes de Cas d'Utilisation</h3>
+<p>Six diagrammes de cas d'utilisation ont été réalisés, un par module fonctionnel :</p>
+<ul>
+<li><strong>Authentification &amp; Compte</strong> (<code>uc_account.wsd</code>) : Inscription, connexion, déconnexion</li>
+<li><strong>Gestion des Films</strong> (<code>uc_movie.wsd</code>) : Parcourir, rechercher, filtrer, voir les détails</li>
+<li><strong>Recherche avancée</strong> (<code>uc_search.wsd</code>) : Recherche par titre/acteur/réalisateur, filtres par genre/durée</li>
+<li><strong>Gestion Personnelle</strong> (<code>uc_personal.wsd</code>) : Watchlist (ajouter/retirer), Agenda, Préférences (genres/plateformes), Recommandations, Notifications</li>
+<li><strong>Backend / Import</strong> (<code>uc_backend.wsd</code>) : Pipeline d'import TMDB, enrichissement OMDb</li>
+<li><strong>Packages</strong> (<code>uc_packages.wsd</code>) : Vue d'ensemble des packages fonctionnels</li>
+</ul>
+<h3>9.2 Diagrammes d'Activité</h3>
+<p>Quatre diagrammes d'activité ont été réalisés pour les flux principaux :</p>
+<ul>
+<li><strong>Import automatisé TMDB</strong> (<code>act.wsd</code>) : Flux complet de la commande <code>app:import-movies</code></li>
+<li><strong>Ajout à la watchlist</strong> (<code>act2.wsd</code>) : Parcours utilisateur pour ajouter un film</li>
+<li><strong>Système de recommandation</strong> (<code>act3.wsd</code>) : Calcul du score et filtrage</li>
+<li><strong>Consentement RGPD</strong> (<code>act4.wsd</code>) : Flux de gestion du bandeau de cookies</li>
+</ul>
+<h3>9.3 Diagramme de Classes</h3>
+<p>Le diagramme de classes est documenté dans <code>DIAGRAMME_CLASSES.md</code> et modélise la structure statique de l'application : entités User, Movie, Notification, documents ConnectionLog, CookieConsent, services TmdbService, OmdbService, et leurs relations.</p>
+<hr>
+<h2>10. Spécifications Techniques</h2>
+<h3>10.1 Stack technologique</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Couche</th>
+<th style="text-align:left">Technologie</th>
+<th style="text-align:left">Version</th>
+<th style="text-align:left">Ce que ça fait</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Interface</td>
+<td style="text-align:left">React</td>
+<td style="text-align:left">19</td>
+<td style="text-align:left">Ce que l'utilisateur voit et avec quoi il interagit</td>
+</tr>
+<tr>
+<td style="text-align:left">Typage</td>
+<td style="text-align:left">TypeScript</td>
+<td style="text-align:left">5.x</td>
+<td style="text-align:left">Ajoute un typage statique au JavaScript pour plus de robustesse</td>
+</tr>
+<tr>
+<td style="text-align:left">Styling</td>
+<td style="text-align:left">Tailwind CSS</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">Framework utilitaire pour le design responsive</td>
+</tr>
+<tr>
+<td style="text-align:left">Outil de création</td>
+<td style="text-align:left">Vite</td>
+<td style="text-align:left">6.x</td>
+<td style="text-align:left">Crée le projet React et démarre le serveur de dev</td>
+</tr>
+<tr>
+<td style="text-align:left">Navigation</td>
+<td style="text-align:left">React Router DOM</td>
+<td style="text-align:left">7.x</td>
+<td style="text-align:left">Gère les pages sans recharger le navigateur</td>
+</tr>
+<tr>
+<td style="text-align:left">Drag &amp; Drop</td>
+<td style="text-align:left">@dnd-kit</td>
+<td style="text-align:left">6.x</td>
+<td style="text-align:left">Permet le glisser-déposer interactif dans la Watchlist</td>
+</tr>
+<tr>
+<td style="text-align:left">Client HTTP</td>
+<td style="text-align:left">Axios</td>
+<td style="text-align:left">1.x</td>
+<td style="text-align:left">Communique avec l'API backend avec intercepteurs automatiques</td>
+</tr>
+<tr>
+<td style="text-align:left">Icônes</td>
+<td style="text-align:left">Lucide React</td>
+<td style="text-align:left">0.x</td>
+<td style="text-align:left">Fournit des icônes SVG optimisées et accessibles</td>
+</tr>
+<tr>
+<td style="text-align:left">Serveur</td>
+<td style="text-align:left">PHP</td>
+<td style="text-align:left">8.3</td>
+<td style="text-align:left">Reçoit les requêtes, vérifie les droits, répond en JSON</td>
+</tr>
+<tr>
+<td style="text-align:left">Framework</td>
+<td style="text-align:left">Symfony</td>
+<td style="text-align:left">7.4</td>
+<td style="text-align:left">Framework PHP structurant : routing, sécurité, injection de dépendances</td>
+</tr>
+<tr>
+<td style="text-align:left">ORM SQL</td>
+<td style="text-align:left">Doctrine ORM</td>
+<td style="text-align:left">3.x</td>
+<td style="text-align:left">Mappe les entités PHP aux tables MySQL</td>
+</tr>
+<tr>
+<td style="text-align:left">ODM NoSQL</td>
+<td style="text-align:left">Doctrine ODM</td>
+<td style="text-align:left">2.x</td>
+<td style="text-align:left">Mappe les documents PHP aux collections MongoDB</td>
+</tr>
+<tr>
+<td style="text-align:left">Auth</td>
+<td style="text-align:left">LexikJWTAuthBundle</td>
+<td style="text-align:left">3.x</td>
+<td style="text-align:left">Gère l'authentification stateless via JSON Web Tokens</td>
+</tr>
+<tr>
+<td style="text-align:left">Base SQL</td>
+<td style="text-align:left">MySQL</td>
+<td style="text-align:left">8.0</td>
+<td style="text-align:left">Stocke les données relationnelles (utilisateurs, films, notifications)</td>
+</tr>
+<tr>
+<td style="text-align:left">Base NoSQL</td>
+<td style="text-align:left">MongoDB</td>
+<td style="text-align:left">6.0</td>
+<td style="text-align:left">Stocke les logs d'audit et les consentements RGPD</td>
+</tr>
+<tr>
+<td style="text-align:left">Films / Séries</td>
+<td style="text-align:left">TMDB API</td>
+<td style="text-align:left">v3</td>
+<td style="text-align:left">Fournit le catalogue de films (affiches, synopsis, casting, plateformes)</td>
+</tr>
+<tr>
+<td style="text-align:left">Durées (fallback)</td>
+<td style="text-align:left">OMDb API</td>
+<td style="text-align:left">v1</td>
+<td style="text-align:left">Fournit la durée des films si TMDB ne l'a pas</td>
+</tr>
+<tr>
+<td style="text-align:left">Conteneurisation</td>
+<td style="text-align:left">Docker + Compose</td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Orchestre l'environnement de développement reproductible</td>
+</tr>
+<tr>
+<td style="text-align:left">CI/CD</td>
+<td style="text-align:left">GitHub Actions</td>
+<td style="text-align:left">—</td>
+<td style="text-align:left">Exécute les tests et le build automatiquement à chaque push</td>
+</tr>
+</tbody>
+</table>
+<h3>10.2 Sécurité de l'application</h3>
+<p>La sécurité a été une priorité tout au long du développement. Voici les principales protections mises en place.</p>
+<h4>10.2.1 Mots de passe</h4>
+<p>Les mots de passe ne sont jamais stockés en clair. Ils sont hashés avec <code>bcrypt</code> via le composant Symfony PasswordHasher (<code>password_hash() / password_verify()</code>). Même si quelqu'un accède à la base, il ne peut pas lire les mots de passe.</p>
+<h4>10.2.2 Authentification stateless (JWT)</h4>
+<p>Contrairement aux sessions PHP classiques, Cinemate utilise des <strong>JSON Web Tokens</strong>. À chaque connexion, un token signé est généré par le serveur et renvoyé au frontend. Ce token est ensuite envoyé dans l'en-tête <code>Authorization: Bearer &lt;token&gt;</code> de chaque requête. Le serveur vérifie la signature du token sans aucun état côté serveur (pas de session en mémoire).</p>
+<h4>10.2.3 Protection CORS</h4>
+<p>Les en-têtes CORS sont configurés via <code>nelmio/cors-bundle</code> pour n'autoriser que les origines légitimes du frontend. L'en-tête custom <code>x-consent-tracking</code> est explicitement autorisé pour le flux RGPD.</p>
+<h4>10.2.4 Contrôle d'accès</h4>
+<p>La configuration <code>security.yaml</code> de Symfony définit des règles d'accès précises :</p>
+<ul>
+<li>Routes publiques : <code>/api/register</code>, <code>/api/login</code>, <code>/api/movies</code>, <code>/api/privacy/consent</code></li>
+<li>Routes protégées : toutes les autres routes sous <code>/api</code> nécessitent <code>IS_AUTHENTICATED_FULLY</code></li>
+</ul>
+<hr>
+<h2>11. Réalisations — Recommandation Personnalisée (Fonctionnalité Principale)</h2>
+<h3>11.1 Description de la fonctionnalité</h3>
+<p>Le moteur de recommandation est la fonctionnalité centrale de Cinemate. Il analyse le profil de l'utilisateur (genres favoris, plateformes de streaming) et le contenu de sa watchlist pour calculer un <strong>score de pertinence</strong> pour chaque film du catalogue, puis affiche les résultats triés par score décroissant.</p>
+<h3>11.2 Algorithme de scoring</h3>
+<p>Le score est calculé selon la formule suivante :</p>
+<pre><code>Score = (Gfav × 3) + (Gimp × 2) + (Pcomm × 5) + (Note_TMDB / 10)
+</code></pre>
+<ul>
+<li><strong>Genres Favoris (Gfav)</strong> : +3 points par genre du film correspondant aux genres favoris du profil</li>
+<li><strong>Genres Implicites (Gimp)</strong> : +2 points par genre correspondant aux 3 genres les plus fréquents dans la watchlist</li>
+<li><strong>Plateformes Communes (Pcomm)</strong> : +5 points si le film est disponible sur une plateforme déclarée par l'utilisateur</li>
+<li><strong>Note TMDB</strong> : bonus proportionnel à la note (max +1 point)</li>
+<li><strong>Seuil</strong> : seuls les films avec un score ≥ 2 sont affichés</li>
+</ul>
+<h3>11.3 Code backend — MovieController::getRecommendations</h3>
+<pre><code class="language-php">&lt;?php
+// backend/src/Controller/MovieController.php (extrait)
+
+#[Route('/recommendations/for-you', name: 'api_movies_recommendations', methods: ['GET'])]
+public function getRecommendations(EntityManagerInterface $entityManager): JsonResponse
+{
+    $user = $this-&gt;getUser();
+    if (!$user) {
+        return $this-&gt;json(['message' =&gt; 'Non authentifié'], 401);
+    }
+
+    // 1. Profil de l'utilisateur
+    $favoriteGenres = $user-&gt;getFavoriteGenres() ?? [];
+    $platforms = $user-&gt;getPlatforms() ?? [];
+    $rawWatchlist = $user-&gt;getWatchlist() ?? [];
+    
+    // Support du format { toWatch: [...], watched: [...] }
+    $watchlistIds = array_merge($rawWatchlist['toWatch'] ?? [], $rawWatchlist['watched'] ?? []);
+
+    // 2. Extraire les 3 genres dominants de la watchlist
+    $repository = $entityManager-&gt;getRepository(Movie::class);
+    $watchlistMovies = $repository-&gt;findBy(['id' =&gt; $watchlistIds]);
+    
+    $implicitGenresCount = [];
+    foreach ($watchlistMovies as $wm) {
+        foreach ($wm-&gt;getGenres() ?? [] as $genre) {
+            $implicitGenresCount[$genre] = ($implicitGenresCount[$genre] ?? 0) + 1;
+        }
+    }
+    arsort($implicitGenresCount);
+    $implicitGenres = array_slice(array_keys($implicitGenresCount), 0, 3);
+
+    // 3. Calculer le score pour chaque film du catalogue
+    $allMovies = $repository-&gt;findAll();
+    $scoredMovies = [];
+    
+    foreach ($allMovies as $movie) {
+        if (in_array((string)$movie-&gt;getId(), $watchlistIds)) continue; // Exclure la watchlist
+        
+        $score = 0;
+        $movieGenres = $movie-&gt;getGenres() ?? [];
+
+        foreach ($favoriteGenres as $fg) {
+            if (in_array($fg, $movieGenres)) $score += 3;  // +3 par genre favori
+        }
+        foreach ($implicitGenres as $ig) {
+            if (in_array($ig, $movieGenres)) $score += 2;  // +2 par genre implicite
+        }
+        // +5 si plateforme commune
+        foreach ($platforms as $up) {
+            foreach ($movie-&gt;getPlatforms() ?? [] as $mp) {
+                if (stripos($mp, $up) !== false) { $score += 5; break 2; }
+            }
+        }
+        if ($movie-&gt;getRating()) $score += ($movie-&gt;getRating() / 10); // Bonus note
+
+        if ($score &gt;= 2) {
+            $scoredMovies[] = ['movie' =&gt; $movie, 'score' =&gt; $score];
+        }
+    }
+    
+    // Tri par score décroissant, retour des 30 meilleurs
+    usort($scoredMovies, fn($a, $b) =&gt; $b['score'] &lt;=&gt; $a['score']);
+    $top = array_slice($scoredMovies, 0, 30);
+    // ... sérialisation et retour JSON
+}
+</code></pre>
+<h3>11.4 Code frontend — Recommendations.tsx</h3>
+<pre><code class="language-tsx">// frontend/src/pages/Recommendations.tsx (extrait)
+
+const Recommendations = () =&gt; {
+    const { isAuthenticated } = useAuth();
+    const [recommendedMovies, setRecommendedMovies] = useState&lt;Movie[]&gt;([]);
+
+    useEffect(() =&gt; {
+        const fetchRecommendations = async () =&gt; {
+            if (!isAuthenticated) return;
+            const response = await api.get('/movies/recommendations/for-you');
+            setRecommendedMovies(response.data);
+        };
+        fetchRecommendations();
+    }, [isAuthenticated]);
+
+    // Filtres locaux supplémentaires (genre, durée, recherche textuelle)
+    const filteredMovies = recommendedMovies.filter(movie =&gt; {
+        const matchesDuration = maxDuration ? (movie.duration || 999) &lt;= maxDuration : true;
+        const matchesSearch = query ? movie.title.toLowerCase().includes(query) : true;
+        const matchesGenre = selectedGenre ? (movie.genres || []).includes(selectedGenre) : true;
+        return matchesDuration &amp;&amp; matchesSearch &amp;&amp; matchesGenre;
+    });
+
+    return &lt;MovieGrid movies={filteredMovies} /&gt;;
+};
+</code></pre>
+<hr>
+<h2>12. Extraits de Code des Composants Métier</h2>
+<h3>12.1 Pipeline d'import automatisé — ImportMoviesCommand</h3>
+<p>Ce composant métier est la commande Symfony qui alimente le catalogue de films. Il orchestre les appels vers l'API TMDB et OMDb, enrichit les données, et persiste les films en base MySQL.</p>
+<pre><code class="language-php">&lt;?php
+// backend/src/Command/ImportMoviesCommand.php (extrait)
+
+#[AsCommand(name: 'app:import-movies', description: 'Imports movies from TMDB API')]
+class ImportMoviesCommand extends Command
+{
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        // 1. Récupérer le mapping des genres (one-shot)
+        $genreMap = $this-&gt;tmdbService-&gt;getGenres();
+
+        for ($page = 1; $page &lt;= $pages; $page++) {
+            // 2. Récupérer les films disponibles en streaming en France (7 dernières années)
+            $moviesData = $this-&gt;tmdbService-&gt;discoverStreamingMovies($page);
+
+            foreach ($moviesData as $movieData) {
+                $movie = $repository-&gt;findOneBy(['tmdbId' =&gt; $tmdbId]) ?? new Movie();
+                $movie-&gt;setTmdbId($tmdbId)-&gt;setTitle($title)-&gt;setDescription($overview);
+
+                // 3. Résolution de la durée (TMDB → OMDb fallback)
+                $runtime = $this-&gt;tmdbService-&gt;getMovieDetails($tmdbId)['runtime'] ?? null;
+                if (!$runtime || $runtime === 0) {
+                    $runtime = $this-&gt;omdbService-&gt;getRuntimeByTitle($originalTitle, $year);
+                }
+                $movie-&gt;setRuntime($runtime);
+
+                // 4. Détection des plateformes de streaming (JustWatch via TMDB)
+                $providers = $this-&gt;tmdbService-&gt;getWatchProviders($tmdbId);
+                // ... extraction flatrate, ads, rent/buy pour la France
+
+                // 5. Sélection ordonnée de la bande-annonce (FR &gt; EN &gt; Teaser)
+                $videos = $this-&gt;tmdbService-&gt;getVideos($tmdbId);
+                // ... priorité : frTrailer &gt; enTrailer &gt; anyTrailer &gt; frTeaser &gt; ...
+
+                $this-&gt;entityManager-&gt;persist($movie);
+            }
+            $this-&gt;entityManager-&gt;flush(); // Batch flush par page
+        }
+        return Command::SUCCESS;
+    }
+}
+</code></pre>
+<h3>12.2 Consentement RGPD conditionnel — LoginSubscriber</h3>
+<p>Ce composant illustre l'architecture événementielle de Symfony. Le subscriber intercepte chaque authentification réussie et ne persiste le log de connexion dans MongoDB que si l'utilisateur a explicitement consenti au tracking.</p>
+<pre><code class="language-php">&lt;?php
+// backend/src/EventSubscriber/LoginSubscriber.php
+
+class LoginSubscriber implements EventSubscriberInterface
+{
+    public static function getSubscribedEvents(): array
+    {
+        return [Events::AUTHENTICATION_SUCCESS =&gt; 'onAuthenticationSuccess'];
+    }
+
+    public function onAuthenticationSuccess(AuthenticationSuccessEvent $event): void
+    {
+        $user = $event-&gt;getUser();
+
+        // Vérification du consentement RGPD via l'en-tête HTTP custom
+        $request = $this-&gt;requestStack-&gt;getCurrentRequest();
+        $hasConsent = $request &amp;&amp; $request-&gt;headers-&gt;get('x-consent-tracking') === 'true';
+
+        // Ne pas logger si l'utilisateur n'a pas consenti
+        if (!$hasConsent) return;
+
+        $log = new ConnectionLog();
+        $log-&gt;setUsername($user-&gt;getUserIdentifier());
+        $log-&gt;setConnectedAt(new \DateTime());
+
+        $this-&gt;dm-&gt;persist($log);
+        $this-&gt;dm-&gt;flush();
+    }
+}
+</code></pre>
+<h3>12.3 Intercepteur Axios — Injection automatique du consentement</h3>
+<p>Côté frontend, un intercepteur Axios injecte automatiquement le header de consentement dans chaque requête si l'utilisateur a accepté les cookies.</p>
+<pre><code class="language-typescript">// frontend/src/services/api.ts
+
+const api = axios.create({
+    baseURL: '/api',
+    headers: { 'Content-Type': 'application/json' },
+});
+
+// Intercepteur : injection du token JWT + consentement RGPD
+api.interceptors.request.use((config) =&gt; {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Le header x-consent-tracking est conditionné par le choix de l'utilisateur
+    return config;
+});
+</code></pre>
+<hr>
+<h2>13. Déploiement</h2>
+<h3>13.1 Environnement local — Docker Compose</h3>
+<p>L'environnement de développement local utilise Docker Compose pour orchestrer <strong>5 conteneurs</strong> interconnectés sur un réseau privé Docker.</p>
+<h4>13.1.1 Architecture Docker</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Service</th>
+<th style="text-align:left">Image</th>
+<th style="text-align:left">Port exposé</th>
+<th style="text-align:left">Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>backend</code></td>
+<td style="text-align:left">php:8.4-cli (build)</td>
+<td style="text-align:left">8000:8000</td>
+<td style="text-align:left">API REST Symfony</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>frontend</code></td>
+<td style="text-align:left">node:20-alpine (build)</td>
+<td style="text-align:left">5173:5173</td>
+<td style="text-align:left">SPA React + Vite (dev server)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>database</code></td>
+<td style="text-align:left">mysql:8.0</td>
+<td style="text-align:left">3306:3306</td>
+<td style="text-align:left">Base de données SQL</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>mongo-db</code></td>
+<td style="text-align:left">mongo:6.0</td>
+<td style="text-align:left">27018:27017</td>
+<td style="text-align:left">Base de données NoSQL</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>pma</code></td>
+<td style="text-align:left">phpmyadmin/phpmyadmin</td>
+<td style="text-align:left">8080:80</td>
+<td style="text-align:left">Interface graphique MySQL</td>
+</tr>
+</tbody>
+</table>
+<h4>13.1.2 Conteneur <code>cinemate-back</code> (Backend)</h4>
+<p>Le Dockerfile utilise l'image PHP 8.4 CLI avec installation des extensions PDO, MongoDB, Zip, Intl. Composer est copié depuis l'image officielle. Le serveur de développement intégré PHP écoute sur le port 8000.</p>
+<pre><code class="language-dockerfile">FROM php:8.4-cli
+RUN apt-get update &amp;&amp; apt-get install -y git unzip libzip-dev libicu-dev libssl-dev \
+    &amp;&amp; docker-php-ext-install pdo pdo_mysql zip intl
+RUN pecl install mongodb &amp;&amp; docker-php-ext-enable mongodb
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+WORKDIR /app
+EXPOSE 8000
+CMD bash -c &quot;composer install --no-interaction &amp;&amp; php -S 0.0.0.0:8000 -t public&quot;
+</code></pre>
+<h4>13.1.3 Conteneur <code>cinemate-front</code> (Frontend)</h4>
+<p>Le Dockerfile utilise Node 20 Alpine pour installer les dépendances et lancer le serveur Vite en mode développement avec le flag <code>--host</code> pour permettre l'accès depuis l'hôte Windows.</p>
+<pre><code class="language-dockerfile">FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 5173
+CMD [&quot;npm&quot;, &quot;run&quot;, &quot;dev&quot;, &quot;--&quot;, &quot;--host&quot;]
+</code></pre>
+<h4>13.1.4 Lancement de l'environnement local</h4>
+<pre><code class="language-bash"># Cloner le projet
+git clone https://github.com/Kagitheepan/cinemate-project.git
+cd cinemate-project
+
+# Lancer tous les conteneurs (build + start)
+docker-compose up --build
+
+# Accéder à l'application
+# Frontend : http://localhost:5173
+# Backend  : http://localhost:8000
+# MySQL    : localhost:3306
+# MongoDB  : localhost:27018
+# phpMyAdmin : http://localhost:8080
+
+# Importer les films dans la base de données
+docker exec cinemate-back php bin/console doctrine:schema:update --force
+docker exec cinemate-back php bin/console app:import-movies --pages=10
+
+# Arrêter les conteneurs
+docker-compose down
+</code></pre>
+<h3>13.2 Intégration Continue — GitHub Actions</h3>
+<p>Le pipeline CI/CD est déclenché automatiquement à chaque push ou pull request sur la branche <code>main</code>. Il exécute deux jobs en parallèle :</p>
+<h4>Job 1 : Frontend</h4>
+<ol>
+<li>Checkout du code</li>
+<li>Installation de Node.js 22 avec cache npm</li>
+<li><code>npm ci</code> (installation déterministe des dépendances)</li>
+<li><code>npm test -- --runInBand</code> (exécution des 14 tests Jest)</li>
+<li><code>npm run build</code> (vérification de la compilation TypeScript + Vite)</li>
+</ol>
+<h4>Job 2 : Backend</h4>
+<ol>
+<li>Checkout du code</li>
+<li>Installation de PHP 8.3 avec extensions (ctype, iconv, mbstring, mongodb)</li>
+<li><code>composer validate</code> (validation du fichier composer.json)</li>
+<li><code>composer install</code> (installation des dépendances)</li>
+<li><code>php bin/phpunit</code> (exécution des 9 tests PHPUnit)</li>
+</ol>
+<hr>
+<h2>14. Plan de Tests</h2>
+<h3>14.1 Configuration des tests</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Environnement</th>
+<th style="text-align:left">Framework</th>
+<th style="text-align:left">Configuration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Frontend</td>
+<td style="text-align:left">Jest + @testing-library/react</td>
+<td style="text-align:left"><code>jest.config.ts</code> avec <code>ts-jest</code>, environnement <code>jsdom</code>, mocks des contextes</td>
+</tr>
+<tr>
+<td style="text-align:left">Backend</td>
+<td style="text-align:left">PHPUnit 9.6</td>
+<td style="text-align:left"><code>phpunit.dist.xml</code>, coût bcrypt réduit à 4 en mode test</td>
+</tr>
+</tbody>
+</table>
+<h3>14.2 Tests unitaires Frontend — AuthContext</h3>
+<p>Tests du hook <code>useAuth()</code> et de la gestion de session :</p>
+<pre><code class="language-typescript">// frontend/src/context/AuthContext.test.tsx
+
+describe('AuthContext - Connexion et Inscription', () =&gt; {
+    it('devrait initialiser avec un utilisateur non connecté si aucun cookie valide', async () =&gt; {
+        const { result } = renderHook(() =&gt; useAuth(), { wrapper });
+        await waitFor(() =&gt; expect(result.current.isLoading).toBe(false));
+        expect(result.current.user).toBeNull();
+        expect(result.current.isAuthenticated).toBe(false);
+    });
+
+    it('devrait permettre la connexion et mettre à jour le state', async () =&gt; {
+        // ... login puis vérification que isAuthenticated === true
+    });
+
+    it('devrait permettre la déconnexion et nettoyer le state', async () =&gt; {
+        // ... logout puis vérification que user === null
+    });
+
+    it('devrait récupérer le profil au démarrage si le cookie est valide', async () =&gt; {
+        mockApi.get.mockResolvedValueOnce({ data: mockUser });
+        // ... vérification que api.get('/profile') est appelé
+    });
+
+    it('devrait gérer les erreurs de récupération du profil', async () =&gt; {
+        // ... vérification que l'erreur est gérée gracieusement
+    });
+});
+</code></pre>
+<h3>14.3 Tests d'intégration Frontend — Home</h3>
+<p>Tests de la page d'accueil avec ses filtres de recherche :</p>
+<pre><code class="language-typescript">// frontend/src/pages/Home.test.tsx
+
+describe('Home - recherche et filtres', () =&gt; {
+    it('filtre les films avec la recherche par titre', async () =&gt; {
+        await user.type(screen.getByPlaceholderText('Titre, acteur, réalisateur...'), 'matrix');
+        expect(screen.getByRole('heading', { name: '1 résultat' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Matrix' })).toBeInTheDocument();
+    });
+
+    it('filtre les films par genre', async () =&gt; {
+        await user.selectOptions(genreSelect, 'Action');
+        expect(screen.getByRole('heading', { name: '2 résultats' })).toBeInTheDocument();
+    });
+
+    it('filtre les films selon le temps disponible', async () =&gt; {
+        await user.selectOptions(durationSelect, '90');
+        expect(screen.getByRole('heading', { name: '1 résultat' })).toBeInTheDocument();
+    });
+
+    it('applique le temps disponible de la modale de démarrage', async () =&gt; {
+        // ... test de la modale &quot;Combien de temps avez-vous ?&quot;
+    });
+});
+</code></pre>
+<h3>14.4 Tests d'intégration Frontend — MovieDetails</h3>
+<pre><code class="language-typescript">// frontend/src/pages/MovieDetails.test.tsx
+
+it('affiche les informations principales, le casting et les recommandations', async () =&gt; {
+    expect(await screen.findByRole('heading', { name: 'Matrix' })).toBeInTheDocument();
+    expect(screen.getByText('Disponible en streaming sur')).toBeInTheDocument();
+    expect(screen.getByText('Netflix')).toBeInTheDocument();
+    expect(screen.getByText('Keanu Reeves')).toBeInTheDocument();
+    expect(screen.getByText('Neo')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Inception' })).toBeInTheDocument(); // Recommandation
+});
+</code></pre>
+<h3>14.5 Tests d'intégration Frontend — Watchlist</h3>
+<pre><code class="language-typescript">// frontend/src/pages/Watchlist.test.tsx
+
+describe('Watchlist - Ajout et Gestion', () =&gt; {
+    it('devrait afficher les films dans les bonnes catégories au chargement');
+    it('devrait permettre d\'ajouter un film à la liste &quot;à voir&quot;');
+    it('devrait permettre de déplacer un film de &quot;à voir&quot; vers &quot;vus&quot;');
+    it('devrait permettre de retirer un film de la watchlist');
+});
+</code></pre>
+<h3>14.6 Tests unitaires Backend — MovieController</h3>
+<pre><code class="language-php">&lt;?php
+// backend/tests/Controller/MovieControllerTest.php
+
+class MovieControllerTest extends TestCase
+{
+    public function testListReturnsCachedMoviesWithCacheHeaders(): void
+    {
+        // Vérifie que le cache fichier fonctionne et que les en-têtes HTTP sont corrects
+        // Cache-Control: public, max-age=60, stale-while-revalidate=300
+        // ETag présent
+    }
+
+    public function testListReturnsNotModifiedWhenEtagMatchesCache(): void
+    {
+        // Vérifie que le serveur renvoie un HTTP 304 Not Modified
+        // quand le client envoie If-None-Match avec le bon ETag
+    }
+
+    public function testSerializeMovieReturnsFullDetailPayload(): void
+    {
+        // Vérifie que le payload JSON contient tous les champs attendus :
+        // id, tmdbId, title, year, releaseDate, rating, imageUrl, genres,
+        // category, duration, description, backdropUrl, director, cast,
+        // availableOn, trailerKey
+    }
+}
+</code></pre>
+<h3>14.7 Résultats des tests</h3>
+<p>Tous les tests passent avec succès. Le pipeline CI/CD GitHub Actions affiche le rapport suivant :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Suite de tests</th>
+<th style="text-align:left">Nb de tests</th>
+<th style="text-align:center">Résultat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Frontend</strong> — AuthContext</td>
+<td style="text-align:left">5 tests</td>
+<td style="text-align:center">✅ PASS</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Frontend</strong> — Home (filtres)</td>
+<td style="text-align:left">4 tests</td>
+<td style="text-align:center">✅ PASS</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Frontend</strong> — MovieDetails</td>
+<td style="text-align:left">1 test</td>
+<td style="text-align:center">✅ PASS</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Frontend</strong> — Watchlist</td>
+<td style="text-align:left">4 tests</td>
+<td style="text-align:center">✅ PASS</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Backend</strong> — MovieController</td>
+<td style="text-align:left">3 tests</td>
+<td style="text-align:center">✅ PASS</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Total</strong></td>
+<td style="text-align:left"><strong>14 + 9 = 23 tests</strong></td>
+<td style="text-align:center"><strong>✅ PASS</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>14.8 Tests de sécurité</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">ID</th>
+<th style="text-align:left">Scénario</th>
+<th style="text-align:left">Action testée</th>
+<th style="text-align:left">Résultat attendu</th>
+<th style="text-align:center">Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">S01</td>
+<td style="text-align:left">Auth manquante</td>
+<td style="text-align:left">GET <code>/api/profile</code> sans token JWT</td>
+<td style="text-align:left">Erreur 401 Non authentifié</td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td style="text-align:left">S02</td>
+<td style="text-align:left">Token expiré</td>
+<td style="text-align:left">GET <code>/api/profile</code> avec token expiré</td>
+<td style="text-align:left">Erreur 401, localStorage nettoyé</td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td style="text-align:left">S03</td>
+<td style="text-align:left">RGPD — Refus</td>
+<td style="text-align:left">Connexion sans acceptation cookies</td>
+<td style="text-align:left">Aucun log dans MongoDB</td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td style="text-align:left">S04</td>
+<td style="text-align:left">RGPD — Acceptation</td>
+<td style="text-align:left">Connexion après acceptation cookies</td>
+<td style="text-align:left">Log présent dans <code>connection_logs</code></td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td style="text-align:left">S05</td>
+<td style="text-align:left">Accès données tierce</td>
+<td style="text-align:left">GET <code>/api/notifications</code> avec JWT d'un autre user</td>
+<td style="text-align:left">Retourne uniquement ses propres notifications</td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td style="text-align:left">S06</td>
+<td style="text-align:left">Inscription doublon</td>
+<td style="text-align:left">POST <code>/api/register</code> avec email existant</td>
+<td style="text-align:left">Erreur 409 Email already used</td>
+<td style="text-align:center">✅</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>15. Présentation des Éléments de Sécurité</h2>
+<h3>15.1 Synthèse des mesures de sécurité</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Menace</th>
+<th style="text-align:left">Contre-mesure</th>
+<th style="text-align:left">Implémentation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Mot de passe compromis</td>
+<td style="text-align:left">Hachage bcrypt</td>
+<td style="text-align:left"><code>UserPasswordHasherInterface</code> (algorithme <code>auto</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left">Session hijacking</td>
+<td style="text-align:left">JWT stateless</td>
+<td style="text-align:left">Token signé RSA (clé privée dans <code>config/jwt/</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left">Accès non autorisé</td>
+<td style="text-align:left">Vérification JWT sur chaque requête</td>
+<td style="text-align:left">Firewall Symfony (<code>security.yaml</code> : <code>jwt: ~</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left">CORS non sécurisé</td>
+<td style="text-align:left">Liste blanche des origines</td>
+<td style="text-align:left"><code>nelmio_cors.yaml</code> avec origines explicites</td>
+</tr>
+<tr>
+<td style="text-align:left">Vol de cookie consent</td>
+<td style="text-align:left">Cookie sécurisé</td>
+<td style="text-align:left"><code>Secure</code>, <code>HttpOnly</code>, <code>SameSite=Lax</code>, expiration 13 mois</td>
+</tr>
+<tr>
+<td style="text-align:left">Non-conformité RGPD</td>
+<td style="text-align:left">Consentement conditionnel</td>
+<td style="text-align:left">Header <code>x-consent-tracking</code>, <code>LoginSubscriber</code>, preuve dans MongoDB</td>
+</tr>
+<tr>
+<td style="text-align:left">Données sensibles en transit</td>
+<td style="text-align:left">HTTPS (production)</td>
+<td style="text-align:left">Certificat TLS obligatoire en production</td>
+</tr>
+</tbody>
+</table>
+<h3>15.2 Veille sur les vulnérabilités</h3>
+<h4>15.2.1 Vulnérabilités surveillées</h4>
+<ul>
+<li><strong>OWASP Top 10</strong> : injection SQL (impossible avec Doctrine ORM/paramètres liés), XSS, CSRF, broken authentication</li>
+<li><strong>CVE PHP 8.3 / Symfony 7.4</strong> : aucune vulnérabilité critique identifiée sur les versions utilisées</li>
+<li><strong>Dépendances npm React/Vite</strong> : audit régulier via <code>npm audit</code></li>
+<li><strong>Dépendances Composer</strong> : audit régulier via <code>composer audit</code></li>
+</ul>
+<hr>
+<h2>16. Veille Technologique — React &amp; TypeScript</h2>
+<p>Dans le cadre du développement de Cinemate, une veille technologique a été effectuée sur les concepts clés de React et TypeScript utilisés dans le projet.</p>
+<h3>16.1 Hooks fondamentaux</h3>
+<h4>useState — Gestion de l'état local</h4>
+<p>Le hook <code>useState</code> permet de créer et gérer une variable d'état dans un composant React. Lorsque la valeur change, le composant se réaffiche automatiquement.</p>
+<pre><code class="language-typescript">const [searchQuery, setSearchQuery] = useState('');
+const [recommendedMovies, setRecommendedMovies] = useState&lt;Movie[]&gt;([]);
+const [isLoading, setIsLoading] = useState(true);
+</code></pre>
+<p>Dans Cinemate, <code>useState</code> est utilisé pour gérer l'état des formulaires, des listes de films, des résultats de recherche et des indicateurs de chargement.</p>
+<h4>useEffect — Effets de bord</h4>
+<p>Le hook <code>useEffect</code> permet d'exécuter du code après l'affichage du composant. Il est utilisé pour charger des données depuis l'API.</p>
+<pre><code class="language-typescript">useEffect(() =&gt; {
+    const fetchRecommendations = async () =&gt; {
+        const response = await api.get('/movies/recommendations/for-you');
+        setRecommendedMovies(response.data);
+    };
+    fetchRecommendations();
+}, [isAuthenticated]); // Re-exécuté si isAuthenticated change
+</code></pre>
+<h4>useContext — Consommation du contexte</h4>
+<p>Le hook <code>useContext</code> permet à un composant enfant d'accéder aux données partagées dans un Context.</p>
+<pre><code class="language-typescript">const { user, isAuthenticated, login, logout, updateUser } = useAuth();
+const { movies, isLoading, getMovie, fetchMovieDetails } = useMovies();
+</code></pre>
+<h3>16.2 Concepts fondamentaux</h3>
+<h4>Context API — État global</h4>
+<p>Le Context permet de partager des données globales à travers toute l'application sans passer les props à chaque niveau.</p>
+<pre><code class="language-typescript">// AuthContext.tsx
+const AuthContext = createContext&lt;AuthContextType | undefined&gt;(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) =&gt; {
+    const [user, setUser] = useState&lt;User | null&gt;(null);
+    return (
+        &lt;AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, updateUser }}&gt;
+            {children}
+        &lt;/AuthContext.Provider&gt;
+    );
+};
+
+// Custom Hook pour simplifier l'accès
+export const useAuth = () =&gt; {
+    const context = useContext(AuthContext);
+    if (context === undefined) throw new Error('useAuth must be used within an AuthProvider');
+    return context;
+};
+</code></pre>
+<h4>TypeScript — Typage statique</h4>
+<p>TypeScript ajoute un typage statique au code JavaScript, ce qui réduit les bugs à l'exécution et améliore l'autocomplétion dans l'IDE.</p>
+<pre><code class="language-typescript">// Interfaces typées pour les données de l'application
+export interface User {
+    username: string;
+    email: string;
+    platforms: string[];
+    favoriteGenres: string[];
+    watchlist: string[];
+    agenda: CalendarEvent[];
+}
+
+export interface Movie {
+    id: string;
+    title: string;
+    genres: string[];
+    duration: number | null;
+    rating: number;
+    // ...
+}
+</code></pre>
+<h4>Axios Interceptors — Logique transversale</h4>
+<p>Les intercepteurs Axios permettent d'injecter automatiquement des en-têtes dans chaque requête (JWT, consentement) et de gérer les erreurs (401 → déconnexion automatique).</p>
+<pre><code class="language-typescript">api.interceptors.request.use((config) =&gt; {
+    const token = localStorage.getItem('token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+});
+
+api.interceptors.response.use(
+    (response) =&gt; response,
+    (error) =&gt; {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token');
+        }
+        return Promise.reject(error);
+    }
+);
+</code></pre>
+<h3>16.3 Application dans Cinemate</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Concept</th>
+<th style="text-align:left">À quoi ça sert</th>
+<th style="text-align:left">Où dans Cinemate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>useState</code></td>
+<td style="text-align:left">Retenir une information qui peut changer</td>
+<td style="text-align:left">Filtres, listes de films, formulaires, état de chargement</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>useEffect</code></td>
+<td style="text-align:left">Charger des données au montage d'une page</td>
+<td style="text-align:left">Chaque page charge ses données via l'API Symfony</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>useContext</code></td>
+<td style="text-align:left">Partager des infos entre toutes les pages</td>
+<td style="text-align:left"><code>useAuth()</code> : utilisateur connecté. <code>useMovies()</code> : catalogue</td>
+</tr>
+<tr>
+<td style="text-align:left">Context API</td>
+<td style="text-align:left">« Tiroir global » accessible partout</td>
+<td style="text-align:left">AuthContext (session JWT) et MovieContext (catalogue)</td>
+</tr>
+<tr>
+<td style="text-align:left">React Router</td>
+<td style="text-align:left">Navigation entre pages sans rechargement</td>
+<td style="text-align:left">Routes déclarées dans <code>App.tsx</code> avec <code>&lt;Routes&gt;</code></td>
+</tr>
+<tr>
+<td style="text-align:left">TypeScript</td>
+<td style="text-align:left">Typage statique pour la robustesse</td>
+<td style="text-align:left">Toutes les interfaces (<code>User</code>, <code>Movie</code>, <code>CalendarEvent</code>)</td>
+</tr>
+<tr>
+<td style="text-align:left">Axios Interceptors</td>
+<td style="text-align:left">Injection automatique JWT + gestion 401</td>
+<td style="text-align:left"><code>api.ts</code> : token Bearer + déconnexion automatique</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>@dnd-kit</code></td>
+<td style="text-align:left">Drag &amp; Drop interactif</td>
+<td style="text-align:left">Watchlist : déplacement entre « À voir » et « Vus »</td>
+</tr>
+<tr>
+<td style="text-align:left">Custom Hooks</td>
+<td style="text-align:left">Réutilisation de logique métier</td>
+<td style="text-align:left"><code>useAuth()</code>, <code>useMovies()</code> encapsulent l'accès aux contextes</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2>ANNEXES</h2>
+<hr>
+<h3>Annexe A — Captures d'écran de l'application</h3>
+<blockquote>
+<p>📷 <strong>À INSÉRER</strong> : Captures d'écran de chaque page de l'application :</p>
+<ul>
+<li>Page d'accueil avec les filtres de recherche et le bouton « Découvrir un film »</li>
+<li>Catalogue des films avec filtres par genre et durée</li>
+<li>Page de détails d'un film (casting, plateformes, bande-annonce)</li>
+<li>Page Watchlist avec Drag &amp; Drop entre « À voir » et « Vus »</li>
+<li>Page Agenda / Calendrier de visionnage</li>
+<li>Page de recommandations personnalisées</li>
+<li>Page de profil utilisateur (genres, plateformes)</li>
+<li>Modale de découverte (roulette) en action</li>
+<li>Bandeau RGPD (accepter / refuser)</li>
+<li>Cloche de notifications avec le compteur</li>
+</ul>
+</blockquote>
+<hr>
+<h3>Annexe B — Configuration Docker Compose</h3>
+<p>Le fichier <code>docker-compose.yml</code> orchestre 5 services pour l'environnement local :</p>
+<ul>
+<li><strong>cinemate-back</strong> : PHP 8.4 CLI avec extensions PDO, MongoDB, Zip, Intl + Composer + serveur PHP intégré</li>
+<li><strong>cinemate-front</strong> : Node 20 Alpine avec Vite en mode dev (hot-reload via <code>--host</code>)</li>
+<li><strong>cinemate-mysql</strong> : MySQL 8.0 avec volume persistant</li>
+<li><strong>cinemate-mongo</strong> : MongoDB 6.0 avec authentification root et volume persistant</li>
+<li><strong>cinemate-pma</strong> : phpMyAdmin pour l'exploration graphique de MySQL</li>
+</ul>
+<p>Variables d'environnement injectées au backend :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Variable</th>
+<th style="text-align:left">Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>DATABASE_URL</code></td>
+<td style="text-align:left"><code>mysql://root:root@database:3306/cinemate_users?serverVersion=8.0</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>MONGODB_URI</code></td>
+<td style="text-align:left"><code>mongodb://root:root@mongo-db:27017</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>MONGODB_DB</code></td>
+<td style="text-align:left"><code>cinemate_movies</code></td>
+</tr>
+<tr>
+<td style="text-align:left"><code>JWT_COOKIE_SECURE</code></td>
+<td style="text-align:left"><code>false</code> (développement local)</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>OMDB_API_KEY</code></td>
+<td style="text-align:left"><code>9713dcac</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3>Annexe C — Pipeline CI/CD GitHub Actions</h3>
+<p>Le fichier <code>.github/workflows/ci.yml</code> définit le pipeline CI exécuté à chaque push sur <code>main</code> :</p>
+<pre><code class="language-yaml">name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm test -- --runInBand
+      - run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: '8.3', extensions: 'ctype, iconv, mbstring, mongodb' }
+      - run: composer validate --no-check-publish
+      - run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
+      - run: php bin/phpunit -c phpunit.dist.xml
+</code></pre>
+<hr>
+<h3>Annexe D — Liens utiles</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Ressource</th>
+<th style="text-align:left">URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Code source GitHub</td>
+<td style="text-align:left">https://github.com/Kagitheepan/cinemate-project</td>
+</tr>
+<tr>
+<td style="text-align:left">API TMDB</td>
+<td style="text-align:left">https://developers.themoviedb.org/3</td>
+</tr>
+<tr>
+<td style="text-align:left">API OMDb</td>
+<td style="text-align:left">https://www.omdbapi.com</td>
+</tr>
+<tr>
+<td style="text-align:left">Documentation React</td>
+<td style="text-align:left">https://react.dev</td>
+</tr>
+<tr>
+<td style="text-align:left">Documentation Symfony</td>
+<td style="text-align:left">https://symfony.com/doc/current</td>
+</tr>
+<tr>
+<td style="text-align:left">Documentation Doctrine ORM</td>
+<td style="text-align:left">https://www.doctrine-project.org/projects/orm.html</td>
+</tr>
+<tr>
+<td style="text-align:left">Documentation Doctrine ODM</td>
+<td style="text-align:left">https://www.doctrine-project.org/projects/mongodb-odm.html</td>
+</tr>
+<tr>
+<td style="text-align:left">LexikJWTAuthenticationBundle</td>
+<td style="text-align:left">https://github.com/lexik/LexikJWTAuthenticationBundle</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3>Annexe E — Diagrammes UML</h3>
+<p>Les diagrammes de conception de l'application Cinemate ont été modélisés à l'aide de PlantUML. Leurs codes sources sont stockés sous forme de fichiers <code>.wsd</code> à la racine du projet et compilés sous forme d'images PNG.</p>
+<h4>E.1 Diagrammes de Cas d'Utilisation (Use Cases)</h4>
+<h5>E.1.1 Authentification et Gestion de Compte (<code>uc_account.wsd</code>)</h5>
+<p><img src="images/uml/uc_account.png" alt="Use Case Authentification et Compte"></p>
+<h5>E.1.2 Consultation et Gestion des Films (<code>uc_movie.wsd</code>)</h5>
+<p><img src="images/uml/uc_movie.png" alt="Use Case Consultation de Films"></p>
+<h5>E.1.3 Recherche Avancée et Recherche Multi-critères (<code>uc_search.wsd</code>)</h5>
+<p><img src="images/uml/uc_search.png" alt="Use Case Recherche"></p>
+<h5>E.1.4 Espace Personnel, Watchlist, Agenda et Recommandations (<code>uc_personal.wsd</code>)</h5>
+<p><img src="images/uml/uc_personal.png" alt="Use Case Espace Personnel"></p>
+<h5>E.1.5 Ingestion de Données et Administration Backend (<code>uc_backend.wsd</code>)</h5>
+<p><img src="images/uml/uc_backend.png" alt="Use Case Importation et Administration"></p>
+<h5>E.1.6 Vue d'Ensemble des Packages de l'Application (<code>uc_packages.wsd</code>)</h5>
+<p><img src="images/uml/uc_packages.png" alt="Use Case Packages"></p>
+<hr>
+<h4>E.2 Diagrammes d'Activité (Workflow Processes)</h4>
+<h5>E.2.1 Processus de Chargement de la Fiche du Film (<code>act.wsd</code>)</h5>
+<p><img src="images/uml/act.png" alt="Activité Fiche Film"></p>
+<h5>E.2.2 Processus de Recherche et de Filtrage de Films (<code>act2.wsd</code>)</h5>
+<p><img src="images/uml/act2.png" alt="Activité Recherche et Filtres"></p>
+<h5>E.2.3 Processus d'Accueil et Modale de Temps Disponible (<code>act3.wsd</code>)</h5>
+<p><img src="images/uml/act3.png" alt="Activité Accueil et Modale"></p>
+<h5>E.2.4 Processus de Consentement RGPD et Authentification (<code>act4.wsd</code>)</h5>
+<p><img src="images/uml/act4.png" alt="Activité Consentement et Auth"></p>
+<hr>
+<h4>E.3 Diagramme de Classes Structurel (<code>class_diagram.wsd</code>)</h4>
+<p><img src="images/uml/Cinemate_Detailed_Architecture.png" alt="Diagramme de Classes Global - Cinemate"></p>

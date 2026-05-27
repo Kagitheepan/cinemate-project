@@ -89,7 +89,7 @@ const NotificationBell = () => {
             {/* Bell Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-gray-300 hover:text-white rounded-lg hover:bg-white/10 transition-all duration-200"
+                className="relative p-2 text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-200"
                 title="Notifications"
                 id="notification-bell"
             >
@@ -103,10 +103,10 @@ const NotificationBell = () => {
 
             {/* Dropdown */}
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-neutral-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/50 z-50 overflow-hidden">
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-xl shadow-2xl shadow-black/50 z-50 overflow-hidden">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-                        <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-black/10 dark:border-white/10">
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                             <Bell size={14} className="text-purple-400" />
                             Notifications
                             {unreadCount > 0 && (
@@ -130,17 +130,17 @@ const NotificationBell = () => {
                     <div className="max-h-80 overflow-y-auto">
                         {notifications.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-10 px-4">
-                                <Bell size={32} className="text-gray-600 mb-3" />
+                                <Bell size={32} className="text-gray-400 dark:text-gray-600 mb-3" />
                                 <p className="text-sm text-gray-500">Aucune notification</p>
-                                <p className="text-xs text-gray-600 mt-1">Planifiez un film dans l'agenda pour recevoir des rappels</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-600 mt-1">Planifiez un film dans l'agenda pour recevoir des rappels</p>
                             </div>
                         ) : (
                             notifications.map((notif) => (
                                 <div
                                     key={notif.id}
-                                    className={`flex items-start gap-3 px-4 py-3 border-b border-white/5 transition-colors cursor-pointer ${
+                                    className={`flex items-start gap-3 px-4 py-3 border-b border-black/5 dark:border-white/5 transition-colors cursor-pointer ${
                                         notif.isRead 
-                                            ? 'bg-transparent hover:bg-white/5' 
+                                            ? 'bg-transparent hover:bg-black/5 dark:hover:bg-white/5' 
                                             : 'bg-purple-500/5 hover:bg-purple-500/10'
                                     }`}
                                     onClick={() => !notif.isRead && markAsRead(notif.id)}
@@ -156,7 +156,7 @@ const NotificationBell = () => {
 
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
-                                        <p className={`text-sm leading-snug ${notif.isRead ? 'text-gray-400' : 'text-white'}`}>
+                                        <p className={`text-sm leading-snug ${notif.isRead ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white'}`}>
                                             {notif.message}
                                         </p>
                                         <div className="flex items-center gap-2 mt-1">
@@ -180,7 +180,7 @@ const NotificationBell = () => {
                                         <div className="flex-shrink-0 w-2 h-2 rounded-full bg-purple-500 mt-2" />
                                     )}
                                     {notif.isRead && (
-                                        <Check size={14} className="flex-shrink-0 text-gray-600 mt-1" />
+                                        <Check size={14} className="flex-shrink-0 text-gray-400 dark:text-gray-600 mt-1" />
                                     )}
                                 </div>
                             ))

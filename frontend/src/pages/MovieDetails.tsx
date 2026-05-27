@@ -72,15 +72,15 @@ const MovieDetails = () => {
     // Only show full screen loader if we have NO data at all
     if (isContextLoading && !movie) {
         return (
-             <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-white">
-                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+             <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-white transition-colors duration-300">
+                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 dark:border-purple-500"></div>
              </div>
         );
     }
 
     if (!movie && !isLocalLoading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 text-white">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-white transition-colors duration-300">
                 <h2 className="text-2xl font-bold mb-4">Film non trouvé</h2>
                 <Button onClick={() => navigate('/')}>Retour à l'accueil</Button>
             </div>
@@ -92,7 +92,7 @@ const MovieDetails = () => {
 
     if (!movie) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 text-white">
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-white transition-colors duration-300">
                 <h2 className="text-2xl font-bold mb-4">Film non trouvé</h2>
                 <Button onClick={() => navigate('/')}>Retour à l'accueil</Button>
             </div>
@@ -178,12 +178,12 @@ const MovieDetails = () => {
     };
 
     return (
-        <div className="min-h-screen bg-neutral-950 pt-20 pb-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 pt-20 pb-12 transition-colors duration-300">
             {/* Back Button */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <button 
                     onClick={() => navigate(-1)} 
-                    className="flex items-center text-gray-400 hover:text-white transition-colors"
+                    className="flex items-center text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
                 >
                     <ArrowLeft className="w-5 h-5 mr-2" />
                     Retour
@@ -194,12 +194,12 @@ const MovieDetails = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                     {/* Left Column: Poster */}
                     <div className="lg:col-span-1">
-                        <div className="aspect-[2/3] w-full rounded-2xl overflow-hidden shadow-2xl shadow-purple-900/20 bg-neutral-900 relative group">
+                        <div className="aspect-[2/3] w-full rounded-2xl overflow-hidden shadow-2xl shadow-purple-900/20 bg-gray-200 dark:bg-neutral-900 relative group">
                              {movie.imageUrl ? (
                                 <img src={movie.imageUrl} alt={movie.title} className="w-full h-full object-cover" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-neutral-800">
-                                    <span className="text-white/20 text-6xl font-black uppercase tracking-tighter mix-blend-overlay">Poster</span>
+                                <div className="w-full h-full flex items-center justify-center bg-gray-300 dark:bg-neutral-800">
+                                    <span className="text-black/20 dark:text-white/20 text-6xl font-black uppercase tracking-tighter mix-blend-overlay">Poster</span>
                                 </div>
                             )}
                         </div>
@@ -222,15 +222,15 @@ const MovieDetails = () => {
                                 )}
                             </div>
                             
-                            <h1 className="text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
+                            <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 leading-tight">
                                 {movie.title}
                             </h1>
 
-                            <div className="flex items-center space-x-8 text-gray-300 mb-6">
+                            <div className="flex items-center space-x-8 text-gray-700 dark:text-gray-300 mb-6">
                                 <div className="flex flex-col">
                                     <div className="flex items-center">
                                         <Star className="w-5 h-5 text-yellow-500 fill-current mr-2" />
-                                        <span className="font-bold text-white">{movie.rating}</span>/10
+                                        <span className="font-bold text-gray-900 dark:text-white">{movie.rating}</span>/10
                                     </div>
                                     <span className="text-xs text-gray-500 uppercase mt-1 tracking-wider font-semibold">Note IMDB</span>
                                 </div>
@@ -254,14 +254,14 @@ const MovieDetails = () => {
                                 </div>
                             </div>
 
-                            <p className="text-lg text-gray-400 leading-relaxed max-w-2xl">
+                            <p className="text-lg text-gray-700 dark:text-gray-400 leading-relaxed max-w-2xl">
                                 {movie.description}
                             </p>
 
                             {/* Streaming Platforms (JustWatch) */}
                             {movie.availableOn && movie.availableOn.length > 0 && (
                                 <div className="pt-4">
-                                    <h3 className="text-sm text-gray-400 uppercase tracking-wider mb-3">Disponible en streaming sur</h3>
+                                    <h3 className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">Disponible en streaming sur</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {movie.availableOn.map((platform, idx) => {
                                             const pStyle = getPlatformStyle(platform);
@@ -272,7 +272,7 @@ const MovieDetails = () => {
                                             );
                                         })}
                                     </div>
-                                    <p className="text-xs text-gray-600 mt-3 italic">Données fournies par JustWatch</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-600 mt-3 italic">Données fournies par JustWatch</p>
                                 </div>
                             )}
                         </div>
@@ -317,19 +317,19 @@ const MovieDetails = () => {
                                 <Calendar className="w-5 h-5 mr-2" />
                                 Planifier
                             </Button>
-                            <Button variant="ghost" size="icon" className="rounded-full border border-white/10">
+                            <Button variant="ghost" size="icon" className="rounded-full border border-black/10 dark:border-white/10 text-gray-700 dark:text-white">
                                 <Share2 className="w-5 h-5" />
                             </Button>
                         </div>
 
                         {/* Cast */}
-                        <div className="border-t border-white/5 pt-8">
-                            <h3 className="text-lg font-bold text-white mb-6">Casting & Équipe</h3>
+                        <div className="border-t border-black/10 dark:border-white/5 pt-8">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Casting & Équipe</h3>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                 {movie.cast && movie.cast.length > 0 ? (
                                     movie.cast.map((actor, idx) => (
                                         <div key={idx} className="flex flex-col items-center text-center space-y-3">
-                                            <div className="w-20 h-20 rounded-full bg-neutral-800 overflow-hidden">
+                                            <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-neutral-800 overflow-hidden">
                                                 {actor.imageUrl ? (
                                                     <img src={actor.imageUrl} alt={actor.name} className="w-full h-full object-cover" />
                                                 ) : (
@@ -339,7 +339,7 @@ const MovieDetails = () => {
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="font-medium text-white">{actor.name}</p>
+                                                <p className="font-medium text-gray-900 dark:text-white">{actor.name}</p>
                                                 <p className="text-xs text-gray-500">{actor.role}</p>
                                             </div>
                                         </div>
@@ -350,11 +350,11 @@ const MovieDetails = () => {
                                 
                                 {movie.director && (
                                     <div className="flex flex-col items-center text-center space-y-3">
-                                         <div className="w-20 h-20 rounded-full bg-neutral-800 flex items-center justify-center text-gray-500 border border-white/5">
+                                         <div className="w-20 h-20 rounded-full bg-gray-200 dark:bg-neutral-800 flex items-center justify-center text-gray-500 border border-black/5 dark:border-white/5">
                                              <span className="text-xs font-bold">DIR</span>
                                          </div>
                                          <div>
-                                            <p className="font-medium text-white">{movie.director}</p>
+                                            <p className="font-medium text-gray-900 dark:text-white">{movie.director}</p>
                                             <p className="text-xs text-gray-500">Réalisateur</p>
                                         </div>
                                     </div>
@@ -365,14 +365,14 @@ const MovieDetails = () => {
                 </div>
 
                 {/* Recommendations */}
-                <div className="mt-24 border-t border-white/5 pt-12">
+                <div className="mt-24 border-t border-black/10 dark:border-white/5 pt-12">
                      <div className="flex items-center justify-between mb-8">
-                        <h2 className="text-2xl font-bold text-white">Autres films similaires</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Autres films similaires</h2>
                         <div className="flex space-x-2">
                             <button 
                                 onClick={() => setRecPage(p => Math.max(0, p - 1))}
                                 disabled={recPage === 0}
-                                className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                className="p-2 rounded-full border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/10 text-gray-900 dark:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                 aria-label="Précédent"
                             >
                                 <ChevronLeft size={20} />
@@ -380,7 +380,7 @@ const MovieDetails = () => {
                             <button 
                                 onClick={() => setRecPage(p => Math.min(totalRecPages - 1, p + 1))}
                                 disabled={recPage >= totalRecPages - 1 || totalRecPages === 0}
-                                className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                className="p-2 rounded-full border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/10 text-gray-900 dark:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                 aria-label="Suivant"
                             >
                                 <ChevronRight size={20} />
@@ -418,7 +418,7 @@ const MovieDetails = () => {
             {/* Video Modal */}
             {isVideoModalOpen && movie.trailerKey && (
                 <div 
-                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-sm"
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-white/90 dark:bg-black/90 backdrop-blur-sm"
                     onClick={() => setIsVideoModalOpen(false)}
                 >
                     <div 
@@ -427,12 +427,12 @@ const MovieDetails = () => {
                     >
                         <button 
                             onClick={() => setIsVideoModalOpen(false)}
-                            className="absolute -top-12 right-0 sm:-right-12 sm:top-0 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                            className="absolute -top-12 right-0 sm:-right-12 sm:top-0 z-10 p-2 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 rounded-full text-gray-900 dark:text-white transition-colors"
                         >
                             <X className="w-6 h-6" />
                         </button>
                         
-                        <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10" style={{ paddingTop: '56.25%' }}>
+                        <div className="relative w-full bg-black rounded-xl overflow-hidden shadow-2xl border border-black/10 dark:border-white/10" style={{ paddingTop: '56.25%' }}>
                             <iframe 
                                 src={`https://www.youtube.com/embed/${movie.trailerKey}?autoplay=1`} 
                                 title="Trailer"

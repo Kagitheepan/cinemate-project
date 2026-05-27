@@ -82,20 +82,20 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div 
-                className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                className="absolute inset-0 bg-white/80 dark:bg-black/80 backdrop-blur-sm"
                 onClick={handleClose}
             ></div>
             
-            <div className="relative bg-neutral-900 border border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="relative bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
                 {/* Header */}
-                <div className="p-6 border-b border-white/5 flex justify-between items-center">
-                    <h2 className="text-xl font-bold text-white flex items-center">
+                <div className="p-6 border-b border-black/5 dark:border-white/5 flex justify-between items-center">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center">
                         <Shuffle className={`w-5 h-5 mr-2 text-purple-400 ${isSpinning ? 'animate-spin' : ''}`} />
                         {step === 1 ? 'Découvrir un film' : isSpinning ? 'Tirage en cours...' : 'Votre sélection'}
                     </h2>
                     <button 
                         onClick={handleClose}
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -106,12 +106,12 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                     {step === 1 ? (
                         <div className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Genre</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Genre</label>
                                 <select 
                                     value={selectedGenre}
                                     aria-label="Filtrer par genre"
                                     onChange={(e) => setSelectedGenre(e.target.value)}
-                                    className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
+                                    className="w-full bg-white dark:bg-black/50 border border-gray-300 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500"
                                 >
                                     <option value="">Tous les genres</option>
                                     {allGenres.map(genre => (
@@ -121,12 +121,12 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Durée maximum</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Durée maximum</label>
                                 <select 
                                     value={maxDuration || ''}
                                     aria-label="Filtrer par durée maximum"
                                     onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
-                                    className="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500"
+                                    className="w-full bg-white dark:bg-black/50 border border-gray-300 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500"
                                 >
                                     <option value="">Toutes durées</option>
                                     <option value="90">- de 1h30</option>
@@ -136,7 +136,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-300 mb-2">Nombre de propositions</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nombre de propositions</label>
                                 <div className="flex gap-4">
                                     {[1, 5, 10].map(num => (
                                         <button
@@ -145,7 +145,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                             className={`flex-1 py-3 rounded-lg border text-sm font-medium transition-all ${
                                                 count === num 
                                                     ? 'bg-purple-600 border-purple-500 text-white' 
-                                                    : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
+                                                    : 'bg-white dark:bg-white/5 border-gray-300 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/10'
                                             }`}
                                         >
                                             {num}
@@ -155,12 +155,12 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                             </div>
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                                <div className="space-y-4">
                             {displayedMovies.length > 0 ? (
                                 displayedMovies.map((movie, index) => (
                                     <div 
                                         key={isSpinning ? `spin-${index}-${movie.id}` : movie.id} 
-                                        className={`bg-black/40 border border-white/5 rounded-xl p-4 flex gap-4 transition-all duration-75 ${
+                                        className={`bg-gray-50 dark:bg-black/40 border border-gray-200 dark:border-white/5 rounded-xl p-4 flex gap-4 transition-all duration-75 ${
                                             isSpinning 
                                                 ? 'blur-[2px] opacity-70 scale-[0.98] border-purple-500/20' 
                                                 : 'hover:border-purple-500/50 cursor-pointer group'
@@ -168,11 +168,11 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                         onClick={() => navigateToMovie(movie.id)}
                                     >
                                         {/* Thumbnail */}
-                                        <div className="w-16 h-24 rounded-lg bg-neutral-800 flex-shrink-0 overflow-hidden">
+                                        <div className="w-16 h-24 rounded-lg bg-gray-200 dark:bg-neutral-800 flex-shrink-0 overflow-hidden">
                                             {movie.imageUrl ? (
                                                 <img src={movie.imageUrl} alt={movie.title} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-gray-600">
+                                                <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-600">
                                                     <Film size={24} />
                                                 </div>
                                             )}
@@ -180,10 +180,10 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                         
                                         {/* Info */}
                                         <div className="flex flex-col justify-center flex-grow">
-                                            <h3 className="font-bold text-white group-hover:text-purple-400 transition-colors line-clamp-1">
+                                            <h3 className="font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-1">
                                                 {movie.title}
                                             </h3>
-                                            <div className="flex items-center text-xs text-white mt-2 space-x-3">
+                                            <div className="flex items-center text-xs text-gray-600 dark:text-white mt-2 space-x-3">
                                                 <span className="flex items-center">
                                                     <Calendar className="w-3 h-3 mr-1" />
                                                     {movie.year}
@@ -193,7 +193,7 @@ const DiscoverModal = ({ isOpen, onClose }: DiscoverModalProps) => {
                                                     {movie.duration ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` : 'N/A'}
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-white mt-2 line-clamp-2">
+                                            <p className="text-xs text-gray-600 dark:text-white mt-2 line-clamp-2">
                                                 {movie.description}
                                             </p>
                                         </div>

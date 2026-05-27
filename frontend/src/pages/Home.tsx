@@ -102,11 +102,11 @@ const Home = () => {
                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-blue-500/30 blur-3xl rounded-full transform scale-150 animate-pulse"></div>
                     </div>
 
-                    <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight bg-gradient-to-br from-white via-gray-200 to-gray-500 bg-clip-text text-transparent drop-shadow-sm">
-                        Découvrez votre prochaine <br/> <span className="text-purple-400">obsession cinématographique</span>
+                    <h1 className="text-4xl sm:text-6xl font-black mb-6 tracking-tight bg-gradient-to-br from-gray-900 via-gray-700 to-gray-500 dark:from-white dark:via-gray-200 dark:to-gray-500 bg-clip-text text-transparent drop-shadow-sm">
+                        Découvrez votre prochaine <br/> <span className="text-purple-600 dark:text-purple-400">obsession cinématographique</span>
                     </h1>
                     
-                    <p className="text-lg text-white mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-lg text-gray-700 dark:text-white mb-10 max-w-2xl mx-auto font-light leading-relaxed">
                         Explorez des milliers de films et séries, créez votre watchlist et partagez vos favoris avec la communauté.
                     </p>
 
@@ -117,14 +117,14 @@ const Home = () => {
                             aria-label="Rechercher un film"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/5 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
+                            className="bg-white/80 dark:bg-white/5 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
                         />
                         
                         <select 
                             value={selectedGenre}
                             aria-label="Filtrer par genre"
                             onChange={(e) => setSelectedGenre(e.target.value)}
-                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                            className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
                             <option value="">Tous les genres</option>
                             {allGenres.map(genre => (
@@ -136,7 +136,7 @@ const Home = () => {
                             value={maxDuration || ''}
                             aria-label="Filtrer par durée"
                             onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
-                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                            className="bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
                             <option value="">Toutes durées</option>
                             <option value="90">- de 1h30</option>
@@ -163,21 +163,21 @@ const Home = () => {
                 />
 
                 <section className="mt-12">
-                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
+                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-black/5 dark:border-white/5">
                         <div className="flex items-center gap-4">
-                            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                            <h2 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400 bg-clip-text text-transparent">
                                 {isFiltering ? `${filteredMovies.length} résultat${filteredMovies.length > 1 ? 's' : ''}` : 'Tendances du moment'}
                             </h2>
                             {isFiltering && (
                                 <button 
                                     onClick={() => { setMaxDuration(null); setSearchQuery(''); setSelectedGenre(''); }}
-                                    className="text-xs text-purple-400 hover:text-white border border-purple-500/30 rounded-full px-3 py-1 transition-colors"
+                                    className="text-xs text-purple-600 dark:text-purple-400 hover:text-black dark:hover:text-white border border-purple-500/30 rounded-full px-3 py-1 transition-colors"
                                 >
                                     Effacer les filtres
                                 </button>
                             )}
                         </div>
-                        <Link to="/movies" className="text-sm font-medium text-purple-400 hover:text-purple-300 transition-colors">
+                        <Link to="/movies" className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 transition-colors">
                             Voir tout &rarr;
                         </Link>
                    </div>
@@ -195,7 +195,7 @@ const Home = () => {
                                        variant="secondary" 
                                        size="lg" 
                                        onClick={() => navigate('/movies')}
-                                       className="text-purple-400 hover:bg-purple-500/10 border-purple-500/30 hover:border-purple-500/60"
+                                       className="text-purple-600 dark:text-purple-400 hover:bg-purple-500/10 border-purple-500/30 hover:border-purple-500/60"
                                    >
                                        Voir tout le catalogue
                                    </Button>

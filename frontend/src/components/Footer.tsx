@@ -2,21 +2,21 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
     return (
-        <footer className="border-t border-white/5 py-12 bg-neutral-900 mt-24">
+        <footer className="border-t border-black/5 dark:border-white/5 py-12 bg-white dark:bg-neutral-900 mt-24 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                     <div className="space-y-4">
                         <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
                             Cinemate
                         </span>
-                        <p className="text-white text-sm">
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">
                             Votre compagnon ultime pour découvrir, suivre et partager votre passion pour le cinéma et les séries.
                         </p>
                     </div>
 
                     <div>
-                        <h4 className="font-semibold text-white mb-4">Navigation</h4>
-                        <ul className="space-y-2 text-sm text-white">
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Navigation</h4>
+                        <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Accueil</a></li>
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Films</a></li>
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Séries</a></li>
@@ -25,8 +25,8 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="font-semibold text-white mb-4">Communauté</h4>
-                        <ul className="space-y-2 text-sm text-white">
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Communauté</h4>
+                        <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Forum</a></li>
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Critiques</a></li>
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Listes</a></li>
@@ -34,22 +34,22 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="font-semibold text-white mb-4">Légal</h4>
-                        <ul className="space-y-2 text-sm text-white">
-                            <li><Link to="/privacy" className="hover:text-purple-400 transition-colors">Confidentialité</Link></li>
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-4">Légal</h4>
+                        <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                            <li><Link to="/privacy" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">Confidentialité</Link></li>
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Conditions</a></li>
                             <li><a href="#" className="hover:text-purple-400 transition-colors">Contact</a></li>
                         </ul>
                     </div>
                 </div>
                 
-                <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-white">
+                <div className="border-t border-black/5 dark:border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
                     <p>&copy; {new Date().getFullYear()} Cinemate. All rights reserved.</p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
                         {/* Placeholder for social icons */}
-                        <a href="#" className="hover:text-white transition-colors">Twitter</a>
-                        <a href="#" className="hover:text-white transition-colors">Instagram</a>
-                        <a href="#" className="hover:text-white transition-colors">GitHub</a>
+                        <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Twitter</a>
+                        <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Instagram</a>
+                        <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">GitHub</a>
                     </div>
                 </div>
             </div>

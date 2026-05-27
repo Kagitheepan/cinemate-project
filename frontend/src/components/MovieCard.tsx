@@ -23,10 +23,10 @@ const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "202
         <Link 
             to={`/movie/${id}`} 
             onMouseEnter={handlePrefetch}
-            className="block group relative rounded-xl h-[450px] w-full overflow-hidden transition-all duration-300 transform hover:scale-[1.03] hover:shadow-2xl hover:shadow-purple-500/20 bg-neutral-900 border border-white/5"
+            className="block group relative rounded-xl h-[450px] w-full overflow-hidden transition-all duration-300 transform hover:scale-[1.03] hover:shadow-2xl hover:shadow-purple-500/20 bg-white dark:bg-neutral-900 border border-black/5 dark:border-white/5"
         >
             {/* Image / Background */}
-            <div className="absolute inset-0 w-full h-full bg-neutral-800">
+            <div className="absolute inset-0 w-full h-full bg-gray-100 dark:bg-neutral-800">
                 {imageUrl ? (
                     <img
                         src={imageUrl}
@@ -35,9 +35,9 @@ const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "202
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                 ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-neutral-800 to-neutral-700 text-neutral-500">
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 dark:from-neutral-800 dark:to-neutral-700 text-gray-500 dark:text-neutral-500">
                         <PlayCircle className="w-16 h-16 mb-4 opacity-50" />
-                        <span className="text-sm tracking-wider uppercase opacity-75">No Poster</span>
+                        <span className="text-sm tracking-wider uppercase opacity-75 text-gray-600 dark:text-gray-400">No Poster</span>
                     </div>
                 )}
             </div>

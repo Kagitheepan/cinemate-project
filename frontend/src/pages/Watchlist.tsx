@@ -255,8 +255,8 @@ const Watchlist = () => {
 
     if (!user) {
          return (
-            <div className="min-h-screen bg-neutral-950 pt-32 pb-12 flex justify-center">
-                <p className="text-gray-400">Veuillez vous connecter pour voir votre watchlist.</p>
+            <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 pt-32 pb-12 flex justify-center transition-colors duration-300">
+                <p className="text-gray-600 dark:text-gray-400">Veuillez vous connecter pour voir votre watchlist.</p>
             </div>
         );
     }
@@ -269,19 +269,19 @@ const Watchlist = () => {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
         >
-            <div className="min-h-screen bg-neutral-950 pt-32 pb-12">
+            <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 pt-32 pb-12 transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-3xl font-bold text-white mb-12 text-center">Ma Watchlist</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-12 text-center">Ma Watchlist</h1>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative items-start">
                         {/* Vertical Divider */}
-                        <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent -translate-x-1/2 min-h-[500px]"></div>
+                        <div className="hidden md:block absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-black/10 dark:via-white/10 to-transparent -translate-x-1/2 min-h-[500px]"></div>
 
                         {/* Left Column: Film à voir */}
-                        <div className="flex flex-col space-y-8 bg-white/5 rounded-2xl p-6 min-h-[600px] border border-white/5 relative">
+                        <div className="flex flex-col space-y-8 bg-white dark:bg-white/5 rounded-2xl p-6 min-h-[600px] border border-black/5 dark:border-white/5 shadow-lg dark:shadow-none relative">
                             <div className="text-center mb-4 relative">
                                 <h2 className="text-2xl font-semibold text-purple-400">Films à voir</h2>
-                                <p className="text-gray-400 text-sm mt-1">Vos prochaines découvertes</p>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Vos prochaines découvertes</p>
                                 {toWatchMovies.length > 0 && (
                                     <button 
                                         onClick={() => clearList('toWatch')}
@@ -342,10 +342,10 @@ const Watchlist = () => {
                         </div>
 
                         {/* Right Column: Film Vu */}
-                        <div className="flex flex-col space-y-8 bg-white/5 rounded-2xl p-6 min-h-[600px] border border-white/5 relative">
+                        <div className="flex flex-col space-y-8 bg-white dark:bg-white/5 rounded-2xl p-6 min-h-[600px] border border-black/5 dark:border-white/5 shadow-lg dark:shadow-none relative">
                             <div className="text-center mb-4 relative">
                                 <h2 className="text-2xl font-semibold text-green-400">Films vus</h2>
-                                <p className="text-gray-400 text-sm mt-1">Votre historique de visionnage</p>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">Votre historique de visionnage</p>
                                 {watchedMovies.length > 0 && (
                                     <button 
                                         onClick={() => clearList('watched')}
@@ -427,15 +427,15 @@ const Watchlist = () => {
             </DragOverlay>
 
             {isAddModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-neutral-900 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/80 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl relative">
                         <button 
                             onClick={() => setIsAddModalOpen(false)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+                            className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
                         >
                             <X size={20} />
                         </button>
-                        <h2 className="text-2xl font-bold text-white mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
                             Ajouter à {addModalTarget === 'toWatch' ? 'Films à voir' : 'Films vus'}
                         </h2>
                         <div className="space-y-4">
@@ -444,26 +444,26 @@ const Watchlist = () => {
                                 placeholder="Rechercher un film..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-neutral-800 border border-white/10 rounded-lg p-3 text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
+                                className="w-full bg-gray-50 dark:bg-neutral-800 border border-gray-300 dark:border-white/10 rounded-lg p-3 text-gray-900 dark:text-white focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none"
                             />
                             <div className="max-h-60 overflow-y-auto custom-scrollbar space-y-2">
                                 {searchQuery ? movies.filter(m => m.title.toLowerCase().includes(searchQuery.toLowerCase())).map(movie => (
-                                    <div key={movie.id} className="flex justify-between items-center bg-neutral-800 p-2 rounded-lg border border-white/5">
+                                    <div key={movie.id} className="flex justify-between items-center bg-white dark:bg-neutral-800 p-2 rounded-lg border border-black/5 dark:border-white/5">
                                         <div className="flex items-center gap-3">
                                             {movie.imageUrl && (
                                                 <img src={movie.imageUrl} alt={movie.title} className="w-8 h-12 object-cover rounded" />
                                             )}
-                                            <span className="text-white text-sm font-medium">{movie.title}</span>
+                                            <span className="text-gray-900 dark:text-white text-sm font-medium">{movie.title}</span>
                                         </div>
                                         <button 
                                             onClick={() => handleAddMovie(movie)}
-                                            className="bg-white/5 hover:bg-purple-600 text-white px-3 py-1.5 rounded text-sm transition-colors border border-white/10"
+                                            className="bg-gray-100 dark:bg-white/5 hover:bg-purple-600 text-gray-900 dark:text-white hover:text-white px-3 py-1.5 rounded text-sm transition-colors border border-black/10 dark:border-white/10"
                                         >
                                             Ajouter
                                         </button>
                                     </div>
                                 )) : (
-                                    <p className="text-gray-500 text-sm text-center py-4">Commencez à taper pour chercher...</p>
+                                    <p className="text-gray-600 dark:text-gray-500 text-sm text-center py-4">Commencez à taper pour chercher...</p>
                                 )}
                             </div>
                         </div>

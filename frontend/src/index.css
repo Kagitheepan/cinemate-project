@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #121212; /* Deep dark background */
+  color-scheme: light dark;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -19,5 +19,5 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  @apply bg-neutral-950 text-white;
+  @apply bg-gray-50 text-neutral-900 dark:bg-neutral-950 dark:text-white transition-colors duration-300;
 }

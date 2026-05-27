@@ -81,11 +81,11 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
-            <div className="bg-neutral-900 border border-white/10 rounded-2xl w-full max-w-md p-8 relative shadow-2xl shadow-purple-500/20 transform scale-100 transition-transform duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+            <div className="bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-2xl w-full max-w-md p-8 relative shadow-2xl shadow-purple-500/20 transform scale-100 transition-transform duration-300">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors p-1"
+                    className="absolute top-4 right-4 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors p-1"
                 >
                     <X size={20} />
                 </button>
@@ -94,7 +94,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                     <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent mb-2">
                         {isLogin ? 'Connexion' : 'Inscription'}
                     </h2>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">
                         {isLogin
                             ? 'Heureux de vous revoir sur Cinemate !'
                             : 'Rejoignez la communauté Cinemate aujourd\'hui.'}
@@ -102,7 +102,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                 </div>
 
                 {error && (
-                    <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center gap-2 text-red-200 text-sm">
+                    <div className="mb-4 p-3 bg-red-100 dark:bg-red-500/20 border border-red-300 dark:border-red-500/50 rounded-lg flex items-center gap-2 text-red-700 dark:text-red-200 text-sm">
                         <AlertCircle size={16} />
                         {error}
                     </div>
@@ -110,45 +110,45 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="relative group">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-400 transition-colors" />
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-400 transition-colors" />
                         <input
                             type="text"
                             placeholder="Nom d'utilisateur"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="w-full bg-black/20 border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                            className="w-full bg-white dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                             required
                         />
                     </div>
 
                     {!isLogin && (
                         <div className="relative group animate-in fade-in slide-in-from-top-2">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-400 transition-colors" />
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-400 transition-colors" />
                             <input
                                 type="email"
                                 placeholder="Email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full bg-black/20 border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                                className="w-full bg-white dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-lg py-3 pl-10 pr-4 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                                 required={!isLogin}
                             />
                         </div>
                     )}
 
                     <div className="relative group">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-400 transition-colors" />
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5 group-focus-within:text-purple-600 dark:group-focus-within:text-purple-400 transition-colors" />
                         <input
                             type={showPassword ? 'text' : 'password'}
                             placeholder="Mot de passe"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full bg-black/20 border border-white/10 rounded-lg py-3 pl-10 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                            className="w-full bg-white dark:bg-black/20 border border-gray-300 dark:border-white/10 rounded-lg py-3 pl-10 pr-12 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                             required
                         />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black dark:hover:text-white focus:outline-none"
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -164,11 +164,11 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
                     </Button>
                 </form>
 
-                <div className="mt-6 text-center text-sm text-gray-400">
+                <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
                     {isLogin ? "Pas encore de compte ? " : "Déjà un compte ? "}
                     <button
                         onClick={toggleMode}
-                        className="text-purple-400 hover:text-purple-300 font-medium underline underline-offset-2 decoration-transparent hover:decoration-purple-400 transition-all"
+                        className="text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-medium underline underline-offset-2 decoration-transparent hover:decoration-purple-600 dark:hover:decoration-purple-400 transition-all"
                     >
                         {isLogin ? "S'inscrire" : 'Se connecter'}
                     </button>

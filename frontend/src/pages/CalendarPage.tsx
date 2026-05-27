@@ -123,8 +123,8 @@ const CalendarPage = () => {
 
     if (!user) {
          return (
-            <div className="min-h-screen bg-neutral-950 pt-24 pb-12 flex justify-center">
-                 <div className="text-gray-400 text-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 pt-24 pb-12 flex justify-center transition-colors duration-300">
+                 <div className="text-gray-600 dark:text-gray-400 text-center">
                      <p className="mb-4">Connectez-vous pour accéder à votre agenda.</p>
                  </div>
             </div>
@@ -132,7 +132,7 @@ const CalendarPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-neutral-950 pt-24 pb-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-neutral-950 pt-24 pb-12 transition-colors duration-300">
             <AddEventModal 
                 isOpen={isModalOpen} 
                 onClose={() => setIsModalOpen(false)} 
@@ -144,12 +144,12 @@ const CalendarPage = () => {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-white mb-2">Mon Agenda</h1>
-                        <p className="text-gray-400">Planifiez vos soirées films et ne manquez aucune sortie.</p>
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Mon Agenda</h1>
+                        <p className="text-gray-600 dark:text-gray-400">Planifiez vos soirées films et ne manquez aucune sortie.</p>
                     </div>
 
                     <div className="flex items-center gap-4">
-                         <div className="flex bg-neutral-900 p-1 rounded-lg border border-white/10 self-start md:self-auto">
+                         <div className="flex bg-white dark:bg-neutral-900 p-1 rounded-lg border border-black/10 dark:border-white/10 self-start md:self-auto">
                             <button
                                 onClick={() => setView('calendar')}
                                 className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all ${
@@ -195,30 +195,30 @@ const CalendarPage = () => {
 
                 {/* Calendar View */}
                 {view === 'calendar' && (
-                    <div className="bg-neutral-900/50 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm">
+                    <div className="bg-white dark:bg-neutral-900/50 border border-black/10 dark:border-white/5 rounded-2xl overflow-hidden backdrop-blur-sm">
                         {/* Calendar Header */}
-                        <div className="flex items-center justify-between p-6 border-b border-white/5">
-                            <h2 className="text-xl font-semibold text-white capitalize">
+                        <div className="flex items-center justify-between p-6 border-b border-black/10 dark:border-white/5">
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-white capitalize">
                                 {format(currentDate, 'MMMM yyyy', { locale: fr })}
                             </h2>
                             <div className="flex items-center space-x-2">
                                 <button 
                                     onClick={goToToday}
-                                    className="px-3 py-1 text-sm bg-white/5 hover:bg-white/10 rounded-md text-gray-300 transition-colors mr-2"
+                                    className="px-3 py-1 text-sm bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-md text-gray-700 dark:text-gray-300 transition-colors mr-2"
                                 >
                                     Aujourd'hui
                                 </button>
-                                <button onClick={prevMonth} className="p-2 hover:bg-white/10 rounded-full text-gray-300 transition-colors">
+                                <button onClick={prevMonth} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full text-gray-700 dark:text-gray-300 transition-colors">
                                     <ChevronLeft size={20} />
                                 </button>
-                                <button onClick={nextMonth} className="p-2 hover:bg-white/10 rounded-full text-gray-300 transition-colors">
+                                <button onClick={nextMonth} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full text-gray-700 dark:text-gray-300 transition-colors">
                                     <ChevronRight size={20} />
                                 </button>
                             </div>
                         </div>
 
                         {/* Days Header */}
-                        <div className="grid grid-cols-7 border-b border-white/5 bg-neutral-900/80">
+                        <div className="grid grid-cols-7 border-b border-black/10 dark:border-white/5 bg-gray-100 dark:bg-neutral-900/80">
                             {weekDays.map(day => (
                                 <div key={day} className="py-3 text-center text-sm font-medium text-gray-500">
                                     {day}
@@ -227,7 +227,7 @@ const CalendarPage = () => {
                         </div>
 
                         {/* Days Grid */}
-                        <div className="grid grid-cols-7 auto-rows-fr bg-neutral-800 gap-[1px] border-b border-white/5">
+                        <div className="grid grid-cols-7 auto-rows-fr bg-gray-300 dark:bg-neutral-800 gap-[1px] border-b border-black/10 dark:border-white/5">
                             {daysInMonth.map((day, idx) => {
                                 const isCurrentMonth = isSameMonth(day, currentDate);
                                 const isTodayDate = isToday(day);
@@ -236,14 +236,14 @@ const CalendarPage = () => {
                                 return (
                                     <div 
                                         key={idx} 
-                                        className={`min-h-[120px] bg-neutral-950 p-2 transition-colors hover:bg-neutral-900/80 relative group ${
+                                        className={`min-h-[120px] bg-white dark:bg-neutral-950 p-2 transition-colors hover:bg-gray-50 dark:hover:bg-neutral-900/80 relative group ${
                                             !isCurrentMonth ? 'opacity-30' : ''
                                         }`}
                                     >
                                         <div className={`text-sm font-medium w-7 h-7 flex items-center justify-center rounded-full mb-1 ${
                                             isTodayDate 
                                                 ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30' 
-                                                : 'text-gray-400'
+                                                : 'text-gray-500 dark:text-gray-400'
                                         }`}>
                                             {format(day, 'd')}
                                         </div>
@@ -253,7 +253,7 @@ const CalendarPage = () => {
                                             {dayEvents.map(event => (
                                                 <div 
                                                     key={event.id}
-                                                    className={`text-xs p-1.5 rounded-md truncate text-white ${event.color} bg-opacity-20 border border-white/5 hover:bg-opacity-30 cursor-pointer transition-all group/event pr-5 relative`}
+                                                    className={`text-xs p-1.5 rounded-md truncate text-white ${event.color} bg-opacity-20 border border-black/5 dark:border-white/5 hover:bg-opacity-30 cursor-pointer transition-all group/event pr-5 relative`}
                                                     title={event.title}
                                                 >
                                                     <span className={`inline-block w-2 h-2 rounded-full mr-1.5 ${event.color}`}></span>
@@ -273,7 +273,7 @@ const CalendarPage = () => {
                                                 e.stopPropagation();
                                                 openAddModal(day);
                                             }}
-                                            className="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-white/10 hover:bg-purple-500 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
+                                            className="absolute bottom-2 right-2 w-6 h-6 rounded-full bg-black/10 dark:bg-white/10 hover:bg-purple-600 dark:hover:bg-purple-500 flex items-center justify-center text-gray-900 dark:text-white opacity-0 group-hover:opacity-100 transition-all duration-200 z-10"
                                         >
                                             <span className="text-sm font-bold">+</span>
                                         </button>
@@ -293,9 +293,9 @@ const CalendarPage = () => {
                              const movie = movies.find(m => m.id === event.movieId);
                              
                              return (
-                                <div key={event.id} className="flex items-center gap-4 bg-neutral-900/50 border border-white/5 p-4 rounded-xl hover:bg-neutral-900/80 transition-colors group">
-                                    <div className="flex flex-col items-center justify-center w-16 h-16 bg-white/5 rounded-lg border border-white/10 group-hover:border-purple-500/30 transition-colors shrink-0">
-                                        <span className="text-xl font-bold text-white">{format(event.date, 'd')}</span>
+                                <div key={event.id} className="flex items-center gap-4 bg-white dark:bg-neutral-900/50 border border-black/10 dark:border-white/5 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-neutral-900/80 transition-colors group">
+                                    <div className="flex flex-col items-center justify-center w-16 h-16 bg-black/5 dark:bg-white/5 rounded-lg border border-black/10 dark:border-white/10 group-hover:border-purple-500/30 transition-colors shrink-0">
+                                        <span className="text-xl font-bold text-gray-900 dark:text-white">{format(event.date, 'd')}</span>
                                         <span className="text-xs text-gray-500 uppercase">{format(event.date, 'MMM', { locale: fr })}</span>
                                     </div>
 
@@ -303,20 +303,20 @@ const CalendarPage = () => {
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className={`w-2 h-2 rounded-full ${event.color}`}></span>
                                             <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2">
-                                                 <h3 className="font-semibold text-white text-lg">{event.title}</h3>
+                                                 <h3 className="font-semibold text-gray-900 dark:text-white text-lg">{event.title}</h3>
                                                  <span className="text-sm text-gray-500">à {format(event.date, 'HH:mm')}</span>
                                             </div>
                                         </div>
-                                        {movie && <p className="text-sm text-gray-400">Film : {movie.title}</p>}
+                                        {movie && <p className="text-sm text-gray-600 dark:text-gray-400">Film : {movie.title}</p>}
                                     </div>
 
                                     <div className="flex items-center gap-2">
-                                        <button className="px-4 py-2 text-sm font-medium text-gray-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
+                                        <button className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors">
                                             Détails
                                         </button>
                                         <button 
                                             onClick={(e) => handleDeleteEvent(event.id, e)}
-                                            className="p-2 text-gray-400 hover:text-red-400 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                                            className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-lg transition-colors"
                                             title="Supprimer"
                                         >
                                             <Trash2 size={18} />

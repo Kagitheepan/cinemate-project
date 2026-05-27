@@ -5,15 +5,18 @@ import './index.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext'
 import { MovieProvider } from './context/MovieContext'
+import { ThemeProvider } from './context/ThemeContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <MovieProvider>
-            <App />
-        </MovieProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <MovieProvider>
+              <App />
+          </MovieProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,
 )
