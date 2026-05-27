@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Sparkles } from 'lucide-react';
 import MovieGrid from '../components/MovieGrid';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import TimeModal from '../components/TimeModal';
 import DiscoverModal from '../components/DiscoverModal';
 import Button from '../components/ui/Button';
@@ -9,6 +9,7 @@ import { useMovies } from '../context/MovieContext';
 
 const Home = () => {
     const { movies, isLoading } = useMovies();
+    const navigate = useNavigate();
     const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
     const [isDiscoverModalOpen, setIsDiscoverModalOpen] = useState(false);
     const [maxDuration, setMaxDuration] = useState<number | null>(() => {
@@ -186,7 +187,21 @@ const Home = () => {
                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
                        </div>
                    ) : displayedMovies.length > 0 ? (
-                       <MovieGrid movies={displayedMovies} />
+                       <>
+                           <MovieGrid movies={displayedMovies} />
+                           {!isFiltering && (
+                               <div className="mt-12 flex justify-center">
+                                   <Button 
+                                       variant="secondary" 
+                                       size="lg" 
+                                       onClick={() => navigate('/movies')}
+                                       className="text-purple-400 hover:bg-purple-500/10 border-purple-500/30 hover:border-purple-500/60"
+                                   >
+                                       Voir tout le catalogue
+                                   </Button>
+                               </div>
+                           )}
+                       </>
                    ) : (
                        <div className="text-center py-20 bg-white/5 rounded-2xl border border-white/5">
                            <p className="text-xl text-white font-medium">Aucun film ne correspond à votre recherche.</p>
