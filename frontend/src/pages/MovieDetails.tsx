@@ -33,6 +33,7 @@ const MovieDetails = () => {
     const [isLocalLoading, setIsLocalLoading] = useState(false);
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+    const [recPage, setRecPage] = useState(0);
     
     useEffect(() => {
         const loadMovieDetails = async () => {
@@ -62,9 +63,10 @@ const MovieDetails = () => {
         loadMovieDetails();
     }, [id, fetchMovieDetails, getMovie]);
 
-    // Scroll to top when ID changes
+    // Scroll to top and reset recommendations page when ID changes
     useEffect(() => {
         window.scrollTo(0, 0);
+        setRecPage(0);
     }, [id]);
 
     // Only show full screen loader if we have NO data at all
@@ -97,11 +99,12 @@ const MovieDetails = () => {
         );
     }
 
-    // Filter recommendations (same category, excluding current movie) - take 3
+    // Filter recommendations (same category, excluding current movie)
     // Use movies from context
-    const recommendations = movies
-        .filter(m => m.category === movie.category && m.id !== movie.id)
-        .slice(0, 3);
+    const allRecommendations = movies.filter(m => m.category === movie.category && m.id !== movie.id);
+    const recItemsPerPage = 3;
+    const totalRecPages = Math.ceil(allRecommendations.length / recItemsPerPage);
+    const recommendations = allRecommendations.slice(recPage * recItemsPerPage, (recPage + 1) * recItemsPerPage);
 
     const watchlistData = user?.watchlist as unknown as { toWatch?: string[], watched?: string[] } | null;
     const isObjectWatchlist = user?.watchlist && !Array.isArray(user.watchlist);
@@ -366,10 +369,20 @@ const MovieDetails = () => {
                      <div className="flex items-center justify-between mb-8">
                         <h2 className="text-2xl font-bold text-white">Autres films similaires</h2>
                         <div className="flex space-x-2">
-                            <button className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors">
+                            <button 
+                                onClick={() => setRecPage(p => Math.max(0, p - 1))}
+                                disabled={recPage === 0}
+                                className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                aria-label="Précédent"
+                            >
                                 <ChevronLeft size={20} />
                             </button>
-                            <button className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors">
+                            <button 
+                                onClick={() => setRecPage(p => Math.min(totalRecPages - 1, p + 1))}
+                                disabled={recPage >= totalRecPages - 1 || totalRecPages === 0}
+                                className="p-2 rounded-full border border-white/10 hover:bg-white/10 text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                aria-label="Suivant"
+                            >
                                 <ChevronRight size={20} />
                             </button>
                         </div>
