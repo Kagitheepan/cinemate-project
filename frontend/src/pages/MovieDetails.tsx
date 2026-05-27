@@ -223,22 +223,31 @@ const MovieDetails = () => {
                                 {movie.title}
                             </h1>
 
-                            <div className="flex items-center space-x-6 text-gray-300 mb-6">
-                                <div className="flex items-center">
-                                    <Star className="w-5 h-5 text-yellow-500 fill-current mr-2" />
-                                    <span className="font-bold text-white">{movie.rating}</span>/10
+                            <div className="flex items-center space-x-8 text-gray-300 mb-6">
+                                <div className="flex flex-col">
+                                    <div className="flex items-center">
+                                        <Star className="w-5 h-5 text-yellow-500 fill-current mr-2" />
+                                        <span className="font-bold text-white">{movie.rating}</span>/10
+                                    </div>
+                                    <span className="text-xs text-gray-500 uppercase mt-1 tracking-wider font-semibold">Note IMDB</span>
                                 </div>
-                                <div className="flex items-center">
-                                    <Calendar className="w-5 h-5 mr-2 text-gray-500" />
-                                    <span>{movie.year}</span>
+                                <div className="flex flex-col">
+                                    <div className="flex items-center">
+                                        <Calendar className="w-5 h-5 mr-2 text-gray-500" />
+                                        <span>{movie.year}</span>
+                                    </div>
+                                    <span className="text-xs text-gray-500 uppercase mt-1 tracking-wider font-semibold">Année</span>
                                 </div>
-                                <div className="flex items-center">
-                                    <Clock className="w-5 h-5 mr-2 text-gray-500" />
-                                    <span>
-                                        {movie.duration && movie.duration > 0 
-                                            ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` 
-                                            : "Donnée non disponible"}
-                                    </span>
+                                <div className="flex flex-col">
+                                    <div className="flex items-center">
+                                        <Clock className="w-5 h-5 mr-2 text-gray-500" />
+                                        <span>
+                                            {movie.duration && movie.duration > 0 
+                                                ? `${Math.floor(movie.duration / 60)}h ${movie.duration % 60}m` 
+                                                : "N/A"}
+                                        </span>
+                                    </div>
+                                    <span className="text-xs text-gray-500 uppercase mt-1 tracking-wider font-semibold">Durée</span>
                                 </div>
                             </div>
 

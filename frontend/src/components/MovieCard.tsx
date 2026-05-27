@@ -51,14 +51,20 @@ const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "202
                     {title}
                 </h3>
                 
-                <div className="flex items-center space-x-4 mb-3 text-sm text-gray-300">
-                    <div className="flex items-center space-x-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span>{rating}</span>
+                <div className="flex items-center space-x-6 mb-3 text-sm text-gray-300">
+                    <div className="flex flex-col">
+                        <div className="flex items-center space-x-1">
+                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <span>{rating}</span>
+                        </div>
+                        <span className="text-[10px] text-gray-500 uppercase font-semibold tracking-wider mt-0.5">Note IMDB</span>
                     </div>
-                    <div className="flex items-center space-x-1">
-                        <Calendar className="w-4 h-4 text-gray-400" />
-                        <span>{year}</span>
+                    <div className="flex flex-col">
+                        <div className="flex items-center space-x-1">
+                            <Calendar className="w-4 h-4 text-gray-400" />
+                            <span>{year}</span>
+                        </div>
+                        <span className="text-[10px] text-gray-500 uppercase font-semibold tracking-wider mt-0.5">Année</span>
                     </div>
                 </div>
 
