@@ -43,7 +43,7 @@ const Footer = () => {
                     </div>
                 </div>
                 
-                <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
                     <p>&copy; {new Date().getFullYear()} Cinemate. All rights reserved.</p>
                     <div className="flex space-x-6 mt-4 md:mt-0">
                         {/* Placeholder for social icons */}

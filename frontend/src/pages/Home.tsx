@@ -115,13 +115,13 @@ const Home = () => {
                             placeholder="Titre, acteur, réalisateur..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
+                            className="bg-white/5 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-64 shadow-xl"
                         />
                         
                         <select 
                             value={selectedGenre}
                             onChange={(e) => setSelectedGenre(e.target.value)}
-                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
                             <option value="">Tous les genres</option>
                             {allGenres.map(genre => (
@@ -132,7 +132,7 @@ const Home = () => {
                         <select 
                             value={maxDuration || ''}
                             onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
-                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
+                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none shadow-xl"
                         >
                             <option value="">Toutes durées</option>
                             <option value="90">- de 1h30</option>

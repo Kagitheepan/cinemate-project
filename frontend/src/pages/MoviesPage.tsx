@@ -85,13 +85,13 @@ const MoviesPage = () => {
                             placeholder="Titre, acteur, réalisateur..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-48"
+                            className="bg-white/5 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 w-full md:w-48"
                         />
                         
                         <select 
                             value={selectedGenre}
                             onChange={(e) => setSelectedGenre(e.target.value)}
-                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
+                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
                         >
                             <option value="">Tous les genres</option>
                             {allGenres.map(genre => (
@@ -102,7 +102,7 @@ const MoviesPage = () => {
                         <select 
                             value={maxDuration || ''}
                             onChange={(e) => setMaxDuration(e.target.value ? parseInt(e.target.value) : null)}
-                            className="bg-gray-900 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
+                            className="bg-gray-900 border border-gray-600 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500 flex-1 md:flex-none"
                         >
                             <option value="">Toutes durées</option>
                             <option value="90">- de 1h30</option>
