@@ -22,6 +22,7 @@ const Navbar = () => {
     }
 
     const navLinks: NavLink[] = [
+        { name: 'Accueil', href: '/' },
         { name: 'Ma Watchlist', href: '/watchlist' },
         { name: 'Agenda', href: '/agenda' },
     ];
@@ -29,7 +30,7 @@ const Navbar = () => {
     if (!isAuthenticated) {
         navLinks.push({ name: 'Inscription/Connexion', action: () => setIsAuthModalOpen(true) });
     } else {
-        navLinks.splice(1, 0, { name: 'Pour Vous', href: '/recommendations' }); // Insère "Pour Vous" après "Ma Watchlist"
+        navLinks.splice(2, 0, { name: 'Pour Vous', href: '/recommendations' }); // Insère "Pour Vous" après "Ma Watchlist"
         navLinks.push({ name: 'Profil', href: '/profile' });
     }
 
