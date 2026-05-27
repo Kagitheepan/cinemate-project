@@ -23,14 +23,22 @@ const CookieBanner = () => {
     };
 
     const handleAccept = async () => {
-        await saveConsent('accepted');
+        try {
+            await saveConsent('accepted');
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du consentement:", error);
+        }
         localStorage.setItem('cookie_consent', 'accepted');
         api.defaults.headers.common['X-Consent-Tracking'] = 'true';
         setIsVisible(false);
     };
 
     const handleRefuse = async () => {
-        await saveConsent('refused');
+        try {
+            await saveConsent('refused');
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du consentement:", error);
+        }
         localStorage.setItem('cookie_consent', 'refused');
         delete api.defaults.headers.common['X-Consent-Tracking'];
         setIsVisible(false);
