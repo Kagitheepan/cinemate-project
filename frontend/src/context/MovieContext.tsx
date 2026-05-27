@@ -151,8 +151,8 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     const fetchMovieDetails = useCallback(async (id: string) => {
         const existingMovie = getMovie(id);
         
-        // If we already have full details (description exists), just return it
-        if (existingMovie && existingMovie.description) {
+        // If we already have full details (cast exists), just return it
+        if (existingMovie && existingMovie.cast) {
             return existingMovie;
         }
 
