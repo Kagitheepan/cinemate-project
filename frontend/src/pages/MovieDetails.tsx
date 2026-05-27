@@ -263,7 +263,7 @@ const MovieDetails = () => {
                                         {movie.availableOn.map((platform, idx) => {
                                             const pStyle = getPlatformStyle(platform);
                                             return (
-                                                <div key={idx} className={`px-4 py-2 rounded-lg border font-semibold text-sm ${pStyle} shadow-lg transition-transform hover:scale-105 flex items-center`}>
+                                                <div key={idx} className={`px-3 py-1.5 rounded-lg border font-medium text-sm ${pStyle} opacity-90 flex items-center`}>
                                                     {platform}
                                                 </div>
                                             );
@@ -325,8 +325,8 @@ const MovieDetails = () => {
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                 {movie.cast && movie.cast.length > 0 ? (
                                     movie.cast.map((actor, idx) => (
-                                        <div key={idx} className="flex flex-col items-center text-center space-y-3 group cursor-pointer">
-                                            <div className="w-20 h-20 rounded-full bg-neutral-800 overflow-hidden border-2 border-transparent group-hover:border-purple-500 transition-all">
+                                        <div key={idx} className="flex flex-col items-center text-center space-y-3">
+                                            <div className="w-20 h-20 rounded-full bg-neutral-800 overflow-hidden">
                                                 {actor.imageUrl ? (
                                                     <img src={actor.imageUrl} alt={actor.name} className="w-full h-full object-cover" />
                                                 ) : (
@@ -336,7 +336,7 @@ const MovieDetails = () => {
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="font-medium text-white group-hover:text-purple-400 transition-colors">{actor.name}</p>
+                                                <p className="font-medium text-white">{actor.name}</p>
                                                 <p className="text-xs text-gray-500">{actor.role}</p>
                                             </div>
                                         </div>
