@@ -162,8 +162,8 @@ class MovieControllerTest extends TestCase
             'director' => 'Lana Wachowski',
             'cast' => [[
                 'name' => 'Keanu Reeves',
-                'profile_path' => '/keanu.jpg',
-                'character' => 'Neo',
+                'imageUrl' => 'https://image.tmdb.org/t/p/w200/keanu.jpg',
+                'role' => 'Neo',
                 'order' => 0
             ]],
             'availableOn' => ['Netflix'],
