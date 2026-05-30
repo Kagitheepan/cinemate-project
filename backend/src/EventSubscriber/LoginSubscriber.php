@@ -53,7 +53,7 @@ class LoginSubscriber implements EventSubscriberInterface
             $log->setUsername($user->getUsername());
         }
 
-        $log->setConnectedAt(new \DateTime());
+        $log->setConnectedAt(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
 
         $this->dm->persist($log);
         $this->dm->flush();
