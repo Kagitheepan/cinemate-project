@@ -3,20 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\MovieRepository;
-use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
 
-#[Entity(repositoryClass: MovieRepository::class)]
+#[ORM\Entity(repositoryClass: MovieRepository::class)]
+#[ORM\Table(name: 'Film')]
 class Movie
 {
-    #[Id]
-    #[GeneratedValue]
-    #[Column]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(name: 'Id_Film')]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::INTEGER, unique: true)]
@@ -46,17 +44,34 @@ class Movie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $trailerKey = null;
 
-    #[ORM\Column(type: Types::JSON)]
-    private array $genres = [];
-
-    #[ORM\Column(type: Types::JSON)]
-    private array $platforms = [];
-
-    #[ORM\Column(type: Types::JSON)]
-    private array $cast = [];
-
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $runtime = null;
+
+    #[ORM\ManyToMany(targetEntity: Genre::class)]
+    #[ORM\JoinTable(name: 'Catégorie')]
+    #[ORM\JoinColumn(name: 'Id_Film', referencedColumnName: 'Id_Film')]
+    #[ORM\InverseJoinColumn(name: 'Id_Genre', referencedColumnName: 'Id_Genre')]
+    private Collection $genres;
+
+    #[ORM\ManyToMany(targetEntity: Platform::class)]
+    #[ORM\JoinTable(name: 'En_Streaming_Sur')]
+    #[ORM\JoinColumn(name: 'Id_Film', referencedColumnName: 'Id_Film')]
+    #[ORM\InverseJoinColumn(name: 'Id_Plateforme', referencedColumnName: 'Id_Plateforme')]
+    private Collection $platforms;
+
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: MovieCasting::class, cascade: ['persist', 'remove'])]
+    private Collection $movieCastings;
+
+    #[ORM\OneToMany(mappedBy: 'movie', targetEntity: UserWatchlist::class, cascade: ['remove'])]
+    private Collection $watchlists;
+
+    public function __construct()
+    {
+        $this->genres = new ArrayCollection();
+        $this->platforms = new ArrayCollection();
+        $this->movieCastings = new ArrayCollection();
+        $this->watchlists = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -159,42 +174,6 @@ class Movie
         return $this;
     }
 
-    public function getGenres(): array
-    {
-        return $this->genres;
-    }
-
-    public function setGenres(array $genres): static
-    {
-        $this->genres = $genres;
-
-        return $this;
-    }
-
-    public function getPlatforms(): array
-    {
-        return $this->platforms;
-    }
-
-    public function setPlatforms(array $platforms): static
-    {
-        $this->platforms = $platforms;
-
-        return $this;
-    }
-
-    public function getCast(): array
-    {
-        return $this->cast;
-    }
-
-    public function setCast(array $cast): static
-    {
-        $this->cast = $cast;
-
-        return $this;
-    }
-
     public function getRuntime(): ?int
     {
         return $this->runtime;
@@ -215,6 +194,114 @@ class Movie
     public function setTrailerKey(?string $trailerKey): static
     {
         $this->trailerKey = $trailerKey;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getGenres(): Collection
+    {
+        return $this->genres;
+    }
+
+    public function addGenre(Genre $genre): static
+    {
+        if (!$this->genres->contains($genre)) {
+            $this->genres->add($genre);
+        }
+
+        return $this;
+    }
+
+    public function removeGenre(Genre $genre): static
+    {
+        $this->genres->removeElement($genre);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Platform>
+     */
+    public function getPlatforms(): Collection
+    {
+        return $this->platforms;
+    }
+
+    public function addPlatform(Platform $platform): static
+    {
+        if (!$this->platforms->contains($platform)) {
+            $this->platforms->add($platform);
+        }
+
+        return $this;
+    }
+
+    public function removePlatform(Platform $platform): static
+    {
+        $this->platforms->removeElement($platform);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MovieCasting>
+     */
+    public function getMovieCastings(): Collection
+    {
+        return $this->movieCastings;
+    }
+
+    public function addMovieCasting(MovieCasting $movieCasting): static
+    {
+        if (!$this->movieCastings->contains($movieCasting)) {
+            $this->movieCastings->add($movieCasting);
+            $movieCasting->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMovieCasting(MovieCasting $movieCasting): static
+    {
+        if ($this->movieCastings->removeElement($movieCasting)) {
+            // set the owning side to null (unless already changed)
+            if ($movieCasting->getMovie() === $this) {
+                $movieCasting->setMovie(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserWatchlist>
+     */
+    public function getWatchlists(): Collection
+    {
+        return $this->watchlists;
+    }
+
+    public function addWatchlist(UserWatchlist $watchlist): static
+    {
+        if (!$this->watchlists->contains($watchlist)) {
+            $this->watchlists->add($watchlist);
+            $watchlist->setMovie($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWatchlist(UserWatchlist $watchlist): static
+    {
+        if ($this->watchlists->removeElement($watchlist)) {
+            // set the owning side to null (unless already changed)
+            if ($watchlist->getMovie() === $this) {
+                $watchlist->setMovie(null);
+            }
+        }
 
         return $this;
     }

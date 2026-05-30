@@ -1,0 +1,38 @@
+@startuml funcmap
+title Cartographie Fonctionnelle — CINEMATE
+
+!include <tupadr3/common>
+!include <tupadr3/font-awesome-5/user>
+!include <tupadr3/font-awesome-5/user_check>
+!include <tupadr3/font-awesome-5/cogs>
+
+skinparam shadowing false
+skinparam RoundCorner 0
+skinparam DefaultTextAlignment left
+
+skinparam rectangle {
+    BackgroundColor White
+    BorderThickness 2
+    BorderColor #222222
+}
+
+' ACTEURS
+actor "<color:#555555><$user{scale=3}></color>\nVisiteur" as Visiteur
+actor "<color:#27AE60><$user_check{scale=3}></color>\nMembre Connecté" as Membre
+actor "<color:#8E44AD><$cogs{scale=3}></color>\nScript Automatisé" as Cron
+
+' SYSTÈME PRINCIPAL
+rectangle "=== Application CINEMATE ===\n\n+ Inscription et connexion sécurisée (RGPD)\n+ Consultation du catalogue et des détails des films\n+ Recherche textuelle de films\n+ Gestion de la Watchlist personnelle (À voir / Vus)\n+ Génération de recommandations personnalisées\n+ Importation et mise à jour massive du catalogue" as Cinemate
+
+' SYSTÈME EXTERNE
+rectangle "=== The Movie Database (TMDB) ===\n\nFournisseur mondial de données\ncinématographiques" as TMDB
+
+' ACTIONS DES ACTEURS VERS LE SYSTÈME (Flèches fines)
+Visiteur -right-> Cinemate
+Membre -right-> Cinemate
+Cron -right-> Cinemate
+
+' FLUX D'ÉCHANGE ENTRE SYSTÈMES (Flèche large avec <=>)
+Cinemate <=down=> TMDB : ""                                          ""\n**Récupération quotidienne des données**\n(Films, Plateformes VOD, Acteurs, Trailers)\n""                                          ""
+
+@enduml

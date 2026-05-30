@@ -1,21 +1,25 @@
-@startuml
+@startuml uc_account
 left to right direction
 skinparam packageStyle rectangle
 
-actor "User Non Connecté" as Guest
-actor "User Connecté" as User
+actor "Utilisateur Non Connecté" as Guest
+actor "Utilisateur Connecté" as User
 
-User -|> Guest
+User -up-|> Guest
 
 package "Accès Compte" {
-    usecase "Authentifier" as UC_Auth
-    usecase "Connexion" as UC_Login
-    usecase "Inscription" as UC_Register
+    usecase "S'authentifier" as UC_Auth
+    usecase "S'inscrire" as UC_Register
+
+    usecase "Se déconnecter" as UC_Logout
+    usecase "Supprimer son compte" as UC_Delete
 }
 
 Guest --> UC_Auth
 
-UC_Auth ..> UC_Login : <<include>>
-UC_Auth ..> UC_Register : <<include>>
+UC_Auth <.. UC_Register : <<extends>>
+
+User --> UC_Logout
+User --> UC_Delete
 
 @enduml

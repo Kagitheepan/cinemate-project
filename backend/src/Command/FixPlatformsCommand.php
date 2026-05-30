@@ -31,7 +31,12 @@ class FixPlatformsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         
         $conn = $this->entityManager->getConnection();
-        $rows = $conn->executeQuery("SELECT id FROM movie WHERE JSON_LENGTH(platforms) = 0 OR platforms = '[]'")->fetchAllAssociative();
+        $rows = $conn->executeQuery("
+            SELECT f.Id_Film as id 
+            FROM Film f 
+            LEFT JOIN En_Streaming_Sur es ON f.Id_Film = es.Id_Film 
+            WHERE es.Id_Film IS NULL
+        ")->fetchAllAssociative();
         $movieIds = array_column($rows, 'id');
         
         $repository = $this->entityManager->getRepository(Movie::class);
@@ -123,7 +128,16 @@ class FixPlatformsCommand extends Command
             }
 
             if (!empty($platforms)) {
-                $movie->setPlatforms($platforms);
+                $platformRepo = $this->entityManager->getRepository(\App\Entity\Platform::class);
+                foreach ($platforms as $platformName) {
+                    $platform = $platformRepo->findOneBy(['platformName' => $platformName]);
+                    if (!$platform) {
+                        $platform = new \App\Entity\Platform();
+                        $platform->setPlatformName($platformName);
+                        $this->entityManager->persist($platform);
+                    }
+                    $movie->addPlatform($platform);
+                }
                 $this->entityManager->persist($movie);
             }
             

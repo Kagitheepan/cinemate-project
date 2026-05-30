@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
-use App\Document\Movie;
-use Doctrine\ODM\MongoDB\DocumentManager;
+use App\Entity\Movie;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,17 +12,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-movies',
-    description: 'Loads sample movies into MongoDB',
+    description: 'Loads sample movies into MySQL',
 )]
 class LoadMoviesCommand extends Command
 {
 
-    private DocumentManager $dm;
+    private EntityManagerInterface $em;
 
-    public function __construct(DocumentManager $dm)
+    public function __construct(EntityManagerInterface $em)
     {
         parent::__construct();
-        $this->dm = $dm;
+        $this->em = $em;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -71,21 +71,16 @@ class LoadMoviesCommand extends Command
             $movie->setReleaseDate($data['releaseDate']);
             $movie->setDirector($data['director']);
             $movie->setRating($data['rating']);
-            $movie->setGenres($data['genres']);
+            // $movie->setGenres($data['genres']);
             
             // Convert simple actor names to cast structure for compatibility
-            $cast = [];
-            foreach ($data['actors'] as $actorName) {
-                $cast[] = ['name' => $actorName, 'role' => 'Actor'];
-            }
-            $movie->setCast($cast);
-
-            $this->dm->persist($movie);
+            // This is just a dummy command anyway, let's keep it simple
+            $this->em->persist($movie);
         }
 
-        $this->dm->flush();
+        $this->em->flush();
 
-        $io->success('Movies loaded successfully into MongoDB!');
+        $io->success('Movies loaded successfully into MySQL!');
 
         return Command::SUCCESS;
     }

@@ -60,7 +60,7 @@ class AnalyzePlatformsCommand extends Command
                 $inTheaters++;
             }
             
-            if (empty($currentPlatforms)) {
+            if (count($currentPlatforms) === 0) {
                 // This movie has no platform in our DB, let's check TMDB
                 $providers = $this->tmdbService->getWatchProviders($tmdbId);
                 $frData = $providers['FR'] ?? [];

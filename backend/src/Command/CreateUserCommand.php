@@ -58,8 +58,19 @@ class CreateUserCommand extends Command
         );
 
         // Add dummy platforms and genres
-        $user->setPlatforms(['Netflix', 'Amazon Prime', 'Disney+']);
-        $user->setFavoriteGenres(['Action', 'Sci-Fi', 'Comedy']);
+        // In a real app we would fetch the actual Platform/Genre entities, but for this mock command we skip
+        // or we need to fetch them from DB.
+        $platformRepo = $this->entityManager->getRepository(\App\Entity\Platform::class);
+        foreach (['Netflix', 'Amazon Prime', 'Disney+'] as $pName) {
+            $p = $platformRepo->findOneBy(['platformName' => $pName]);
+            if ($p) $user->addPlatform($p);
+        }
+
+        $genreRepo = $this->entityManager->getRepository(\App\Entity\Genre::class);
+        foreach (['Action', 'Sci-Fi', 'Comedy'] as $gName) {
+            $g = $genreRepo->findOneBy(['genreName' => $gName]);
+            if ($g) $user->addFavoriteGenre($g);
+        }
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

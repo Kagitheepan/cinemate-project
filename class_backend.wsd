@@ -1,0 +1,87 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty members
+
+class User {
+  - id : int
+  - username : string
+  - email : string
+  - roles : array
+  - password : string
+}
+
+class Movie {
+  - id : int
+  - tmdbId : int
+  - title : string
+  - description : string
+  - releaseDate : DateTimeInterface
+  - poster : string
+  - backdrop : string
+  - director : string
+  - rating : float
+  - trailerKey : string
+  - runtime : int
+}
+
+class Genre {
+  - id : int
+  - genreName : string
+}
+
+class Platform {
+  - id : int
+  - platformName : string
+}
+
+class Casting {
+  - id : int
+  - name : string
+  - profilePath : string
+}
+
+class MovieCasting {
+  - characterName : string
+  - castOrder : int
+}
+
+class Notification {
+  - id : int
+  - message : string
+  - type : string
+  - isRead : bool
+  - emailSent : bool
+  - movieId : string
+  - eventId : string
+  - createdAt : DateTimeInterface
+  - eventDate : DateTimeInterface
+}
+
+class UserAgenda {
+  - eventDate : DateTimeInterface
+  - timeSlot : string
+}
+
+class UserWatchlist {
+  - statut : string
+}
+
+' Relations
+User "1..1" -- "0..*" UserAgenda
+User "1..1" -- "0..*" UserWatchlist
+User "0..*" -- "0..*" Platform
+User "0..*" -- "0..*" Genre
+
+Movie "1..1" -- "0..*" MovieCasting
+Movie "0..*" -- "0..*" Genre
+Movie "0..*" -- "0..*" Platform
+
+MovieCasting "0..*" -- "1..1" Casting
+
+Notification "0..*" -- "1..1" User
+
+UserAgenda "0..*" -- "1..1" Movie
+
+UserWatchlist "0..*" -- "1..1" Movie
+
+@enduml

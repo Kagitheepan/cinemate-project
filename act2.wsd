@@ -1,40 +1,50 @@
-@startuml
-!theme plain
-skinparam style strictuml
-skinparam TitleFontSize 20
+@startuml act2
+title Diagramme d'Activité — Ajout à la Watchlist
 
-title Processus Frontend : Recherche de Films (MoviesPage.tsx)
+skinparam shadowing false
+skinparam RoundCorner 5
+skinparam ArrowColor #333333
+skinparam ActivityBackgroundColor #D6EAF8
+skinparam ActivityBorderColor #2980B9
 
+|Utilisateur (Frontend)|
 start
+:Clique sur "Ajouter à la Watchlist";
 
-:L'utilisateur accède à la Page des Films;
-:Récupérer les films globaux (useMovies);
-:Restaurer les états des filtres (sessionStorage);
+if (Utilisateur authentifié ?) then (Non)
+    :Affiche la modale de connexion;
+    stop
+else (Oui)
+    :Envoie requête PUT /api/profile avec l'ID du film;
 
-partition "Application Cumulative des Filtres" {
-  fork
-    :Saisir Mots-Clés\n(Filtre par Titre);
-  fork again
-    :Sélectionner un Genre\n(Menu déroulant);
-  fork again
-    :Sélectionner une Durée Max\n(Menu déroulant);
-  end fork
-}
+|Serveur (Backend)|
+    :Intercepte la requête et valide le JWT;
+    :Recherche le film en BDD par ID;
+    
+    if (Le film existe ?) then (Non)
+        :Retourne une Erreur 404;
+|Utilisateur (Frontend)|
+        #FADBD8:Affiche une notification d'erreur;
+        stop
+    else (Oui)
+|Serveur (Backend)|
+        :Recherche si une liaison UserWatchlist existe déjà;
+        if (Liaison existe ?) then (Oui)
+            :Mise à jour du statut\n(ex: bascule vers "vu");
+        else (Non)
+            :Création d'une nouvelle entité UserWatchlist;
+            :Statut = "a_voir" par défaut;
+        endif
+        
+        :Persiste les données en BDD\n(EntityManager->flush());
+        :Retourne Succès 200 avec le profil mis à jour;
 
-:Combiner les filtres (movies.filter);
-:Appliquer la pagination\n(Limiter à 'displayedCount');
-
-if (Résultats > 0 ?) then (Oui)
-  :Afficher les résultats (MovieGrid);
-  
-  if (Reste-t-il des films non affichés ?) then (Oui)
-    :Afficher le bouton "Voir plus de films";
-  else (Non)
-  endif
-  
-else (Non)
-  :Afficher "Aucun film ne correspond";
+|Utilisateur (Frontend)|
+        :Met à jour le state React (AuthContext);
+        #D5F5E3:Affiche une notification de succès;
+        :Met à jour l'icône de la Watchlist sur l'interface;
+        stop
+    endif
 endif
 
-stop
 @enduml

@@ -15,7 +15,7 @@ class Notification
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'Id_Utilisateur', referencedColumnName: 'Id_Utilisateur', nullable: false)]
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]

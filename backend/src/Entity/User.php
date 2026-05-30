@@ -3,18 +3,19 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\DBAL\Types\Types;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: 'Utilisateur')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(name: 'Id_Utilisateur')]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -23,30 +24,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
-
-    /**
-     * @var list<string> The user roles
-     */
     #[ORM\Column]
     private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
     #[ORM\Column]
     private ?string $password = null;
 
-    /**
-     * @var list<string> Platforms available to the user (e.g. ['Netflix', 'Amazon Prime'])
-     */
-    #[ORM\Column(type: Types::JSON)]
-    private array $platforms = [];
+    #[ORM\ManyToMany(targetEntity: Platform::class)]
+    #[ORM\JoinTable(name: 'Plateforme_Favoris_User')]
+    #[ORM\JoinColumn(name: 'Id_Utilisateur', referencedColumnName: 'Id_Utilisateur')]
+    #[ORM\InverseJoinColumn(name: 'Id_Plateforme', referencedColumnName: 'Id_Plateforme')]
+    private Collection $platforms;
 
-    /**
-     * @var list<string> Favorite genres (e.g. ['Action', 'Sci-Fi'])
-     */
-    #[ORM\Column(type: Types::JSON)]
-    private array $favoriteGenres = [];
+    #[ORM\ManyToMany(targetEntity: Genre::class)]
+    #[ORM\JoinTable(name: 'Genre_Favoris')]
+    #[ORM\JoinColumn(name: 'Id_Utilisateur', referencedColumnName: 'Id_Utilisateur')]
+    #[ORM\InverseJoinColumn(name: 'Id_Genre', referencedColumnName: 'Id_Genre')]
+    private Collection $favoriteGenres;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserAgenda::class, cascade: ['persist', 'remove'])]
+    private Collection $agendas;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserWatchlist::class, cascade: ['persist', 'remove'])]
+    private Collection $watchlists;
+
+    public function __construct()
+    {
+        $this->platforms = new ArrayCollection();
+        $this->favoriteGenres = new ArrayCollection();
+        $this->agendas = new ArrayCollection();
+        $this->watchlists = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -61,7 +69,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
-
         return $this;
     }
 
@@ -73,50 +80,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
- 
- 
-
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
     public function getUserIdentifier(): string
     {
         return (string) $this->username;
     }
 
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user has at least ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
-    /**
-     * @param list<string> $roles
-     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
-
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): string
     {
         return $this->password;
@@ -125,77 +109,117 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
-    public function getPlatforms(): array
+    /**
+     * @return Collection<int, Platform>
+     */
+    public function getPlatforms(): Collection
     {
         return $this->platforms;
     }
 
-    public function setPlatforms(array $platforms): self
+    public function addPlatform(Platform $platform): static
     {
-        $this->platforms = $platforms;
+        if (!$this->platforms->contains($platform)) {
+            $this->platforms->add($platform);
+        }
 
         return $this;
     }
 
-    public function getFavoriteGenres(): array
+    public function removePlatform(Platform $platform): static
+    {
+        $this->platforms->removeElement($platform);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Genre>
+     */
+    public function getFavoriteGenres(): Collection
     {
         return $this->favoriteGenres;
     }
 
-    public function setFavoriteGenres(array $favoriteGenres): self
+    public function addFavoriteGenre(Genre $genre): static
     {
-        $this->favoriteGenres = $favoriteGenres;
+        if (!$this->favoriteGenres->contains($genre)) {
+            $this->favoriteGenres->add($genre);
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteGenre(Genre $genre): static
+    {
+        $this->favoriteGenres->removeElement($genre);
 
         return $this;
     }
 
     /**
-     * @var list<string> Movie IDs in watchlist
+     * @return Collection<int, UserWatchlist>
      */
-    #[ORM\Column(type: Types::JSON)]
-    private array $watchlist = [];
+    public function getWatchlists(): Collection
+    {
+        return $this->watchlists;
+    }
+
+    public function addWatchlistRelation(UserWatchlist $watchlist): static
+    {
+        if (!$this->watchlists->contains($watchlist)) {
+            $this->watchlists->add($watchlist);
+            $watchlist->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWatchlistRelation(UserWatchlist $watchlist): static
+    {
+        if ($this->watchlists->removeElement($watchlist)) {
+            if ($watchlist->getUser() === $this) {
+                $watchlist->setUser(null);
+            }
+        }
+
+        return $this;
+    }
 
     /**
-     * @var list<array> Agenda events 
+     * @return Collection<int, UserAgenda>
      */
-    #[ORM\Column(type: Types::JSON)]
-    private array $agenda = [];
-
-    public function getWatchlist(): array
+    public function getAgendas(): Collection
     {
-        return $this->watchlist;
+        return $this->agendas;
     }
 
-    public function setWatchlist(array $watchlist): self
+    public function addAgenda(UserAgenda $agenda): static
     {
-        $this->watchlist = $watchlist;
+        if (!$this->agendas->contains($agenda)) {
+            $this->agendas->add($agenda);
+            $agenda->setUser($this);
+        }
 
         return $this;
     }
 
-    public function getAgenda(): array
+    public function removeAgenda(UserAgenda $agenda): static
     {
-        return $this->agenda;
-    }
-
-    public function setAgenda(array $agenda): self
-    {
-        $this->agenda = $agenda;
+        if ($this->agendas->removeElement($agenda)) {
+            // set the owning side to null (unless already changed)
+            if ($agenda->getUser() === $this) {
+                $agenda->setUser(null);
+            }
+        }
 
         return $this;
     }
-
 }

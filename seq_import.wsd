@@ -1,0 +1,45 @@
+@startuml seq_import
+title Diagramme de Séquence — Import Automatisé TMDB
+
+skinparam shadowing false
+skinparam RoundCorner 5
+
+actor "Cron / CLI" as Cron
+participant "Commande d'Import\n(Backend)" as Cmd
+participant "API Externe\n(TMDB)" as TMDB
+database "Base de données\n(MySQL)" as DB
+
+Cron -> Cmd: execute()
+activate Cmd
+
+Cmd -> TMDB: Récupération des genres
+activate TMDB
+TMDB --> Cmd: Liste des genres
+deactivate TMDB
+
+loop Pour chaque page demandée
+    Cmd -> TMDB: discoverStreamingMovies(page)
+    activate TMDB
+    TMDB --> Cmd: Liste des films de la page
+    deactivate TMDB
+    
+    loop Pour chaque film
+        Cmd -> TMDB: Récupère Détails complets\n(Plateformes, Trailers, Casting, Durée)
+        activate TMDB
+        TMDB --> Cmd: Données détaillées
+        deactivate TMDB
+        
+        alt Film valide (Sorti, avec plateforme et trailer)
+            Cmd -> DB: Sauvegarde (Création ou Mise à jour)
+        else Film non valide
+            Cmd -> DB: Suppression (si existait) et ignoré
+        end
+    end
+    
+    Cmd -> DB: Exécution des requêtes en masse (flush)
+    Cmd -> Cmd: Libération de la mémoire RAM (clear)
+end
+
+Cmd --> Cron: Fin de l'import (Succès)
+deactivate Cmd
+@enduml

@@ -61,22 +61,31 @@ class RegistrationControllerTest extends TestCase
 
     public function testRegisterCreatesUserWhenPayloadIsValid(): void
     {
-        $repository = $this->createMock(EntityRepository::class);
-        $repository
-            ->expects(self::exactly(2))
+        $userRepository = $this->createMock(EntityRepository::class);
+        $userRepository
             ->method('findOneBy')
-            ->withConsecutive(
-                [['email' => 'alice@example.com']],
-                [['username' => 'alice']]
-            )
             ->willReturn(null);
+
+        $platformRepository = $this->createMock(EntityRepository::class);
+        $platform = new \App\Entity\Platform();
+        $platform->setPlatformName('Netflix');
+        $platformRepository->method('findOneBy')->willReturn($platform);
+
+        $genreRepository = $this->createMock(EntityRepository::class);
+        $genre = new \App\Entity\Genre();
+        $genre->setGenreName('Action');
+        $genreRepository->method('findOneBy')->willReturn($genre);
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager
-            ->expects(self::exactly(2))
             ->method('getRepository')
-            ->with(User::class)
-            ->willReturn($repository);
+            ->willReturnCallback(function ($entityClass) use ($userRepository, $platformRepository, $genreRepository) {
+                if ($entityClass === User::class) return $userRepository;
+                if ($entityClass === \App\Entity\Platform::class) return $platformRepository;
+                if ($entityClass === \App\Entity\Genre::class) return $genreRepository;
+                return $userRepository;
+            });
+
         $entityManager
             ->expects(self::once())
             ->method('persist')
@@ -84,8 +93,10 @@ class RegistrationControllerTest extends TestCase
                 return $user->getUsername() === 'alice'
                     && $user->getEmail() === 'alice@example.com'
                     && $user->getPassword() === 'hashed-password'
-                    && $user->getPlatforms() === ['Netflix']
-                    && $user->getFavoriteGenres() === ['Action'];
+                    && $user->getPlatforms()->count() === 1
+                    && $user->getPlatforms()->first()->getPlatformName() === 'Netflix'
+                    && $user->getFavoriteGenres()->count() === 1
+                    && $user->getFavoriteGenres()->first()->getGenreName() === 'Action';
             }));
         $entityManager->expects(self::once())->method('flush');
 

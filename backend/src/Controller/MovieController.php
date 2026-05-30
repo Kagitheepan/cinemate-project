@@ -23,8 +23,7 @@ class MovieController extends AbstractController
     #[Route('', name: 'api_movies_list', methods: ['GET'])]
     public function list(MovieRepository $movieRepository, Request $request): JsonResponse
     {
-        // Server-side file cache to avoid re-querying DB on every request
-        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list.json';
+        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v2.json';
         $cacheTtl = 3600; // 1 hour (3600 seconds)
         $jsonContent = null;
 
@@ -33,41 +32,33 @@ class MovieController extends AbstractController
         }
 
         if (!$jsonContent) {
-            // Use raw DBAL query for maximum performance, bypassing Doctrine ORM overhead
-            $conn = $this->entityManager->getConnection();
-            $sql = 'SELECT id, tmdb_id AS tmdbId, title, release_date AS releaseDate, rating, poster, genres, runtime, director, `cast` FROM movie ORDER BY release_date DESC LIMIT 200';
-            $stmt = $conn->prepare($sql);
-            $resultSet = $stmt->executeQuery();
-            $rows = $resultSet->fetchAllAssociative();
+            // Using Doctrine since the raw SQL is too complex with 4 joined tables
+            $movies = $movieRepository->findBy([], ['releaseDate' => 'DESC'], 200);
 
             $data = [];
-            foreach ($rows as $row) {
-                // Genres is stored as JSON string in DB, need to decode it
-                $genres = is_string($row['genres']) ? json_decode($row['genres'], true) : $row['genres'];
-                
-                // Decode cast and extract names
-                $castData = is_string($row['cast']) ? json_decode($row['cast'], true) : ($row['cast'] ?? []);
-                $castNames = [];
-                if (is_array($castData)) {
-                    foreach ($castData as $actor) {
-                        if (isset($actor['name'])) {
-                            $castNames[] = $actor['name'];
-                        }
-                    }
+            foreach ($movies as $movie) {
+                $genres = [];
+                foreach ($movie->getGenres() as $g) {
+                    $genres[] = $g->getGenreName();
                 }
-                
+
+                $castNames = [];
+                foreach ($movie->getMovieCastings() as $mc) {
+                    $castNames[] = $mc->getCasting()->getName();
+                }
+
                 $data[] = [
-                    'id' => (string)$row['id'],
-                    'tmdbId' => $row['tmdbId'],
-                    'title' => $row['title'],
-                    'year' => $row['releaseDate'] ? substr($row['releaseDate'], 0, 4) : null,
-                    'releaseDate' => $row['releaseDate'] ? substr($row['releaseDate'], 0, 10) : null,
-                    'rating' => (float)$row['rating'],
-                    'imageUrl' => $row['poster'] ? 'https://image.tmdb.org/t/p/w500' . $row['poster'] : null,
+                    'id' => (string)$movie->getId(),
+                    'tmdbId' => $movie->getTmdbId(),
+                    'title' => $movie->getTitle(),
+                    'year' => $movie->getReleaseDate() ? $movie->getReleaseDate()->format('Y') : null,
+                    'releaseDate' => $movie->getReleaseDate() ? $movie->getReleaseDate()->format('Y-m-d') : null,
+                    'rating' => (float)$movie->getRating(),
+                    'imageUrl' => $movie->getPoster() ? 'https://image.tmdb.org/t/p/w500' . $movie->getPoster() : null,
                     'genres' => $genres,
                     'category' => $genres[0] ?? 'Unknown',
-                    'duration' => $row['runtime'],
-                    'director' => $row['director'],
+                    'duration' => $movie->getRuntime(),
+                    'director' => $movie->getDirector(),
                     'castNames' => $castNames,
                 ];
             }
@@ -76,10 +67,8 @@ class MovieController extends AbstractController
             file_put_contents($cacheFile, $jsonContent);
         }
 
-        // Generate ETag from content hash for conditional requests
         $etag = '"' . md5($jsonContent) . '"';
 
-        // Check If-None-Match header for conditional GET
         $ifNoneMatch = $request->headers->get('If-None-Match');
         if ($ifNoneMatch && $ifNoneMatch === $etag) {
             return new JsonResponse(null, 304, [
@@ -98,12 +87,10 @@ class MovieController extends AbstractController
     #[Route('/{id}', name: 'api_movies_show', methods: ['GET'])]
     public function show(string $id, MovieRepository $movieRepository): JsonResponse
     {
-        // Try by ID (if numeric)
         $movie = null;
         if (is_numeric($id)) {
             $movie = $movieRepository->find((int)$id);
             
-            // Also try by TMDB ID via same method if not found
              if (!$movie) {
                  $movie = $movieRepository->findOneBy(['tmdbId' => (int)$id]);
             }
@@ -113,31 +100,50 @@ class MovieController extends AbstractController
             return $this->json(['message' => 'Movie not found'], 404);
         }
 
-        // Full version for detail view
         return $this->json($this->serializeMovie($movie, true));
     }
 
     private function serializeMovie(Movie $movie, bool $full = true): array
     {
+        $genres = [];
+        foreach ($movie->getGenres() as $g) {
+            $genres[] = $g->getGenreName();
+        }
+
+        $platforms = [];
+        foreach ($movie->getPlatforms() as $p) {
+            $platforms[] = $p->getPlatformName();
+        }
+
+        $cast = [];
+        foreach ($movie->getMovieCastings() as $mc) {
+            $cast[] = [
+                'name' => $mc->getCasting()->getName(),
+                'profile_path' => $mc->getCasting()->getProfilePath(),
+                'character' => $mc->getCharacterName(),
+                'order' => $mc->getCastOrder()
+            ];
+        }
+
         $data = [
-            'id' => (string)$movie->getId(), // DB ID
+            'id' => (string)$movie->getId(),
             'tmdbId' => $movie->getTmdbId(),
             'title' => $movie->getTitle(),
             'year' => $movie->getReleaseDate() ? $movie->getReleaseDate()->format('Y') : null,
             'releaseDate' => $movie->getReleaseDate() ? $movie->getReleaseDate()->format('Y-m-d') : null,
             'rating' => $movie->getRating(),
             'imageUrl' => $movie->getPoster() ? 'https://image.tmdb.org/t/p/w500' . $movie->getPoster() : null,
-            'genres' => $movie->getGenres(),
-            'category' => $movie->getGenres()[0] ?? 'Unknown', // Frontend expects single category?
-            'duration' => $movie->getRuntime(), // Real duration from DB, or null
+            'genres' => $genres,
+            'category' => $genres[0] ?? 'Unknown',
+            'duration' => $movie->getRuntime(),
         ];
 
         if ($full) {
             $data['description'] = $movie->getDescription();
             $data['backdropUrl'] = $movie->getBackdrop() ? 'https://image.tmdb.org/t/p/original' . $movie->getBackdrop() : null;
             $data['director'] = $movie->getDirector();
-            $data['cast'] = $movie->getCast();
-            $data['availableOn'] = $movie->getPlatforms();
+            $data['cast'] = $cast;
+            $data['availableOn'] = $platforms;
             $data['trailerKey'] = $movie->getTrailerKey();
         }
 
@@ -153,67 +159,69 @@ class MovieController extends AbstractController
             return $this->json(['message' => 'Non authentifié'], 401);
         }
 
-        // 1. Profil de l'utilisateur
-        $favoriteGenres = $user->getFavoriteGenres() ?? [];
-        $platforms = $user->getPlatforms() ?? [];
-        $rawWatchlist = $user->getWatchlist() ?? [];
-        $watchlistIds = [];
-        // Support du format { toWatch: [...], watched: [...] } ou format tableau simple
-        if (isset($rawWatchlist['toWatch']) || isset($rawWatchlist['watched'])) {
-            $watchlistIds = array_merge($rawWatchlist['toWatch'] ?? [], $rawWatchlist['watched'] ?? []);
-        } else {
-            $watchlistIds = $rawWatchlist;
+        $favoriteGenres = [];
+        foreach ($user->getFavoriteGenres() as $g) {
+            $favoriteGenres[] = $g->getGenreName();
         }
 
-        // 2. Extraire les genres dominants de la watchlist
+        $platforms = [];
+        foreach ($user->getPlatforms() as $p) {
+            $platforms[] = $p->getPlatformName();
+        }
+
+        $watchlistIds = [];
+        foreach ($user->getWatchlists() as $w) {
+            $watchlistIds[] = (string)$w->getMovie()->getId();
+        }
+
         $repository = $entityManager->getRepository(Movie::class);
         $watchlistMovies = [];
         if (!empty($watchlistIds)) {
-            // La watchlist stocke les IDs internes (MySQL), pas les tmdbId
             $watchlistMovies = $repository->findBy(['id' => $watchlistIds]);
         }
         
         $implicitGenresCount = [];
         foreach ($watchlistMovies as $wm) {
-            foreach ($wm->getGenres() ?? [] as $genre) {
-                $implicitGenresCount[$genre] = ($implicitGenresCount[$genre] ?? 0) + 1;
+            foreach ($wm->getGenres() as $genre) {
+                $genreName = $genre->getGenreName();
+                $implicitGenresCount[$genreName] = ($implicitGenresCount[$genreName] ?? 0) + 1;
             }
         }
         
-        // Trier les genres par fréquence décroissante et prendre les 3 meilleurs
         arsort($implicitGenresCount);
         $implicitGenres = array_slice(array_keys($implicitGenresCount), 0, 3);
 
-        // 3. Récupérer tous les films
         $allMovies = $repository->findAll();
         
-        // 4. Calculer le score
         $scoredMovies = [];
         foreach ($allMovies as $movie) {
-            // Exclure les films déjà dans la watchlist (en utilisant l'ID interne)
             if (in_array((string)$movie->getId(), $watchlistIds)) {
                 continue; 
             }
 
             $score = 0;
-            $movieGenres = $movie->getGenres() ?? [];
-            $moviePlatforms = $movie->getPlatforms() ?? [];
+            $movieGenres = [];
+            foreach ($movie->getGenres() as $g) {
+                $movieGenres[] = $g->getGenreName();
+            }
+            
+            $moviePlatforms = [];
+            foreach ($movie->getPlatforms() as $p) {
+                $moviePlatforms[] = $p->getPlatformName();
+            }
 
-            // +3 points par genre favori
             foreach ($favoriteGenres as $fg) {
                 if (in_array($fg, $movieGenres)) {
                     $score += 3;
                 }
             }
 
-            // +2 points par genre implicite
             foreach ($implicitGenres as $ig) {
                 if (in_array($ig, $movieGenres)) {
                     $score += 2;
                 }
             }
 
-            // +5 points par plateforme en commun
             $platformMatch = false;
             foreach ($platforms as $up) {
                 foreach ($moviePlatforms as $mp) {
@@ -227,43 +235,43 @@ class MovieController extends AbstractController
                 $score += 5;
             }
 
-            // Bonus pour la note globale (max +1)
             if ($movie->getRating()) {
                 $score += ($movie->getRating() / 10);
             }
 
-            if ($score >= 2) { // Garder les films avec un minimum de pertinence
+            if ($score >= 2) {
+                // On ajoute un poids aléatoire entre 0.0 et 1.5 pour mélanger
+                // les films qui ont une pertinence similaire à chaque rechargement.
+                $randomWeight = mt_rand(0, 150) / 100;
+                
                 $scoredMovies[] = [
                     'movie' => $movie,
-                    'score' => $score
+                    'score' => $score + $randomWeight
                 ];
             }
         }
 
-        // 5. Trier par score décroissant
         usort($scoredMovies, function ($a, $b) {
             return $b['score'] <=> $a['score'];
         });
 
-        // Prendre les 24 meilleurs
-        $topMovies = array_slice($scoredMovies, 0, 24);
+        $topMovies = array_slice($scoredMovies, 0, 100);
 
-        // 6. Formater la réponse comme /api/movies
         $data = [];
         foreach ($topMovies as $item) {
             /** @var Movie $movie */
             $movie = $item['movie'];
             
-            $castData = $movie->getCast() ?? [];
             $castNames = [];
-            if (is_array($castData)) {
-                foreach ($castData as $actor) {
-                    if (isset($actor['name'])) {
-                        $castNames[] = $actor['name'];
-                    }
-                }
+            foreach ($movie->getMovieCastings() as $mc) {
+                $castNames[] = $mc->getCasting()->getName();
             }
             
+            $genres = [];
+            foreach ($movie->getGenres() as $g) {
+                $genres[] = $g->getGenreName();
+            }
+
             $data[] = [
                 'id' => (string)$movie->getId(),
                 'tmdbId' => $movie->getTmdbId(),
@@ -272,12 +280,12 @@ class MovieController extends AbstractController
                 'releaseDate' => $movie->getReleaseDate() ? $movie->getReleaseDate()->format('Y-m-d') : null,
                 'rating' => (float)$movie->getRating(),
                 'imageUrl' => $movie->getPoster() ? 'https://image.tmdb.org/t/p/w500' . $movie->getPoster() : null,
-                'genres' => $movie->getGenres() ?? [],
-                'category' => $movie->getGenres()[0] ?? 'Unknown',
+                'genres' => $genres,
+                'category' => $genres[0] ?? 'Unknown',
                 'duration' => $movie->getRuntime(),
                 'director' => $movie->getDirector(),
                 'castNames' => $castNames,
-                'score' => $item['score'] // On renvoie le score pour debug ou tri local si besoin
+                'score' => $item['score']
             ];
         }
 

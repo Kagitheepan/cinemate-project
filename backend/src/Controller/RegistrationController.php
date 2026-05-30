@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Platform;
+use App\Entity\Genre;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,8 +40,29 @@ class RegistrationController extends AbstractController
         $user = new User();
         $user->setUsername($data['username']);
         $user->setEmail($data['email']);
-        $user->setPlatforms($data['platforms'] ?? []);
-        $user->setFavoriteGenres($data['favoriteGenres'] ?? []);
+        if (!empty($data['platforms'])) {
+            foreach ($data['platforms'] as $platformName) {
+                $platform = $entityManager->getRepository(Platform::class)->findOneBy(['platformName' => $platformName]);
+                if (!$platform) {
+                    $platform = new Platform();
+                    $platform->setPlatformName($platformName);
+                    $entityManager->persist($platform);
+                }
+                $user->addPlatform($platform);
+            }
+        }
+
+        if (!empty($data['favoriteGenres'])) {
+            foreach ($data['favoriteGenres'] as $genreName) {
+                $genre = $entityManager->getRepository(Genre::class)->findOneBy(['genreName' => $genreName]);
+                if (!$genre) {
+                    $genre = new Genre();
+                    $genre->setGenreName($genreName);
+                    $entityManager->persist($genre);
+                }
+                $user->addFavoriteGenre($genre);
+            }
+        }
 
         // Hash password
         $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
@@ -53,7 +76,7 @@ class RegistrationController extends AbstractController
             'user' => [
                 'username' => $user->getUsername(),
                 'email' => $user->getEmail(),
-                'platforms' => $user->getPlatforms(),
+                'platforms' => $data['platforms'] ?? [],
             ]
         ], 201);
     }

@@ -1,0 +1,36 @@
+@startuml seq_reco
+title Diagramme de Séquence — Recommandations
+
+skinparam shadowing false
+skinparam RoundCorner 5
+
+actor "Utilisateur" as User
+participant "React Frontend" as Front
+participant "Backend Symfony" as API
+database "MySQL" as DB
+
+User -> Front: Accède à l'onglet "Pour vous"
+activate Front
+
+Front -> API: GET /api/recommendations/for-you + JWT
+activate API
+
+API -> DB: Récupération de la Watchlist de l'utilisateur
+activate DB
+DB --> API: Historique des films
+deactivate DB
+
+API -> DB: Récupération du catalogue (Tous les films)
+activate DB
+DB --> API: Films disponibles
+deactivate DB
+
+API -> API: Exécution de l'algorithme de scoring\n(Application des filtres, notes, genres, etc.)
+API -> API: Tri et sélection du Top 100
+
+API --> Front: 200 OK (JSON Films Recommandés)
+deactivate API
+
+Front --> User: Affichage de la grille de films
+deactivate Front
+@enduml

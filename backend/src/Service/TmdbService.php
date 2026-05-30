@@ -48,18 +48,12 @@ class TmdbService
 
     public function discoverStreamingMovies(int $page = 1): array
     {
-        // 7 dernières années
-        $startDate = (new \DateTime('-7 years'))->format('Y-m-d');
-        $endDate = (new \DateTime())->format('Y-m-d');
-
         $response = $this->client->request('GET', self::BASE_URL . '/discover/movie', [
             'query' => [
                 'api_key' => $this->apiKey,
                 'language' => 'fr-FR',
                 'page' => $page,
                 'sort_by' => 'popularity.desc',
-                'primary_release_date.gte' => $startDate,
-                'primary_release_date.lte' => $endDate,
                 'watch_region' => 'FR',
                 'with_watch_monetization_types' => 'flatrate|rent|buy|ads|free', // Seulement dispos en streaming/VOD
             ]

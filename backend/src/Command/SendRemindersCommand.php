@@ -41,13 +41,14 @@ class SendRemindersCommand extends Command
         $emailsSent = 0;
 
         foreach ($users as $user) {
-            $agenda = $user->getAgenda();
+            $agenda = $user->getAgendas();
             if (empty($agenda)) continue;
 
             foreach ($agenda as $event) {
-                $eventStart = new \DateTime($event['start'] ?? '');
-                $eventId = $event['id'] ?? '';
-                $movieTitle = $event['title'] ?? 'Film';
+                /** @var \App\Entity\UserAgenda $event */
+                $eventStart = clone $event->getEventDate();
+                $eventId = (string)($event->getMovie() ? $event->getMovie()->getId() : '');
+                $movieTitle = $event->getMovie() ? $event->getMovie()->getTitle() : 'Film';
 
                 if (empty($eventId)) continue;
 
@@ -76,7 +77,7 @@ class SendRemindersCommand extends Command
                     $notification->setUser($user);
                     $notification->setMessage($message);
                     $notification->setType('reminder');
-                    $notification->setMovieId($event['movieId'] ?? null);
+                    $notification->setMovieId($event->getMovie() ? $event->getMovie()->getId() : null);
                     $notification->setEventId($eventId);
                     $notification->setEventDate($eventStart);
 

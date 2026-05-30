@@ -1,32 +1,41 @@
 @startuml
 left to right direction
+skinparam packageStyle rectangle
 
-actor "User Non Connecté" as Guest
-actor "User Connecté" as User
-actor "Notifications" as Notif
-actor "API JustWatch" as JustWatch
+actor "Utilisateur" as User
+actor "API Streaming Availability" as SA
 actor "API TMDB" as TMDB
+actor "Serveur (Cron)" as Cron
 
-User -|> Guest
+
 
 package "Accès Compte" as PkgAccount
+
+package "RGPD & Confidentialité" as PkgPrivacy
 package "Découverte et Recherche" as PkgSearch
 package "Fiche Film" as PkgMovie
 package "Gestion Personnel" as PkgPersonal
+package "Notifications & Rappels" as PkgNotifs
+
 package "Backend & API" as PkgBackend
-
-Guest --> PkgAccount
-Guest --> PkgSearch
-Guest --> PkgMovie
-
+        
+User --> PkgPrivacy
+User --> PkgSearch
+User --> PkgMovie
 User --> PkgPersonal
+User --> PkgNotifs
 
-PkgPersonal ..> PkgBackend : <<use>>
+PkgMovie ..> PkgAccount : <<include>>
+PkgPersonal ..> PkgAccount : <<include>>
+PkgNotifs ..> PkgAccount : <<include>>
+
 PkgSearch ..> PkgBackend : <<use>>
 PkgMovie ..> PkgBackend : <<use>>
+PkgPersonal ..> PkgBackend : <<use>>
+PkgNotifs ..> PkgBackend : <<use>>
 
-PkgPersonal <-- Notif
-PkgBackend <-- JustWatch
+PkgBackend <-- SA
 PkgBackend <-- TMDB
-
+PkgBackend <-- Cron
+PkgNotifs <-- Cron
 @enduml

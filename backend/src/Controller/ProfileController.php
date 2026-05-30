@@ -8,6 +8,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
+use App\Entity\Platform;
+use App\Entity\Genre;
+use App\Entity\Movie;
+use App\Entity\UserWatchlist;
+use App\Entity\UserAgenda;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/profile')]
@@ -23,13 +28,46 @@ class ProfileController extends AbstractController
             return $this->json(['message' => 'User not found'], 404);
         }
 
+        // Format platforms
+        $platforms = [];
+        foreach ($user->getPlatforms() as $platform) {
+            $platforms[] = $platform->getPlatformName();
+        }
+
+        // Format favorite genres
+        $favoriteGenres = [];
+        foreach ($user->getFavoriteGenres() as $genre) {
+            $favoriteGenres[] = $genre->getGenreName();
+        }
+
+        $watchlist = ['toWatch' => [], 'watched' => []];
+        foreach ($user->getWatchlists() as $userWatchlist) {
+            $movieId = (string) $userWatchlist->getMovie()->getId();
+            if ($userWatchlist->getStatut() === 'vu') {
+                $watchlist['watched'][] = $movieId;
+            } else {
+                $watchlist['toWatch'][] = $movieId;
+            }
+        }
+
+        // Format agenda
+        $agenda = [];
+        foreach ($user->getAgendas() as $userAgenda) {
+            $agenda[] = [
+                'movieId' => (string) $userAgenda->getMovie()->getId(),
+                'title' => $userAgenda->getMovie()->getTitle(),
+                'date' => $userAgenda->getEventDate()->format('Y-m-d'),
+                'timeSlot' => $userAgenda->getTimeSlot()
+            ];
+        }
+
         return $this->json([
             'username' => $user->getUsername(),
             'email' => $user->getEmail(),
-            'platforms' => $user->getPlatforms(),
-            'favoriteGenres' => $user->getFavoriteGenres(),
-            'watchlist' => $user->getWatchlist(),
-            'agenda' => $user->getAgenda(),
+            'platforms' => $platforms,
+            'favoriteGenres' => $favoriteGenres,
+            'watchlist' => $watchlist,
+            'agenda' => $agenda,
         ]);
     }
 
@@ -41,41 +79,122 @@ class ProfileController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (isset($data['platforms'])) {
-            $user->setPlatforms($data['platforms']);
+            // Clear existing
+            foreach ($user->getPlatforms() as $p) {
+                $user->removePlatform($p);
+            }
+            foreach ($data['platforms'] as $platformName) {
+                $platform = $entityManager->getRepository(Platform::class)->findOneBy(['platformName' => $platformName]);
+                if (!$platform) {
+                    $platform = new Platform();
+                    $platform->setPlatformName($platformName);
+                    $entityManager->persist($platform);
+                }
+                $user->addPlatform($platform);
+            }
         }
 
         if (isset($data['favoriteGenres'])) {
-            $user->setFavoriteGenres($data['favoriteGenres']);
+            // Clear existing
+            foreach ($user->getFavoriteGenres() as $g) {
+                $user->removeFavoriteGenre($g);
+            }
+            foreach ($data['favoriteGenres'] as $genreName) {
+                $genre = $entityManager->getRepository(Genre::class)->findOneBy(['genreName' => $genreName]);
+                if (!$genre) {
+                    $genre = new Genre();
+                    $genre->setGenreName($genreName);
+                    $entityManager->persist($genre);
+                }
+                $user->addFavoriteGenre($genre);
+            }
         }
 
-
-        
         if (isset($data['watchlist'])) {
-             $user->setWatchlist($data['watchlist']);
+            // Clear existing
+            foreach ($user->getWatchlists() as $w) {
+                $user->removeWatchlistRelation($w);
+                $entityManager->remove($w);
+            }
+            
+            // Watchlist can be an array of IDs or an object {toWatch: [], watched: []}
+            if (is_array($data['watchlist']) && !isset($data['watchlist']['toWatch']) && !isset($data['watchlist']['watched'])) {
+                foreach ($data['watchlist'] as $movieId) {
+                    $movie = $entityManager->getRepository(Movie::class)->find((int)$movieId);
+                    if ($movie) {
+                        $uw = new UserWatchlist();
+                        $uw->setUser($user);
+                        $uw->setMovie($movie);
+                        $uw->setStatut('a_voir');
+                        $entityManager->persist($uw);
+                        $user->addWatchlistRelation($uw);
+                    }
+                }
+            } else {
+                if (isset($data['watchlist']['toWatch'])) {
+                    foreach ($data['watchlist']['toWatch'] as $movieId) {
+                        $movie = $entityManager->getRepository(Movie::class)->find((int)$movieId);
+                        if ($movie) {
+                            $uw = new UserWatchlist();
+                            $uw->setUser($user);
+                            $uw->setMovie($movie);
+                            $uw->setStatut('a_voir');
+                            $entityManager->persist($uw);
+                            $user->addWatchlistRelation($uw);
+                        }
+                    }
+                }
+                if (isset($data['watchlist']['watched'])) {
+                    foreach ($data['watchlist']['watched'] as $movieId) {
+                        $movie = $entityManager->getRepository(Movie::class)->find((int)$movieId);
+                        if ($movie) {
+                            $uw = new UserWatchlist();
+                            $uw->setUser($user);
+                            $uw->setMovie($movie);
+                            $uw->setStatut('vu');
+                            $entityManager->persist($uw);
+                            $user->addWatchlistRelation($uw);
+                        }
+                    }
+                }
+            }
         }
 
         if (isset($data['agenda'])) {
-             $user->setAgenda($data['agenda']);
+            // Clear existing
+            foreach ($user->getAgendas() as $a) {
+                $user->removeAgenda($a);
+                $entityManager->remove($a);
+            }
+            foreach ($data['agenda'] as $agendaItem) {
+                if (isset($agendaItem['movieId'])) {
+                    $movie = $entityManager->getRepository(Movie::class)->find((int)$agendaItem['movieId']);
+                    if ($movie) {
+                        $ua = new UserAgenda();
+                        $ua->setUser($user);
+                        $ua->setMovie($movie);
+                        if (isset($agendaItem['date'])) {
+                            $ua->setEventDate(new \DateTime($agendaItem['date']));
+                        } else {
+                            $ua->setEventDate(new \DateTime());
+                        }
+                        if (isset($agendaItem['timeSlot'])) {
+                            $ua->setTimeSlot($agendaItem['timeSlot']);
+                        }
+                        $entityManager->persist($ua);
+                        $user->addAgenda($ua);
+                    }
+                }
+            }
         }
         
-        // Optional: Update email/username if needed
         if (isset($data['email'])) {
              $user->setEmail($data['email']);
         }
 
         $entityManager->flush();
 
-        return $this->json([
-            'message' => 'Profile updated successfully',
-            'user' => [
-                'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
-                'platforms' => $user->getPlatforms(),
-                'favoriteGenres' => $user->getFavoriteGenres(),
-                'watchlist' => $user->getWatchlist(),
-                'agenda' => $user->getAgenda(),
-            ]
-        ]);
+        return $this->show(); // Re-use the show method to return the formatted data
     }
 
     #[Route('', name: 'api_profile_delete', methods: ['DELETE'])]
@@ -88,21 +207,7 @@ class ProfileController extends AbstractController
             return $this->json(['message' => 'User not found'], 404);
         }
 
-        // Create a DeletedUser record
-        $deletedUser = new \App\Entity\DeletedUser();
-        $deletedUser->setOriginalId($user->getId());
-        $deletedUser->setUsername($user->getUsername());
-        $deletedUser->setEmail($user->getEmail());
-        $deletedUser->setDeletedAt(new \DateTime());
-
-        // We could also store more data if we added those columns to DeletedUser,
-        // but for now we'll stick to the requested basic info.
-
-        $entityManager->persist($deletedUser);
-        
-        // Hard delete the original User
         $entityManager->remove($user);
-        
         $entityManager->flush();
 
         return $this->json(['message' => 'Account deleted successfully']);

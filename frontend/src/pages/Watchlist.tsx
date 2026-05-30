@@ -297,7 +297,7 @@ const Watchlist = () => {
                                 items={toWatchMovies.map(m => m.id)} 
                                 strategy={verticalListSortingStrategy}
                             >
-                                <div className="space-y-6 px-2 flex-grow min-h-[200px]" id="toWatchContainer">
+                                <DroppableContainer id="toWatchContainer" className="space-y-6 px-2 flex-grow min-h-[200px]">
                                     {toWatchMovies.map((movie) => (
                                         <div key={movie.id} className="flex flex-col space-y-3">
                                             <SortableItem id={movie.id}>
@@ -322,7 +322,7 @@ const Watchlist = () => {
                                             </div>
                                         </div>
                                     ))}
-                                </div>
+                                </DroppableContainer>
                             </SortableContext>
                             
                             <div className="flex justify-center mt-auto pt-4">

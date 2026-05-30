@@ -2,46 +2,40 @@
 left to right direction
 skinparam packageStyle rectangle
 
-actor "User Connecté" as User
-actor "Notifications" as Notif
+actor "Utilisateur Connecté" as User
 
 package "Gestion Personnel" {
-    usecase "Recevoir Notif\n(Rappel)" as UC_Notif
-    usecase "Consulter Historique\nde films" as UC_History
-    usecase "Se Déconnecter" as UC_Logout
+    usecase "Consulter ses notifications" as UC_NotifView
     
     usecase "Gérer sa Watchlist" as UC_Watchlist
-    usecase "Ajouter un film" as UC_AddFilm
+    usecase "Ajouter un film (à voir)" as UC_AddFilm
+    usecase "Marquer comme vu" as UC_MarkWatched
     usecase "Retirer un film" as UC_RemoveFilm
     
     usecase "Gérer son agenda" as UC_Agenda
-    usecase "Sélectionner Horaire\n+ Film" as UC_AddAgenda
+    usecase "Sélectionner Horaire + Film" as UC_AddAgenda
     usecase "Modifier Horaire/Film" as UC_ModAgenda
     usecase "Supprimer Horaire/Film" as UC_DelAgenda
     
     usecase "Modifier Préférences" as UC_Prefs
-    usecase "Genres" as UC_PrefGenres
-    usecase "Plateformes" as UC_PrefPlats
+    usecase "Gérer Genres favoris" as UC_PrefGenres
+    usecase "Gérer Plateformes" as UC_PrefPlats
     
-    usecase "Recommandations\npersonnalisées" as UC_Reco
+    usecase "Recommandations personnalisées" as UC_Reco
+    usecase "Découvrir un film (Roulette)" as UC_Roulette
 }
 
-usecase "Récupérer recommandations basiques" as UC_RecBasics
+usecase "Scoring Backend" as UC_ScoreBackend
 
-User --> UC_History
-User --> UC_Logout
 User --> UC_Watchlist
 User --> UC_Agenda
 User --> UC_Prefs
 User --> UC_Reco
-User --> UC_Notif
-
-Notif --> UC_Notif
-
-UC_History ..> UC_AddFilm : <<include>>
-UC_History ..> UC_RemoveFilm : <<include>>
+User --> UC_NotifView
+User --> UC_Roulette
 
 UC_Watchlist ..> UC_AddFilm : <<include>>
+UC_Watchlist ..> UC_MarkWatched : <<include>>
 UC_Watchlist ..> UC_RemoveFilm : <<include>>
 
 UC_Agenda ..> UC_AddAgenda : <<include>>
@@ -51,6 +45,6 @@ UC_Agenda ..> UC_DelAgenda : <<include>>
 UC_Prefs ..> UC_PrefGenres : <<include>>
 UC_Prefs ..> UC_PrefPlats : <<include>>
 
-UC_Reco ..> UC_RecBasics : <<include>>
+UC_Reco ..> UC_ScoreBackend : <<include>>
 
 @enduml
