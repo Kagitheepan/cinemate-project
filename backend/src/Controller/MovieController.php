@@ -117,10 +117,11 @@ class MovieController extends AbstractController
 
         $cast = [];
         foreach ($movie->getMovieCastings() as $mc) {
+            $profilePath = $mc->getCasting()->getProfilePath();
             $cast[] = [
                 'name' => $mc->getCasting()->getName(),
-                'profile_path' => $mc->getCasting()->getProfilePath(),
-                'character' => $mc->getCharacterName(),
+                'imageUrl' => $profilePath ? 'https://image.tmdb.org/t/p/w200' . $profilePath : null,
+                'role' => $mc->getCharacterName(),
                 'order' => $mc->getCastOrder()
             ];
         }
