@@ -53,10 +53,17 @@ class ProfileController extends AbstractController
         // Format agenda
         $agenda = [];
         foreach ($user->getAgendas() as $userAgenda) {
+            $start = new \DateTime($userAgenda->getEventDate()->format('c'));
+            $end = (clone $start)->modify('+2 hours');
+
             $agenda[] = [
+                'id' => uniqid(),
                 'movieId' => (string) $userAgenda->getMovie()->getId(),
                 'title' => $userAgenda->getMovie()->getTitle(),
-                'date' => $userAgenda->getEventDate()->format('Y-m-d'),
+                'start' => $start->format('c'),
+                'end' => $end->format('c'),
+                // Conservation pour compatibilité
+                'date' => $start->format('Y-m-d'),
                 'timeSlot' => $userAgenda->getTimeSlot()
             ];
         }
@@ -173,7 +180,9 @@ class ProfileController extends AbstractController
                         $ua = new UserAgenda();
                         $ua->setUser($user);
                         $ua->setMovie($movie);
-                        if (isset($agendaItem['date'])) {
+                        if (isset($agendaItem['start'])) {
+                            $ua->setEventDate(new \DateTime($agendaItem['start']));
+                        } elseif (isset($agendaItem['date'])) {
                             $ua->setEventDate(new \DateTime($agendaItem['date']));
                         } else {
                             $ua->setEventDate(new \DateTime());
