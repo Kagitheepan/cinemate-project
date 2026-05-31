@@ -85,8 +85,9 @@ class SendRemindersCommand extends Command
                     $emailAddress = $user->getEmail();
                     if ($emailAddress) {
                         try {
+                            $fromAddress = $_ENV['MAILER_FROM'] ?? 'noreply@cinemate.app';
                             $email = (new Email())
-                                ->from('noreply@cinemate.app')
+                                ->from($fromAddress)
                                 ->to($emailAddress)
                                 ->subject("🎬 Cinemate - Rappel : {$movieTitle}")
                                 ->html($this->buildEmailHtml($movieTitle, $eventStart, $timeLabel, $user->getUsername()));
