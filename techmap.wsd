@@ -26,9 +26,9 @@ skinparam database {
 }
 
 ' Définition des éléments avec de grandes icônes (scale=3 ou 4) et de la couleur
-rectangle "<color:#555555><$users{scale=4}></color>\n\n**Utilisateurs**\n(Humains)" as Users
+rectangle "<color:#555555><$users{scale=4}></color>\n\n**Utilisateurs**\n(Humains)" as Users #transparent;line:transparent
 
-rectangle "=== Front-end ===\n\n<color:#61DAFB><$react{scale=4}></color>\n\n**React JS**\n(PWA / Client Web)" as Front
+rectangle "=== Front-end ===\n\n<color:#61DAFB><$react{scale=4}></color>\n\n**React JS**\n(Client Web)" as Front
 
 rectangle "=== Back-end ===\n\n<color:#000000><$symfony{scale=4}></color>\n\n**Symfony 6**\n(API REST)" as API
 
