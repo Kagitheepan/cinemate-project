@@ -168,31 +168,59 @@ class ProfileController extends AbstractController
         }
 
         if (isset($data['agenda'])) {
-            // Clear existing
-            foreach ($user->getAgendas() as $a) {
-                $user->removeAgenda($a);
-                $entityManager->remove($a);
-            }
+            $existingAgendas = $user->getAgendas();
+            $newMovieIds = [];
+
             foreach ($data['agenda'] as $agendaItem) {
-                if (isset($agendaItem['movieId'])) {
-                    $movie = $entityManager->getRepository(Movie::class)->find((int)$agendaItem['movieId']);
+                if (!isset($agendaItem['movieId'])) continue;
+                
+                $movieId = (int)$agendaItem['movieId'];
+                $newMovieIds[] = $movieId;
+
+                // Chercher si cet agenda existe déjà
+                $existing = null;
+                foreach ($existingAgendas as $a) {
+                    if ($a->getMovie()->getId() === $movieId) {
+                        $existing = $a;
+                        break;
+                    }
+                }
+
+                $eventDate = new \DateTime();
+                if (isset($agendaItem['start'])) {
+                    $eventDate = new \DateTime($agendaItem['start']);
+                } elseif (isset($agendaItem['date'])) {
+                    $eventDate = new \DateTime($agendaItem['date']);
+                }
+
+                if ($existing) {
+                    // Mettre à jour l'existant
+                    $existing->setEventDate($eventDate);
+                    if (isset($agendaItem['timeSlot'])) {
+                        $existing->setTimeSlot($agendaItem['timeSlot']);
+                    }
+                } else {
+                    // Créer un nouveau
+                    $movie = $entityManager->getRepository(Movie::class)->find($movieId);
                     if ($movie) {
                         $ua = new UserAgenda();
                         $ua->setUser($user);
                         $ua->setMovie($movie);
-                        if (isset($agendaItem['start'])) {
-                            $ua->setEventDate(new \DateTime($agendaItem['start']));
-                        } elseif (isset($agendaItem['date'])) {
-                            $ua->setEventDate(new \DateTime($agendaItem['date']));
-                        } else {
-                            $ua->setEventDate(new \DateTime());
-                        }
+                        $ua->setEventDate($eventDate);
                         if (isset($agendaItem['timeSlot'])) {
                             $ua->setTimeSlot($agendaItem['timeSlot']);
                         }
                         $entityManager->persist($ua);
                         $user->addAgenda($ua);
                     }
+                }
+            }
+
+            // Supprimer ceux qui ne sont plus dans la liste
+            foreach ($existingAgendas as $a) {
+                if (!in_array($a->getMovie()->getId(), $newMovieIds)) {
+                    $user->removeAgenda($a);
+                    $entityManager->remove($a);
                 }
             }
         }
