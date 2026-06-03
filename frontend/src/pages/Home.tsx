@@ -87,7 +87,7 @@ const Home = () => {
     const displayedMovies = isFiltering ? filteredMovies : filteredMovies.slice(0, 6);
 
     return (
-        <div className="flex-grow pt-24 pb-12 transition-all duration-500 ease-in-out">
+        <div className="flex-grow pt-24 pb-12 transition-colors duration-500 ease-in-out">
             <TimeModal 
                 isOpen={isTimeModalOpen}
                 onConfirm={handleTimeConfirm}
