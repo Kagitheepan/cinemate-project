@@ -9,9 +9,10 @@ interface MovieCardProps {
     imageUrl?: string;
     rating?: number;
     year?: string;
+    priority?: boolean;
 }
 
-const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "2024" }: MovieCardProps) => {
+const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "2024", priority = false }: MovieCardProps) => {
     const { fetchMovieDetails } = useMovies();
 
     const handlePrefetch = () => {
@@ -23,7 +24,7 @@ const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "202
         <Link 
             to={`/movie/${id}`} 
             onMouseEnter={handlePrefetch}
-            className="block group relative rounded-xl h-[450px] w-full overflow-hidden transition-all duration-300 transform hover:scale-[1.03] hover:shadow-2xl hover:shadow-purple-500/20 bg-white dark:bg-neutral-900 border border-black/5 dark:border-white/5"
+            className="block group relative rounded-xl h-[450px] w-full overflow-hidden transition duration-300 transform hover:scale-[1.03] hover:shadow-2xl hover:shadow-purple-500/20 bg-white dark:bg-neutral-900 border border-black/5 dark:border-white/5"
         >
             {/* Image / Background */}
             <div className="absolute inset-0 w-full h-full bg-gray-100 dark:bg-neutral-800">
@@ -31,7 +32,7 @@ const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "202
                     <img
                         src={imageUrl}
                         alt={title}
-                        loading="lazy"
+                        {...(priority ? { fetchPriority: "high" } : { loading: "lazy" })}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                 ) : (
@@ -72,7 +73,7 @@ const MovieCard = ({ id, title, description, imageUrl, rating = 7.5, year = "202
                     {description}
                 </p>
 
-                <div className="w-full py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-lg text-white font-medium text-sm transition-all duration-200 text-center">
+                <div className="w-full py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-lg text-white font-medium text-sm transition-colors duration-200 text-center">
                     Voir détails
                 </div>
             </div>
