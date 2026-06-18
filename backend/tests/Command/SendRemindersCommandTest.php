@@ -68,4 +68,51 @@ class SendRemindersCommandTest extends TestCase
         self::assertStringContainsString('Email envoyé à alice@example.com pour "Inception"', $output);
         self::assertStringContainsString('Terminé : 1 notification(s) créée(s), 1 email(s) envoyé(s)', $output);
     }
+    public function testExecuteHandlesMailerException(): void
+    {
+        $user = new User();
+        $user->setUsername('bob')->setEmail('bob@example.com');
+        $reflection = new \ReflectionClass(User::class);
+        $property = $reflection->getProperty('id');
+        $property->setAccessible(true);
+        $property->setValue($user, 43);
+
+        $agenda = new \App\Entity\UserAgenda();
+        $agenda->setEventDate((new \DateTime())->modify('+12 hours'));
+        
+        $movie = new \App\Entity\Movie();
+        $movie->setTitle('Matrix');
+        $movieReflection = new \ReflectionClass(\App\Entity\Movie::class);
+        $movieProperty = $movieReflection->getProperty('id');
+        $movieProperty->setAccessible(true);
+        $movieProperty->setValue($movie, 102);
+        
+        $agenda->setMovie($movie);
+        $user->addAgenda($agenda);
+
+        $userRepo = $this->createMock(EntityRepository::class);
+        $userRepo->method('findAll')->willReturn([$user]);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getRepository')->with(User::class)->willReturn($userRepo);
+        
+        $notifRepo = $this->createMock(NotificationRepository::class);
+        $notifRepo->method('existsForEvent')->with(43, '102')->willReturn(false);
+
+        $mailer = $this->createMock(MailerInterface::class);
+        $mailer->expects(self::once())
+            ->method('send')
+            ->willThrowException(new \Exception('SMTP Error'));
+
+        $command = new SendRemindersCommand($em, $notifRepo, $mailer);
+        $application = new Application();
+        $application->add($command);
+
+        $commandTester = new CommandTester($application->find('app:send-reminders'));
+        $commandTester->execute([]);
+
+        $output = $commandTester->getDisplay();
+        self::assertStringContainsString('SMTP Error', $output);
+        self::assertStringContainsString('0 email(s)', $output);
+    }
 }

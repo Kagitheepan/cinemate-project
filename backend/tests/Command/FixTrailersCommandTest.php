@@ -28,7 +28,22 @@ class FixTrailersCommandTest extends TestCase
 
         $tmdb = $this->createMock(TmdbService::class);
         $tmdb->method('getVideos')->with(101)->willReturn([
-            ['site' => 'YouTube', 'type' => 'Trailer', 'iso_639_1' => 'fr', 'key' => 'FR_KEY_123']
+            ['site' => 'Vimeo'],
+            ['site' => 'YouTube', 'type' => 'Featurette', 'key' => 'ANY_VIDEO'],
+            ['site' => 'YouTube', 'type' => 'Teaser', 'iso_639_1' => 'it', 'key' => 'ANY_TEASER'],
+            ['site' => 'YouTube', 'type' => 'Teaser', 'iso_639_1' => 'en', 'key' => 'EN_TEASER'],
+            ['site' => 'YouTube', 'type' => 'Teaser', 'iso_639_1' => 'fr', 'key' => 'FR_TEASER'],
+            ['site' => 'YouTube', 'type' => 'Trailer', 'iso_639_1' => 'it', 'key' => 'ANY_TRAILER'],
+            ['site' => 'YouTube', 'type' => 'Trailer', 'iso_639_1' => 'en', 'key' => 'EN_TRAILER'],
+            ['site' => 'YouTube', 'type' => 'Trailer', 'iso_639_1' => 'fr', 'key' => 'FR_TRAILER'],
+            // Duplicates to trigger the !$frTrailer false conditions
+            ['site' => 'YouTube', 'type' => 'Trailer', 'iso_639_1' => 'fr', 'key' => 'FR_TRAILER_2'],
+            ['site' => 'YouTube', 'type' => 'Trailer', 'iso_639_1' => 'en', 'key' => 'EN_TRAILER_2'],
+            ['site' => 'YouTube', 'type' => 'Trailer', 'iso_639_1' => 'it', 'key' => 'ANY_TRAILER_2'],
+            ['site' => 'YouTube', 'type' => 'Teaser', 'iso_639_1' => 'fr', 'key' => 'FR_TEASER_2'],
+            ['site' => 'YouTube', 'type' => 'Teaser', 'iso_639_1' => 'en', 'key' => 'EN_TEASER_2'],
+            ['site' => 'YouTube', 'type' => 'Teaser', 'iso_639_1' => 'it', 'key' => 'ANY_TEASER_2'],
+            ['site' => 'YouTube', 'type' => 'Featurette', 'key' => 'ANY_VIDEO_2'],
         ]);
 
         $command = new FixTrailersCommand($em, $tmdb);
@@ -39,7 +54,7 @@ class FixTrailersCommandTest extends TestCase
         $commandTester->execute([]);
 
         $commandTester->assertCommandIsSuccessful();
-        self::assertSame('FR_KEY_123', $movie->getTrailerKey());
+        self::assertSame('FR_TRAILER', $movie->getTrailerKey());
         self::assertStringContainsString('Successfully fixed 1 trailers', $commandTester->getDisplay());
     }
 }

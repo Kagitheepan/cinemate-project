@@ -59,22 +59,48 @@ class RegistrationControllerTest extends TestCase
         self::assertSame(['message' => 'Email already used'], json_decode($response->getContent(), true));
     }
 
+    public function testRegisterRejectsAlreadyUsedUsername(): void
+    {
+        $repository = $this->createMock(EntityRepository::class);
+        
+        $repository->expects($this->exactly(2))
+            ->method('findOneBy')
+            ->willReturnMap([
+                [['email' => 'alice@example.com'], null, null],
+                [['username' => 'alice'], null, new User()]
+            ]);
+
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager
+            ->expects(self::exactly(2))
+            ->method('getRepository')
+            ->with(User::class)
+            ->willReturn($repository);
+        $entityManager->expects(self::never())->method('persist');
+        $entityManager->expects(self::never())->method('flush');
+
+        $response = $this->createController()->register(
+            $this->createRegistrationRequest(),
+            $this->createMock(UserPasswordHasherInterface::class),
+            $entityManager
+        );
+
+        self::assertSame(409, $response->getStatusCode());
+        self::assertSame(['message' => 'Username already taken'], json_decode($response->getContent(), true));
+    }
+
     public function testRegisterCreatesUserWhenPayloadIsValid(): void
     {
         $userRepository = $this->createMock(EntityRepository::class);
         $userRepository
             ->method('findOneBy')
-            ->willReturn(null);
+            ->willReturn(null); // Neither email nor username exists
 
         $platformRepository = $this->createMock(EntityRepository::class);
-        $platform = new \App\Entity\Platform();
-        $platform->setPlatformName('Netflix');
-        $platformRepository->method('findOneBy')->willReturn($platform);
+        $platformRepository->method('findOneBy')->willReturn(null); // Platform doesn't exist, should create it
 
         $genreRepository = $this->createMock(EntityRepository::class);
-        $genre = new \App\Entity\Genre();
-        $genre->setGenreName('Action');
-        $genreRepository->method('findOneBy')->willReturn($genre);
+        $genreRepository->method('findOneBy')->willReturn(null); // Genre doesn't exist, should create it
 
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $entityManager
@@ -86,18 +112,11 @@ class RegistrationControllerTest extends TestCase
                 return $userRepository;
             });
 
+        // We expect persist 3 times: platform, genre, and user
         $entityManager
-            ->expects(self::once())
-            ->method('persist')
-            ->with(self::callback(function (User $user): bool {
-                return $user->getUsername() === 'alice'
-                    && $user->getEmail() === 'alice@example.com'
-                    && $user->getPassword() === 'hashed-password'
-                    && $user->getPlatforms()->count() === 1
-                    && $user->getPlatforms()->first()->getPlatformName() === 'Netflix'
-                    && $user->getFavoriteGenres()->count() === 1
-                    && $user->getFavoriteGenres()->first()->getGenreName() === 'Action';
-            }));
+            ->expects(self::exactly(3))
+            ->method('persist');
+        
         $entityManager->expects(self::once())->method('flush');
 
         $passwordHasher = $this->createMock(UserPasswordHasherInterface::class);

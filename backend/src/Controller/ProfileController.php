@@ -118,51 +118,52 @@ class ProfileController extends AbstractController
         }
 
         if (isset($data['watchlist'])) {
-            // Clear existing
-            foreach ($user->getWatchlists() as $w) {
-                $user->removeWatchlistRelation($w);
-                $entityManager->remove($w);
-            }
+            $existingWatchlists = $user->getWatchlists();
             
-            // Watchlist can be an array of IDs or an object {toWatch: [], watched: []}
+            // Build an array of desired state: movieId => status
+            $desiredState = [];
             if (is_array($data['watchlist']) && !isset($data['watchlist']['toWatch']) && !isset($data['watchlist']['watched'])) {
                 foreach ($data['watchlist'] as $movieId) {
-                    $movie = $entityManager->getRepository(Movie::class)->find((int)$movieId);
-                    if ($movie) {
-                        $uw = new UserWatchlist();
-                        $uw->setUser($user);
-                        $uw->setMovie($movie);
-                        $uw->setStatut('a_voir');
-                        $entityManager->persist($uw);
-                        $user->addWatchlistRelation($uw);
-                    }
+                    $desiredState[(int)$movieId] = 'a_voir';
                 }
             } else {
                 if (isset($data['watchlist']['toWatch'])) {
                     foreach ($data['watchlist']['toWatch'] as $movieId) {
-                        $movie = $entityManager->getRepository(Movie::class)->find((int)$movieId);
-                        if ($movie) {
-                            $uw = new UserWatchlist();
-                            $uw->setUser($user);
-                            $uw->setMovie($movie);
-                            $uw->setStatut('a_voir');
-                            $entityManager->persist($uw);
-                            $user->addWatchlistRelation($uw);
-                        }
+                        $desiredState[(int)$movieId] = 'a_voir';
                     }
                 }
                 if (isset($data['watchlist']['watched'])) {
                     foreach ($data['watchlist']['watched'] as $movieId) {
-                        $movie = $entityManager->getRepository(Movie::class)->find((int)$movieId);
-                        if ($movie) {
-                            $uw = new UserWatchlist();
-                            $uw->setUser($user);
-                            $uw->setMovie($movie);
-                            $uw->setStatut('vu');
-                            $entityManager->persist($uw);
-                            $user->addWatchlistRelation($uw);
-                        }
+                        $desiredState[(int)$movieId] = 'vu';
                     }
+                }
+            }
+
+            // Update existing or remove them if not in desired state
+            foreach ($existingWatchlists as $existing) {
+                $movieId = $existing->getMovie()->getId();
+                if (isset($desiredState[$movieId])) {
+                    // Update status if it changed
+                    $existing->setStatut($desiredState[$movieId]);
+                    // Remove from desiredState so we only have NEW ones left to insert
+                    unset($desiredState[$movieId]);
+                } else {
+                    // Not in the new state, remove it
+                    $user->removeWatchlistRelation($existing);
+                    $entityManager->remove($existing);
+                }
+            }
+
+            // Add remaining desired states as new Watchlist records
+            foreach ($desiredState as $movieId => $status) {
+                $movie = $entityManager->getRepository(Movie::class)->find($movieId);
+                if ($movie) {
+                    $uw = new UserWatchlist();
+                    $uw->setUser($user);
+                    $uw->setMovie($movie);
+                    $uw->setStatut($status);
+                    $entityManager->persist($uw);
+                    $user->addWatchlistRelation($uw);
                 }
             }
         }
