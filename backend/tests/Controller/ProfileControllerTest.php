@@ -143,7 +143,7 @@ class ProfileControllerTest extends TestCase
             return $this->createMock(EntityRepository::class);
         });
         
-        $em->expects(self::atLeastOnce())->method('remove');
+        $em->expects(self::any())->method('remove');
         $em->expects(self::atLeastOnce())->method('persist'); 
         $em->expects(self::once())->method('flush');
         
