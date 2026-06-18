@@ -27,3 +27,37 @@ backend/compose.override.yaml
 frontend/dist/
 frontend/coverage/
 frontend/.env.local
+
+# --- CACHE & RAPPORTS BACKEND SUPPLEMENTAIRES ---
+backend/bin/.phpunit.result.cache
+backend/coverage_html/
+
+# --- PRESENTATIONS & DOCUMENTS LOURDS ---
+*.pdf
+*.pptx
+
+# --- DOSSIERS TEMPORAIRES & MAQUETTES ---
+_template_images/
+_tmp_content/
+_tmp_hexagons/
+_tmp_template/
+img_dp/
+maquettes/
+
+# --- SCRIPTS UTILITAIRES & FICHIERS GENERES ---
+*.py
+plantuml.jar
+extracted_slides.txt
+extracted_text.txt
+extracted_v2.txt
+extracted_v4.txt
+extracted_v6.txt
+pdf_extract.txt
+temp_check.txt
+temp_agile.md
+template_slide1.xml
+restructure.js
+render_404.html
+
+# --- BROUILLONS MARKDOWN ---
+Dossier_Projet_Cinemate*.md
