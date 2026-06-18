@@ -46,12 +46,7 @@ class LoginSubscriber implements EventSubscriberInterface
         }
 
         $log = new ConnectionLog();
-        
-        if (method_exists($user, 'getUserIdentifier')) {
-            $log->setUsername($user->getUserIdentifier());
-        } elseif (method_exists($user, 'getUsername')) {
-            $log->setUsername($user->getUsername());
-        }
+        $log->setUsername($user->getUserIdentifier());
 
         $log->setConnectedAt(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
 

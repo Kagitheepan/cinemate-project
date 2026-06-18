@@ -17,7 +17,11 @@ skinparam rectangle {
 }
 
 ' ACTEURS
-actor "<color:#555555><$user{scale=3}></color>\nVisiteur" as Visiteur
+skinparam rectangle<<centered>> {
+    DefaultTextAlignment center
+    TextAlignment center
+}
+rectangle "<color:#555555><$user{scale=3}></color>\nVisiteur" as Visiteur <<centered>> #transparent;line:transparent
 
 
 ' SYSTÈME PRINCIPAL

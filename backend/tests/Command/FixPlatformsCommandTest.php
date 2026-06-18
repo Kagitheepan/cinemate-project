@@ -67,13 +67,21 @@ class FixPlatformsCommandTest extends TestCase
 
         $tmdb = $this->createMock(TmdbService::class);
         $tmdb->method('getWatchProviders')->willReturnMap([
-            [101, ['FR' => ['flatrate' => [['provider_name' => 'Netflix']]]]],
-            [102, []],
+            [101, ['FR' => [
+                'flatrate' => [['provider_name' => 'Netflix']],
+                'ads' => [['provider_name' => 'Pluto TV']],
+            ]]],
+            [102, ['FR' => ['rent' => [['provider_name' => 'VOD']]]]],
             [103, []],
         ]);
         
         $tmdb->method('getMovieDetails')->willReturnCallback(function($id) {
-            if ($id === 103) return ['production_companies' => [['name' => 'Marvel Studios']]];
+            if ($id === 103) return ['production_companies' => [
+                ['name' => 'Marvel Studios'],
+                ['name' => 'Netflix'],
+                ['name' => 'Amazon Studios'],
+                ['name' => 'Apple']
+            ]];
             return [];
         });
 
