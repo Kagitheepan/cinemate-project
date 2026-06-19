@@ -108,36 +108,53 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
         
-        const fetchMovies = async () => {
-            try {
-                const response = await api.get('/movies', { signal: controller.signal });
-                if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-                    const apiMovies = response.data.map(mapApiMovie);
-                    setMovies(apiMovies);
-                    setCachedMovies(apiMovies);
-                } else {
-                    // Fallback to mock if API returns empty
-                    console.log("API returned empty, using mock data");
-                    const converted = convertMockMovies();
-                    setMovies(converted);
+        const loadMovies = async () => {
+            let success = false;
+            let attempts = 0;
+            const maxAttempts = 10;
+            const retryDelay = 2000;
+
+            while (!success && attempts < maxAttempts && !controller.signal.aborted) {
+                attempts++;
+                try {
+                    const response = await api.get('/movies', { signal: controller.signal });
+                    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+                        const apiMovies = response.data.map(mapApiMovie);
+                        setMovies(apiMovies);
+                        setCachedMovies(apiMovies);
+                        success = true;
+                    } else {
+                        console.log(`API returned empty. Attempt ${attempts}/${maxAttempts}`);
+                        if (attempts < maxAttempts) {
+                            await new Promise(resolve => setTimeout(resolve, retryDelay));
+                        }
+                    }
+                } catch (err: any) {
+                    if (err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
+                        return; // Ignore intentional aborts
+                    }
+                    console.error(`Failed to fetch movies from API. Attempt ${attempts}/${maxAttempts}`, err);
+                    if (attempts < maxAttempts) {
+                        await new Promise(resolve => setTimeout(resolve, retryDelay));
+                    }
                 }
-            } catch (err: any) {
-                if (err.name === 'AbortError' || err.code === 'ERR_CANCELED') {
-                    return; // Ignore intentional aborts
-                }
-                console.error("Failed to fetch movies from API, using mock data", err);
-                // Only fall back to mock if we have no cache
+            }
+
+            if (!success && !controller.signal.aborted) {
+                console.log("Could not load real movies after retries, using mock data");
                 if (!cached) {
                     const converted = convertMockMovies();
                     setMovies(converted);
                 }
                 setError("Mode déconnecté / Mock Data");
-            } finally {
+            }
+            
+            if (!controller.signal.aborted) {
                 setIsLoading(false);
             }
         };
 
-        fetchMovies();
+        loadMovies();
         
         return () => {
             controller.abort();
