@@ -5,8 +5,7 @@
 Thumbs.db
 *.log
 
-# --- DOCKER & ENVIRONNEMENT (Sécurité) ---
-# On ignore les fichiers de surcharge locale et les variables d'env réelles
+# --- DOCKER & ENVIRONNEMENT ---
 docker-compose.override.yml
 .env.local
 .env.*.local
@@ -28,7 +27,7 @@ frontend/dist/
 frontend/coverage/
 frontend/.env.local
 
-# --- CACHE & RAPPORTS BACKEND SUPPLEMENTAIRES ---
+# --- CACHE & RAPPORTS BACKEND ---
 backend/bin/.phpunit.result.cache
 backend/coverage_html/
 

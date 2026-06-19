@@ -1,3 +1,10 @@
 **/node_modules/
 frontend/node_modules
 backend/vendor
+
+# --- PREVENTION FUITES DE SECRETS ---
+.env.local
+.env.*.local
+**/*.pem
+.git/
+.github/

@@ -32,8 +32,12 @@ class MovieController extends AbstractController
         }
 
         if (!$jsonContent) {
-            // Using Doctrine since the raw SQL is too complex with 4 joined tables
-            $movies = $movieRepository->findBy([], ['releaseDate' => 'DESC'], 200);
+            // Using optimized repository method to avoid N+1 queries
+            $movies = $movieRepository->findMoviesWithDetails(200);
+
+            if (empty($movies)) {
+                return $this->json([]);
+            }
 
             $data = [];
             foreach ($movies as $movie) {
