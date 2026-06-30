@@ -1,0 +1,2 @@
+doctrine_mongodb:
+    default_database: 'cinemate_movies_test'

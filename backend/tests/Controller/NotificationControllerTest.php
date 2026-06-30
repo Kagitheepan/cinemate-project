@@ -2,161 +2,136 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\NotificationController;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\User;
 use App\Entity\Notification;
-use App\Repository\NotificationRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class NotificationControllerTest extends TestCase
+class NotificationControllerTest extends WebTestCase
 {
-    private function createController(?User $user): NotificationController
-    {
-        $controller = new NotificationController();
-        $container = new Container();
-
-        if ($user) {
-            $token = $this->createMock(TokenInterface::class);
-            $token->method('getUser')->willReturn($user);
-            
-            $tokenStorage = $this->createMock(TokenStorageInterface::class);
-            $tokenStorage->method('getToken')->willReturn($token);
-            
-            $container->set('security.token_storage', $tokenStorage);
-        } else {
-            $tokenStorage = $this->createMock(TokenStorageInterface::class);
-            $tokenStorage->method('getToken')->willReturn(null);
-            $container->set('security.token_storage', $tokenStorage);
-        }
-
-        $controller->setContainer($container);
-        return $controller;
-    }
-
     public function testListRequiresAuth(): void
     {
-        $controller = $this->createController(null);
-        $repo = $this->createMock(NotificationRepository::class);
-        
-        $response = $controller->list($repo);
-        self::assertSame(401, $response->getStatusCode());
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request('GET', '/api/notifications');
+        $this->assertResponseStatusCodeSame(401);
     }
 
     public function testListReturnsNotifications(): void
     {
-        $user = (new User())->setUsername('alice');
-        $reflection = new \ReflectionClass(User::class);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($user, 42);
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $em = $client->getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => 'testuser']);
 
-        $notif = (new Notification())
-            ->setUser($user)
-            ->setMessage('Hello')
-            ->setType('info')
-            ->setIsRead(false)
-            ->setCreatedAt(new \DateTimeImmutable('2026-05-18T10:00:00+00:00'));
+        $notif = new Notification();
+        $notif->setUser($user);
+        $notif->setMessage('Hello');
+        $notif->setType('info');
+        $notif->setIsRead(false);
+        $notif->setCreatedAt(new \DateTime('2026-05-18T10:00:00+00:00'));
+        $em->persist($notif);
+        $em->flush();
 
-        $reflectionNotif = new \ReflectionClass(Notification::class);
-        $notifIdProp = $reflectionNotif->getProperty('id');
-        $notifIdProp->setAccessible(true);
-        $notifIdProp->setValue($notif, 100);
+        $client->loginUser($user);
+        $client->request('GET', '/api/notifications');
 
-        $repo = $this->createMock(NotificationRepository::class);
-        $repo->method('findByUser')->with(42)->willReturn([$notif]);
-        $repo->method('countUnreadByUser')->with(42)->willReturn(1);
-
-        $controller = $this->createController($user);
-        $response = $controller->list($repo);
-
-        self::assertSame(200, $response->getStatusCode());
+        $this->assertResponseIsSuccessful();
         
-        $data = json_decode($response->getContent(), true);
-        self::assertSame(1, $data['unreadCount']);
-        self::assertCount(1, $data['notifications']);
-        self::assertSame('Hello', $data['notifications'][0]['message']);
-        self::assertSame(100, $data['notifications'][0]['id']);
-        self::assertSame('2026-05-18T10:00:00+00:00', $data['notifications'][0]['createdAt']);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertSame(1, $data['unreadCount']);
+        $this->assertCount(1, $data['notifications']);
+        $this->assertSame('Hello', $data['notifications'][0]['message']);
     }
 
     public function testMarkAsReadRequiresAuth(): void
     {
-        $controller = $this->createController(null);
-        $response = $controller->markAsRead(100, $this->createMock(NotificationRepository::class), $this->createMock(EntityManagerInterface::class));
-        self::assertSame(401, $response->getStatusCode());
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
+        $client->request('PATCH', '/api/notifications/read/100', [], [], ['HTTP_X_CSRF_TOKEN' => 'dummy-token']);
+        $this->assertResponseStatusCodeSame(401);
     }
 
     public function testMarkAsReadReturns404IfNotFoundOrWrongUser(): void
     {
-        $user = new User();
-        $repo = $this->createMock(NotificationRepository::class);
-        $repo->method('find')->willReturn(null);
-
-        $controller = $this->createController($user);
-        $response = $controller->markAsRead(100, $repo, $this->createMock(EntityManagerInterface::class));
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $em = $client->getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => 'testuser']);
         
-        self::assertSame(404, $response->getStatusCode());
+        $client->loginUser($user);
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
+        $client->request('PATCH', '/api/notifications/read/99999', [], [], ['HTTP_X_CSRF_TOKEN' => 'dummy-token']);
+        
+        $this->assertResponseStatusCodeSame(404);
     }
 
     public function testMarkAsReadUpdatesStatusAndFlushes(): void
     {
-        $user = new User();
-        $reflection = new \ReflectionClass(User::class);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($user, 42);
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $em = $client->getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => 'testuser']);
 
-        $notif = (new Notification())->setUser($user)->setIsRead(false);
+        $notif = new Notification();
+        $notif->setUser($user);
+        $notif->setMessage('Read me');
+        $notif->setType('info');
+        $notif->setIsRead(false);
+        $notif->setCreatedAt(new \DateTime('2026-05-18T10:00:00+00:00'));
+        $em->persist($notif);
+        $em->flush();
 
-        $repo = $this->createMock(NotificationRepository::class);
-        $repo->method('find')->with(100)->willReturn($notif);
+        $client->loginUser($user);
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
+        $client->request('PATCH', '/api/notifications/read/' . $notif->getId(), [], [], ['HTTP_X_CSRF_TOKEN' => 'dummy-token']);
 
-        $em = $this->createMock(EntityManagerInterface::class);
-        $em->expects(self::once())->method('flush');
-
-        $controller = $this->createController($user);
-        $response = $controller->markAsRead(100, $repo, $em);
-
-        self::assertSame(200, $response->getStatusCode());
-        self::assertTrue($notif->isRead());
+        $this->assertResponseIsSuccessful();
+        
+        $em->clear();
+        $updatedNotif = $em->getRepository(Notification::class)->find($notif->getId());
+        $this->assertTrue($updatedNotif->isRead());
     }
 
     public function testMarkAllAsReadRequiresAuth(): void
     {
-        $controller = $this->createController(null);
-        $response = $controller->markAllAsRead($this->createMock(NotificationRepository::class), $this->createMock(EntityManagerInterface::class));
-        self::assertSame(401, $response->getStatusCode());
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
+        $client->request('PATCH', '/api/notifications/read-all', [], [], ['HTTP_X_CSRF_TOKEN' => 'dummy-token']);
+        $this->assertResponseStatusCodeSame(401);
     }
 
     public function testMarkAllAsReadUpdatesStatusAndFlushes(): void
     {
-        $user = new User();
-        $reflection = new \ReflectionClass(User::class);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($user, 42);
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $em = $client->getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => 'testuser']);
 
-        $notif1 = (new Notification())->setUser($user)->setIsRead(false);
-        $notif2 = (new Notification())->setUser($user)->setIsRead(false);
+        $notif1 = new Notification();
+        $notif1->setUser($user)->setMessage('A')->setType('info')->setIsRead(false)->setCreatedAt(new \DateTime());
+        $em->persist($notif1);
 
-        $repo = $this->createMock(NotificationRepository::class);
-        $repo->method('findUnreadByUser')->with(42)->willReturn([$notif1, $notif2]);
-
-        $em = $this->createMock(EntityManagerInterface::class);
-        $em->expects(self::once())->method('flush');
-
-        $controller = $this->createController($user);
-        $response = $controller->markAllAsRead($repo, $em);
-
-        self::assertSame(200, $response->getStatusCode());
-        self::assertTrue($notif1->isRead());
-        self::assertTrue($notif2->isRead());
+        $notif2 = new Notification();
+        $notif2->setUser($user)->setMessage('B')->setType('info')->setIsRead(false)->setCreatedAt(new \DateTime());
+        $em->persist($notif2);
         
-        $data = json_decode($response->getContent(), true);
-        self::assertSame(2, $data['marked']);
+        $em->flush();
+
+        $client->loginUser($user);
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
+        $client->request('PATCH', '/api/notifications/read-all', [], [], ['HTTP_X_CSRF_TOKEN' => 'dummy-token']);
+
+        $this->assertResponseIsSuccessful();
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertSame(2, $data['marked']);
+        
+        $em->clear();
+        $updatedNotif1 = $em->getRepository(Notification::class)->find($notif1->getId());
+        $updatedNotif2 = $em->getRepository(Notification::class)->find($notif2->getId());
+        
+        $this->assertTrue($updatedNotif1->isRead());
+        $this->assertTrue($updatedNotif2->isRead());
     }
 }

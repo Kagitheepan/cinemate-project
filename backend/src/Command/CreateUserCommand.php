@@ -48,6 +48,7 @@ class CreateUserCommand extends Command
 
         $user = new User();
         $user->setUsername($username);
+        $user->setEmail($username . '@example.com');
         
         // Hash the password
         $user->setPassword(

@@ -3,23 +3,33 @@
 namespace App\Tests\Controller;
 
 use App\Controller\CronController;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class CronControllerTest extends TestCase
+class CronControllerTest extends WebTestCase
 {
     public function testSendRemindersUnauthorized(): void
     {
-        $controller = new CronController();
-        $container = new \Symfony\Component\DependencyInjection\Container();
-        $controller->setContainer($container);
+        self::ensureKernelShutdown();
+        $client = static::createClient();
         
-        $request = new Request(['token' => 'wrong_token']);
-        $kernel = $this->createMock(KernelInterface::class);
+        // Pass a wrong token
+        $client->request('GET', '/api/cron/reminders?token=wrong_token');
         
-        $response = $controller->sendReminders($request, $kernel);
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testSendRemindersAuthorized(): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
         
-        self::assertSame(401, $response->getStatusCode());
+        $token = $_ENV['CRON_SECRET'] ?? 'secret_par_defaut';
+        
+        // Pass the right token
+        $client->request('GET', '/api/cron/reminders?token=' . $token);
+        
+        $this->assertResponseIsSuccessful();
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertTrue($data['success']);
     }
 }

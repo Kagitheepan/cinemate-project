@@ -33,6 +33,7 @@ security:
             provider: app_user_provider
 
     access_control:
+        - { path: ^/api/csrf-cookie, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/logout, roles: PUBLIC_ACCESS }

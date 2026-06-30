@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import api from '../services/api';
+import api, { initCsrf } from '../services/api';
 
 export interface CalendarEvent {
     id: string;
@@ -37,6 +37,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     useEffect(() => {
         const initAuth = async () => {
             try {
+                // Initialiser le cookie CSRF avant toute requête mutante
+                await initCsrf();
                 const response = await api.get('/profile');
                 setUser(response.data);
             } catch (error) {
