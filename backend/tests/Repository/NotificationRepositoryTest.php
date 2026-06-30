@@ -3,66 +3,73 @@
 namespace App\Tests\Repository;
 
 use App\Entity\Notification;
+use App\Entity\User;
 use App\Repository\NotificationRepository;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\ManagerRegistry;
-use PHPUnit\Framework\TestCase;
 
-class NotificationRepositoryTest extends TestCase
+class NotificationRepositoryTest extends KernelTestCase
 {
+    private EntityManagerInterface $entityManager;
     private NotificationRepository $repository;
+    private User $testUser;
+    private User $otherUser;
 
     protected function setUp(): void
     {
-        $registry = $this->createMock(ManagerRegistry::class);
-        $em = $this->createMock(EntityManagerInterface::class);
+        $kernel = self::bootKernel();
+        $this->entityManager = static::getContainer()->get('doctrine')->getManager();
+        $this->repository = $this->entityManager->getRepository(Notification::class);
         
-        $em->method('getClassMetadata')->willReturn(new ClassMetadata(Notification::class));
-        
-        $qb = $this->createMock(\Doctrine\ORM\QueryBuilder::class);
-        $qb->method('select')->willReturnSelf();
-        $qb->method('from')->willReturnSelf();
-        $qb->method('where')->willReturnSelf();
-        $qb->method('andWhere')->willReturnSelf();
-        $qb->method('setParameter')->willReturnSelf();
-        $qb->method('setParameters')->willReturnSelf();
-        $qb->method('orderBy')->willReturnSelf();
-        $qb->method('setMaxResults')->willReturnSelf();
-        
-        $query = $this->createMock(\Doctrine\ORM\Query::class);
-        $query->method('getResult')->willReturn(['mocked_result']);
-        $query->method('getSingleScalarResult')->willReturn(42);
-        
-        $qb->method('getQuery')->willReturn($query);
-        $em->method('createQueryBuilder')->willReturn($qb);
+        // We assume testuser and admin exist via AppFixtures
+        $this->testUser = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'testuser']);
+        $this->otherUser = new User();
+        $this->otherUser->setUsername('other_user_for_test_' . uniqid());
+        $this->otherUser->setEmail('other_test@example.com');
+        $this->otherUser->setPassword('test');
+        $this->entityManager->persist($this->otherUser);
 
-        $registry->method('getManagerForClass')->willReturn($em);
-
-        $this->repository = new NotificationRepository($registry);
+        // Clear existing notifications for testUser
+        $existing = $this->repository->findByUser($this->testUser->getId());
+        foreach ($existing as $n) {
+            $this->entityManager->remove($n);
+        }
+        $this->entityManager->flush();
     }
 
     public function testFindUnreadByUser(): void
     {
-        $result = $this->repository->findUnreadByUser(1);
-        self::assertSame(['mocked_result'], $result);
-    }
+        $notif1 = new Notification();
+        $notif1->setUser($this->testUser)->setMessage('Unread 1')->setType('info')->setIsRead(false)->setCreatedAt(new \DateTime());
+        $this->entityManager->persist($notif1);
 
-    public function testFindByUser(): void
-    {
-        $result = $this->repository->findByUser(1);
-        self::assertSame(['mocked_result'], $result);
-    }
+        $notif2 = new Notification();
+        $notif2->setUser($this->testUser)->setMessage('Read')->setType('info')->setIsRead(true)->setCreatedAt(new \DateTime());
+        $this->entityManager->persist($notif2);
 
-    public function testCountUnreadByUser(): void
-    {
-        $result = $this->repository->countUnreadByUser(1);
-        self::assertSame(42, $result);
+        $notif3 = new Notification();
+        $notif3->setUser($this->otherUser)->setMessage('Unread Other')->setType('info')->setIsRead(false)->setCreatedAt(new \DateTime());
+        $this->entityManager->persist($notif3);
+
+        $this->entityManager->flush();
+
+        $unread = $this->repository->findUnreadByUser($this->testUser->getId());
+        $this->assertCount(1, $unread);
+        $this->assertSame('Unread 1', $unread[0]->getMessage());
+        
+        $count = $this->repository->countUnreadByUser($this->testUser->getId());
+        $this->assertSame(1, $count);
     }
 
     public function testExistsForEvent(): void
     {
-        $result = $this->repository->existsForEvent(1, 'event_id');
-        self::assertTrue($result);
+        $notif = new Notification();
+        $notif->setUser($this->testUser)->setMessage('Reminder')->setType('reminder')->setEventId('evt-123')->setIsRead(false)->setCreatedAt(new \DateTime());
+        $this->entityManager->persist($notif);
+        $this->entityManager->flush();
+
+        $this->assertTrue($this->repository->existsForEvent($this->testUser->getId(), 'evt-123'));
+        $this->assertFalse($this->repository->existsForEvent($this->testUser->getId(), 'evt-456'));
+        $this->assertFalse($this->repository->existsForEvent($this->otherUser->getId(), 'evt-123'));
     }
 }

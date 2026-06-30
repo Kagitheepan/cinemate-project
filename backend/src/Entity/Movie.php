@@ -48,7 +48,7 @@ class Movie
     private ?int $runtime = null;
 
     #[ORM\ManyToMany(targetEntity: Genre::class)]
-    #[ORM\JoinTable(name: 'Catégorie')]
+    #[ORM\JoinTable(name: 'Categorie')]
     #[ORM\JoinColumn(name: 'Id_Film', referencedColumnName: 'Id_Film')]
     #[ORM\InverseJoinColumn(name: 'Id_Genre', referencedColumnName: 'Id_Genre')]
     private Collection $genres;

@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class TmdbServiceTest extends TestCase
 {
-    private function createMockClient(array $responseData = null, \Throwable $exception = null): HttpClientInterface
+    private function createMockClient(?array $responseData = null, ?\Throwable $exception = null): HttpClientInterface
     {
         $response = $this->createMock(ResponseInterface::class);
 

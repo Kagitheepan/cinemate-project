@@ -4,47 +4,44 @@ namespace App\Tests\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\Persistence\ManagerRegistry;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-class UserRepositoryTest extends TestCase
+class UserRepositoryTest extends KernelTestCase
 {
-    public function testUpgradePasswordSuccess(): void
-    {
-        $registry = $this->createMock(ManagerRegistry::class);
-        $em = $this->createMock(EntityManagerInterface::class);
-        
-        $em->method('getClassMetadata')->willReturn(new ClassMetadata(User::class));
-        $registry->method('getManagerForClass')->willReturn($em);
-        
-        $em->expects(self::once())->method('persist');
-        $em->expects(self::once())->method('flush');
+    private EntityManagerInterface $entityManager;
+    private UserRepository $repository;
+    private User $testUser;
 
-        $repo = new UserRepository($registry);
-        
-        $user = new User();
-        $repo->upgradePassword($user, 'new_hashed_password');
-        
-        self::assertSame('new_hashed_password', $user->getPassword());
+    protected function setUp(): void
+    {
+        $kernel = self::bootKernel();
+        $this->entityManager = static::getContainer()->get('doctrine')->getManager();
+        $this->repository = $this->entityManager->getRepository(User::class);
+        $this->testUser = $this->repository->findOneBy(['username' => 'testuser']);
     }
 
-    public function testUpgradePasswordThrowsExceptionOnInvalidUser(): void
+    public function testUpgradePassword(): void
     {
-        $registry = $this->createMock(ManagerRegistry::class);
-        $em = $this->createMock(EntityManagerInterface::class);
+        $newHash = 'new_hashed_password_123';
         
-        $em->method('getClassMetadata')->willReturn(new ClassMetadata(User::class));
-        $registry->method('getManagerForClass')->willReturn($em);
+        $this->repository->upgradePassword($this->testUser, $newHash);
         
-        $repo = new UserRepository($registry);
+        $this->entityManager->clear();
         
-        $invalidUser = $this->createMock(PasswordAuthenticatedUserInterface::class);
-        
+        $reloadedUser = $this->repository->find($this->testUser->getId());
+        $this->assertSame($newHash, $reloadedUser->getPassword());
+    }
+
+    public function testUpgradePasswordThrowsExceptionForUnsupportedUser(): void
+    {
+        $unsupportedUser = new class implements PasswordAuthenticatedUserInterface {
+            public function getPassword(): ?string { return null; }
+        };
+
         $this->expectException(UnsupportedUserException::class);
-        $repo->upgradePassword($invalidUser, 'new_hashed_password');
+        $this->repository->upgradePassword($unsupportedUser, 'hash');
     }
 }

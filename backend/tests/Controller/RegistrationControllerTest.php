@@ -2,163 +2,82 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\RegistrationController;
-use App\Entity\User;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class RegistrationControllerTest extends TestCase
+class RegistrationControllerTest extends WebTestCase
 {
     public function testRegisterRejectsMissingFields(): void
     {
-        $controller = $this->createController();
-        $request = new Request([], [], [], [], [], [], json_encode([
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        
+        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'username' => 'alice',
             'email' => 'alice@example.com',
+            // Missing password
         ]));
 
-        $response = $controller->register(
-            $request,
-            $this->createMock(UserPasswordHasherInterface::class),
-            $this->createMock(EntityManagerInterface::class)
-        );
-
-        self::assertSame(400, $response->getStatusCode());
-        self::assertSame(['message' => 'Missing fields'], json_decode($response->getContent(), true));
+        $this->assertResponseStatusCodeSame(400);
+        $this->assertSame(['message' => 'Missing fields'], json_decode($client->getResponse()->getContent(), true));
     }
 
     public function testRegisterRejectsAlreadyUsedEmail(): void
     {
-        $repository = $this->createMock(EntityRepository::class);
-        $repository
-            ->expects(self::once())
-            ->method('findOneBy')
-            ->with(['email' => 'alice@example.com'])
-            ->willReturn(new User());
+        self::ensureKernelShutdown();
+        $client = static::createClient();
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager
-            ->expects(self::once())
-            ->method('getRepository')
-            ->with(User::class)
-            ->willReturn($repository);
-        $entityManager->expects(self::never())->method('persist');
-        $entityManager->expects(self::never())->method('flush');
+        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'username' => 'alice_new',
+            'email' => 'test@example.com', // Already exists in fixtures
+            'password' => 'password123',
+            'platforms' => [],
+            'favoriteGenres' => [],
+        ]));
 
-        $response = $this->createController()->register(
-            $this->createRegistrationRequest(),
-            $this->createMock(UserPasswordHasherInterface::class),
-            $entityManager
-        );
-
-        self::assertSame(409, $response->getStatusCode());
-        self::assertSame(['message' => 'Email already used'], json_decode($response->getContent(), true));
+        $this->assertResponseStatusCodeSame(422);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertSame('Erreurs de validation.', $data['message']);
+        $this->assertArrayHasKey('email', $data['errors']);
     }
 
     public function testRegisterRejectsAlreadyUsedUsername(): void
     {
-        $repository = $this->createMock(EntityRepository::class);
-        
-        $repository->expects($this->exactly(2))
-            ->method('findOneBy')
-            ->willReturnMap([
-                [['email' => 'alice@example.com'], null, null],
-                [['username' => 'alice'], null, new User()]
-            ]);
+        self::ensureKernelShutdown();
+        $client = static::createClient();
 
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager
-            ->expects(self::exactly(2))
-            ->method('getRepository')
-            ->with(User::class)
-            ->willReturn($repository);
-        $entityManager->expects(self::never())->method('persist');
-        $entityManager->expects(self::never())->method('flush');
+        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'username' => 'testuser', // Already exists in fixtures
+            'email' => 'newemail@example.com',
+            'password' => 'password123',
+            'platforms' => [],
+            'favoriteGenres' => [],
+        ]));
 
-        $response = $this->createController()->register(
-            $this->createRegistrationRequest(),
-            $this->createMock(UserPasswordHasherInterface::class),
-            $entityManager
-        );
-
-        self::assertSame(409, $response->getStatusCode());
-        self::assertSame(['message' => 'Username already taken'], json_decode($response->getContent(), true));
+        $this->assertResponseStatusCodeSame(422);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertSame('Erreurs de validation.', $data['message']);
+        $this->assertArrayHasKey('username', $data['errors']);
     }
 
     public function testRegisterCreatesUserWhenPayloadIsValid(): void
     {
-        $userRepository = $this->createMock(EntityRepository::class);
-        $userRepository
-            ->method('findOneBy')
-            ->willReturn(null); // Neither email nor username exists
+        self::ensureKernelShutdown();
+        $client = static::createClient();
 
-        $platformRepository = $this->createMock(EntityRepository::class);
-        $platformRepository->method('findOneBy')->willReturn(null); // Platform doesn't exist, should create it
-
-        $genreRepository = $this->createMock(EntityRepository::class);
-        $genreRepository->method('findOneBy')->willReturn(null); // Genre doesn't exist, should create it
-
-        $entityManager = $this->createMock(EntityManagerInterface::class);
-        $entityManager
-            ->method('getRepository')
-            ->willReturnCallback(function ($entityClass) use ($userRepository, $platformRepository, $genreRepository) {
-                if ($entityClass === User::class) return $userRepository;
-                if ($entityClass === \App\Entity\Platform::class) return $platformRepository;
-                if ($entityClass === \App\Entity\Genre::class) return $genreRepository;
-                return $userRepository;
-            });
-
-        // We expect persist 3 times: platform, genre, and user
-        $entityManager
-            ->expects(self::exactly(3))
-            ->method('persist');
-        
-        $entityManager->expects(self::once())->method('flush');
-
-        $passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
-        $passwordHasher
-            ->expects(self::once())
-            ->method('hashPassword')
-            ->with(self::isInstanceOf(User::class), 'plain-password')
-            ->willReturn('hashed-password');
-
-        $response = $this->createController()->register(
-            $this->createRegistrationRequest(),
-            $passwordHasher,
-            $entityManager
-        );
-
-        self::assertSame(201, $response->getStatusCode());
-        self::assertSame([
-            'message' => 'User created successfully',
-            'user' => [
-                'username' => 'alice',
-                'email' => 'alice@example.com',
-                'platforms' => ['Netflix'],
-            ],
-        ], json_decode($response->getContent(), true));
-    }
-
-    private function createRegistrationRequest(): Request
-    {
-        return new Request([], [], [], [], [], [], json_encode([
+        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
             'username' => 'alice',
             'email' => 'alice@example.com',
             'password' => 'plain-password',
             'platforms' => ['Netflix'],
             'favoriteGenres' => ['Action'],
         ]));
-    }
 
-    private function createController(): RegistrationController
-    {
-        $controller = new RegistrationController();
-        $controller->setContainer(new Container());
-
-        return $controller;
+        $this->assertResponseStatusCodeSame(201);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        
+        $this->assertSame('User created successfully', $data['message']);
+        $this->assertSame('alice', $data['user']['username']);
+        $this->assertSame('alice@example.com', $data['user']['email']);
+        $this->assertContains('Netflix', $data['user']['platforms']);
     }
 }

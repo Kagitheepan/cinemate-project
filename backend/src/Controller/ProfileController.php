@@ -120,9 +120,9 @@ class ProfileController extends AbstractController
         if (isset($data['watchlist'])) {
             $existingWatchlists = $user->getWatchlists();
             
-            // Build an array of desired state: movieId => status
             $desiredState = [];
-            if (is_array($data['watchlist']) && !isset($data['watchlist']['toWatch']) && !isset($data['watchlist']['watched'])) {
+            if (is_array($data['watchlist']) && !isset($data['watchlist']['toWatch']) && 
+            !isset($data['watchlist']['watched'])) {
                 foreach ($data['watchlist'] as $movieId) {
                     $desiredState[(int)$movieId] = 'a_voir';
                 }
@@ -138,23 +138,16 @@ class ProfileController extends AbstractController
                     }
                 }
             }
-
-            // Update existing or remove them if not in desired state
             foreach ($existingWatchlists as $existing) {
                 $movieId = $existing->getMovie()->getId();
                 if (isset($desiredState[$movieId])) {
-                    // Update status if it changed
                     $existing->setStatut($desiredState[$movieId]);
-                    // Remove from desiredState so we only have NEW ones left to insert
                     unset($desiredState[$movieId]);
                 } else {
-                    // Not in the new state, remove it
                     $user->removeWatchlistRelation($existing);
                     $entityManager->remove($existing);
                 }
             }
-
-            // Add remaining desired states as new Watchlist records
             foreach ($desiredState as $movieId => $status) {
                 $movie = $entityManager->getRepository(Movie::class)->find($movieId);
                 if ($movie) {

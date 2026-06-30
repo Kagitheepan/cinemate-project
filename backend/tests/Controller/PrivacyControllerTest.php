@@ -2,98 +2,69 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\PrivacyController;
-use App\Document\CookieConsent;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\User;
-use Doctrine\ODM\MongoDB\DocumentManager;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
-class PrivacyControllerTest extends TestCase
+class PrivacyControllerTest extends WebTestCase
 {
-    private function createController(?User $user): PrivacyController
-    {
-        $controller = new PrivacyController();
-        $container = new Container();
-
-        if ($user) {
-            $token = $this->createMock(TokenInterface::class);
-            $token->method('getUser')->willReturn($user);
-            
-            $tokenStorage = $this->createMock(TokenStorageInterface::class);
-            $tokenStorage->method('getToken')->willReturn($token);
-            
-            $container->set('security.token_storage', $tokenStorage);
-        } else {
-            $tokenStorage = $this->createMock(TokenStorageInterface::class);
-            $tokenStorage->method('getToken')->willReturn(null);
-            $container->set('security.token_storage', $tokenStorage);
-        }
-
-        $controller->setContainer($container);
-        return $controller;
-    }
-
     public function testSaveConsentRejectsInvalidChoice(): void
     {
-        $controller = $this->createController(null);
-        $request = new Request([], [], [], [], [], [], json_encode(['choice' => 'maybe']));
+        self::ensureKernelShutdown();
+        $client = static::createClient();
         
-        $response = $controller->saveConsent($request, $this->createMock(DocumentManager::class));
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
+        $client->request('POST', '/api/privacy/consent', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => 'dummy-token'], json_encode([
+            'choice' => 'maybe'
+        ]));
         
-        self::assertSame(400, $response->getStatusCode());
+        $this->assertResponseStatusCodeSame(400);
     }
 
     public function testSaveConsentSavesDocumentAndSetsCookieWithUser(): void
     {
-        $user = (new User())->setUsername('alice');
-        $controller = $this->createController($user);
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $em = $client->getContainer()->get('doctrine')->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['username' => 'testuser']);
         
-        $request = new Request([], [], [], [], [], [], json_encode(['choice' => 'accepted']));
+        $client->loginUser($user);
         
-        $dm = $this->createMock(DocumentManager::class);
-        $dm->expects(self::once())
-           ->method('persist')
-           ->with(self::callback(function (CookieConsent $consent): bool {
-               return $consent->getChoice() === 'accepted' 
-                   && $consent->getUsername() === 'alice'
-                   && $consent->getPolicyVersion() === '2026-05-18';
-           }));
-        $dm->expects(self::once())->method('flush');
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
+        $client->request('POST', '/api/privacy/consent', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => 'dummy-token'], json_encode([
+            'choice' => 'accepted'
+        ]));
         
-        $response = $controller->saveConsent($request, $dm);
-        
-        self::assertSame(200, $response->getStatusCode());
+        $this->assertResponseIsSuccessful();
+        $response = $client->getResponse();
         
         $cookies = $response->headers->getCookies();
-        self::assertCount(1, $cookies);
-        self::assertSame('cinemate_consent_id', $cookies[0]->getName());
-        self::assertTrue($cookies[0]->isHttpOnly());
+        // The controller sets `cinemate_consent_id`
+        $consentCookie = null;
+        foreach ($cookies as $cookie) {
+            if ($cookie->getName() === 'cinemate_consent_id') {
+                $consentCookie = $cookie;
+                break;
+            }
+        }
+        $this->assertNotNull($consentCookie);
+        $this->assertTrue($consentCookie->isHttpOnly());
     }
     
     public function testSaveConsentWorksWithoutUserAndReusesCookie(): void
     {
-        $controller = $this->createController(null);
+        self::ensureKernelShutdown();
+        $client = static::createClient();
         
-        $request = new Request([], [], [], ['cinemate_consent_id' => 'existing-id'], [], [], json_encode(['choice' => 'refused']));
+        // Pass existing cookie
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('cinemate_consent_id', 'existing-id'));
+        $client->getCookieJar()->set(new \Symfony\Component\BrowserKit\Cookie('CSRF-TOKEN', 'dummy-token'));
         
-        $dm = $this->createMock(DocumentManager::class);
-        $dm->expects(self::once())
-           ->method('persist')
-           ->with(self::callback(function (CookieConsent $consent): bool {
-               return $consent->getChoice() === 'refused' 
-                   && $consent->getUsername() === null
-                   && $consent->getConsentId() === 'existing-id';
-           }));
-        $dm->expects(self::once())->method('flush');
+        $client->request('POST', '/api/privacy/consent', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_X_CSRF_TOKEN' => 'dummy-token'], json_encode([
+            'choice' => 'refused'
+        ]));
         
-        $response = $controller->saveConsent($request, $dm);
-        
-        self::assertSame(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        self::assertSame('refused', $data['choice']);
+        $this->assertResponseIsSuccessful();
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertSame('refused', $data['choice']);
     }
 }

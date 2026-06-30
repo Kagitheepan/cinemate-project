@@ -2,29 +2,24 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\AuthController;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class AuthControllerTest extends TestCase
+class AuthControllerTest extends WebTestCase
 {
     public function testLogoutClearsBearerCookie(): void
     {
-        $controller = new AuthController();
-        $controller->setContainer(new Container());
+        $client = static::createClient();
+        $client->request('POST', '/api/logout');
 
-        $request = new Request();
-        $response = $controller->logout($request);
-
-        self::assertSame(200, $response->getStatusCode());
+        $this->assertResponseIsSuccessful();
         
+        $response = $client->getResponse();
         $cookies = $response->headers->getCookies();
-        self::assertCount(1, $cookies);
+        $this->assertCount(1, $cookies);
         
         $cookie = $cookies[0];
-        self::assertSame('BEARER', $cookie->getName());
-        self::assertTrue($cookie->isCleared());
-        self::assertSame('/', $cookie->getPath());
+        $this->assertSame('BEARER', $cookie->getName());
+        $this->assertTrue($cookie->isCleared());
+        $this->assertSame('/', $cookie->getPath());
     }
 }

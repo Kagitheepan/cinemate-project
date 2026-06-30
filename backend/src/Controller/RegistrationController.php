@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -18,7 +19,8 @@ class RegistrationController extends AbstractController
     public function register(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator
     ): JsonResponse {
         $data = json_decode($request->getContent(), true);
 
@@ -26,20 +28,28 @@ class RegistrationController extends AbstractController
             return $this->json(['message' => 'Missing fields'], 400);
         }
 
-        // Check if user already exists
-        $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-        if ($existingUser) {
-            return $this->json(['message' => 'Email already used'], 409);
-        }
-
-        $existingUsername = $entityManager->getRepository(User::class)->findOneBy(['username' => $data['username']]);
-        if ($existingUsername) {
-            return $this->json(['message' => 'Username already taken'], 409);
-        }
-
         $user = new User();
         $user->setUsername($data['username']);
         $user->setEmail($data['email']);
+
+        // Hash password avant validation (le champ password stocke le hash)
+        $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
+        $user->setPassword($hashedPassword);
+
+        // Validation via les contraintes Assert définies sur l'entité User
+        $errors = $validator->validate($user);
+
+        if (count($errors) > 0) {
+            $errorMessages = [];
+            foreach ($errors as $error) {
+                $errorMessages[$error->getPropertyPath()] = $error->getMessage();
+            }
+            return $this->json([
+                'message' => 'Erreurs de validation.',
+                'errors' => $errorMessages
+            ], 422);
+        }
+
         if (!empty($data['platforms'])) {
             foreach ($data['platforms'] as $platformName) {
                 $platform = $entityManager->getRepository(Platform::class)->findOneBy(['platformName' => $platformName]);
@@ -64,10 +74,6 @@ class RegistrationController extends AbstractController
             }
         }
 
-        // Hash password
-        $hashedPassword = $passwordHasher->hashPassword($user, $data['password']);
-        $user->setPassword($hashedPassword);
-
         $entityManager->persist($user);
         $entityManager->flush();
 
@@ -81,3 +87,4 @@ class RegistrationController extends AbstractController
         ], 201);
     }
 }
+

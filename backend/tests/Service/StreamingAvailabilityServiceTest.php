@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class StreamingAvailabilityServiceTest extends TestCase
 {
-    private function createMockClient(array $responseData = null, \Throwable $exception = null): HttpClientInterface
+    private function createMockClient(?array $responseData = null, ?\Throwable $exception = null): HttpClientInterface
     {
         $response = $this->createMock(ResponseInterface::class);
 
@@ -33,7 +33,7 @@ class StreamingAvailabilityServiceTest extends TestCase
     public function testReturnsEmptyIfApiKeyIsMissing(): void
     {
         $client = $this->createMock(HttpClientInterface::class);
-        $client->expects(self::never())->method('request'); // Should not even make an API call
+        $client->expects(self::never())->method('request'); 
 
         $service = new StreamingAvailabilityService($client, 'YOUR_API_KEY_HERE');
         self::assertSame([], $service->getStreamingByTmdbId(603));
@@ -65,8 +65,6 @@ class StreamingAvailabilityServiceTest extends TestCase
 
     public function testFallsBackToOtherCountriesInPriorityOrder(): void
     {
-        // France missing, US has Hulu, DE has Wow
-        // Order is 'fr', 'us', 'gb', 'de'... so 'us' should be picked before 'de'
         $payload = [
             'streamingOptions' => [
                 'de' => [
@@ -74,7 +72,7 @@ class StreamingAvailabilityServiceTest extends TestCase
                 ],
                 'us' => [
                     ['service' => ['name' => 'Hulu'], 'type' => 'subscription']
-                ],
+                ]
             ]
         ];
 
@@ -87,7 +85,6 @@ class StreamingAvailabilityServiceTest extends TestCase
     
     public function testFallsBackToAnyCountryAsLastResort(): void
     {
-        // 'jp' is not in the priority list, but it's the only one available
         $payload = [
             'streamingOptions' => [
                 'jp' => [
@@ -105,7 +102,6 @@ class StreamingAvailabilityServiceTest extends TestCase
 
     public function testExtractsPayantVodIfNoSubscription(): void
     {
-        // Only rent/buy available
         $payload = [
             'streamingOptions' => [
                 'fr' => [

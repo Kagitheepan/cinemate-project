@@ -2,68 +2,53 @@
 
 namespace App\Tests\Command;
 
-use App\Command\CreateUserCommand;
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\EntityRepository;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Entity\User;
 
-class CreateUserCommandTest extends TestCase
+class CreateUserCommandTest extends KernelTestCase
 {
     public function testExecuteCreatesUser(): void
     {
-        $em = $this->createMock(EntityManagerInterface::class);
-        $repo = $this->createMock(EntityRepository::class);
-        $repo->method('findOneBy')->willReturn(null);
-        $em->method('getRepository')->willReturn($repo);
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
         
-        $em->expects(self::once())->method('persist');
-        $em->expects(self::once())->method('flush');
-
-        $hasher = $this->createMock(UserPasswordHasherInterface::class);
-        $hasher->method('hashPassword')->willReturn('hashed_password');
-
-        $command = new CreateUserCommand($em, $hasher);
-        $application = new Application();
-        $application->add($command);
-
         $command = $application->find('app:create-user');
         $commandTester = new CommandTester($command);
+        
+        // Ensure user does not exist first (clean up from previous tests)
+        $em = static::getContainer()->get('doctrine')->getManager();
+        $repo = $em->getRepository(User::class);
+        
         $commandTester->execute([
-            'username' => 'testuser',
-            'password' => 'testpass',
+            'username' => 'new_admin_user',
+            'password' => 'super_password',
         ]);
-
+        
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
-        self::assertStringContainsString('successfully created', $output);
+        $this->assertStringContainsString('successfully created', $output);
+        
+        $user = $repo->findOneBy(['username' => 'new_admin_user']);
+        $this->assertNotNull($user);
     }
 
     public function testExecuteFailsIfUserExists(): void
     {
-        $em = $this->createMock(EntityManagerInterface::class);
-        $repo = $this->createMock(EntityRepository::class);
-        $repo->method('findOneBy')->willReturn(new User());
-        $em->method('getRepository')->willReturn($repo);
-
-        $hasher = $this->createMock(UserPasswordHasherInterface::class);
-
-        $command = new CreateUserCommand($em, $hasher);
-        $application = new Application();
-        $application->add($command);
-
+        $kernel = self::bootKernel();
+        $application = new Application($kernel);
+        
         $command = $application->find('app:create-user');
         $commandTester = new CommandTester($command);
+        
         $commandTester->execute([
-            'username' => 'testuser',
-            'password' => 'testpass',
+            'username' => 'testuser', // Created by fixtures
+            'password' => 'any_password',
         ]);
-
-        self::assertSame(1, $commandTester->getStatusCode());
+        
+        $this->assertEquals(1, $commandTester->getStatusCode());
         $output = $commandTester->getDisplay();
-        self::assertStringContainsString('already exists', $output);
+        $this->assertStringContainsString('already exists', $output);
     }
 }
