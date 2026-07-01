@@ -9,6 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 #[Route('/api/movies')]
 class MovieController extends AbstractController
@@ -295,5 +299,24 @@ class MovieController extends AbstractController
         }
 
         return $this->json($data);
+    }
+
+    #[Route('/init-db', name: 'api_init_db', methods: ['GET'])]
+    public function initDb(KernelInterface $kernel): JsonResponse
+    {
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput([
+            'command' => 'app:load-movies',
+        ]);
+
+        $output = new BufferedOutput();
+        $application->run($input, $output);
+
+        return $this->json([
+            'message' => 'Base de données initialisée avec succès !', 
+            'details' => $output->fetch()
+        ]);
     }
 }
