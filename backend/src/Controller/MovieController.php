@@ -36,8 +36,7 @@ class MovieController extends AbstractController
         }
 
         if (!$jsonContent) {
-            // Using optimized repository method to avoid N+1 queries
-            $movies = $movieRepository->findMoviesWithDetails(200);
+            $movies = $movieRepository->findMoviesWithDetails(1000);
 
             if (empty($movies)) {
                 return $this->json([]);
