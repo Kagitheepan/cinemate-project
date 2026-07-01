@@ -31,14 +31,9 @@ export async function initCsrf(): Promise<void> {
     }
 }
 
-// Add a request interceptor to include the auth token and CSRF token
+// Intercepteur de requête : ajoute le token CSRF sur les requêtes mutantes
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-
         // Ajouter le token CSRF sur les requêtes mutantes (POST, PUT, PATCH, DELETE)
         const method = config.method?.toUpperCase();
         if (method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
@@ -53,17 +48,10 @@ api.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// Add a response interceptor to handle 401 errors (expired token)
+// Intercepteur de réponse : propage les erreurs (le JWT HttpOnly est géré par le navigateur)
 api.interceptors.response.use(
     (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem('token');
-            // Optionally redirect to login or refresh page
-            // window.location.href = '/login'; 
-        }
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 export default api;

@@ -79,7 +79,6 @@ class ImportMoviesCommand extends Command
                 $title = $movieData['title'];
                 $originalTitle = $movieData['original_title'] ?? $title;
 
-                // Fetch Watch Providers First to verify if we should import
                 $providers = $this->tmdbService->getWatchProviders($tmdbId);
                 $platformsNames = [];
                 $frData = $providers['FR'] ?? [];
@@ -107,7 +106,6 @@ class ImportMoviesCommand extends Command
                 $releaseDate = !empty($movieData['release_date']) ? new \DateTime($movieData['release_date']) : null;
                 $isReleased = $releaseDate && $releaseDate <= new \DateTime();
                 
-                // Fetch Trailer
                 $videos = $this->tmdbService->getVideos($tmdbId);
                 $frTrailer = null; $enTrailer = null;
                 
@@ -122,7 +120,6 @@ class ImportMoviesCommand extends Command
                     }
                 }
                 
-                // On rejette le film s'il n'est pas sorti, sans plateforme, ou sans trailer FR/EN
                 if (!$isReleased || empty($platformsNames) || (!$frTrailer && !$enTrailer)) {
                     $movie = $repository->findOneBy(['tmdbId' => $tmdbId]);
                     if ($movie && $movie->getId()) {
@@ -132,13 +129,11 @@ class ImportMoviesCommand extends Command
                     continue;
                 }
 
-                // Check if exists
                 $movie = $repository->findOneBy(['tmdbId' => $tmdbId]);
                 if (!$movie) {
                     $movie = new Movie();
                     $movie->setTmdbId($tmdbId);
                 } else {
-                    // Clear existing relations
                     foreach ($movie->getGenres() as $g) { $movie->removeGenre($g); }
                     foreach ($movie->getPlatforms() as $p) { $movie->removePlatform($p); }
                     foreach ($movie->getMovieCastings() as $mc) {

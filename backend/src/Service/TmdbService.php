@@ -48,6 +48,8 @@ class TmdbService
 
     public function discoverStreamingMovies(int $page = 1): array
     {
+        sleep(1);
+
         $response = $this->client->request('GET', self::BASE_URL . '/discover/movie', [
             'query' => [
                 'api_key' => $this->apiKey,
