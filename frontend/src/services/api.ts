@@ -11,9 +11,10 @@ const api = axios.create({
     withCredentials: true, // Nécessaire pour envoyer/recevoir les cookies (JWT + CSRF)
 });
 
+let storedCsrfToken: string | null = null;
+
 /**
- * Lit un cookie par son nom.
- * Utilisé pour récupérer le token CSRF depuis le cookie CSRF-TOKEN.
+ * Lit un cookie par son nom. (Garde pour rétrocompatibilité locale)
  */
 function getCookie(name: string): string | null {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -22,11 +23,13 @@ function getCookie(name: string): string | null {
 
 /**
  * Initialise le cookie CSRF en appelant l'endpoint dédié.
- * Doit être appelé au démarrage de l'application.
  */
 export async function initCsrf(): Promise<void> {
     try {
-        await api.get('/csrf-cookie');
+        const response = await api.get('/csrf-cookie');
+        if (response.data && response.data.token) {
+            storedCsrfToken = response.data.token;
+        }
     } catch (error) {
         console.error('Failed to initialize CSRF cookie:', error);
     }
@@ -35,10 +38,10 @@ export async function initCsrf(): Promise<void> {
 // Intercepteur de requête : ajoute le token CSRF sur les requêtes mutantes
 api.interceptors.request.use(
     (config) => {
-        // Ajouter le token CSRF sur les requêtes mutantes (POST, PUT, PATCH, DELETE)
         const method = config.method?.toUpperCase();
         if (method && ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) {
-            const csrfToken = getCookie('CSRF-TOKEN');
+            // On privilégie le token reçu dans la requête (cross-domain), sinon le cookie (local)
+            const csrfToken = storedCsrfToken || getCookie('CSRF-TOKEN');
             if (csrfToken) {
                 config.headers['X-CSRF-TOKEN'] = csrfToken;
             }
