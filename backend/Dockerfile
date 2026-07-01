@@ -6,9 +6,10 @@ RUN apt-get update && apt-get install -y git unzip openssl
 
 # Configuration d'Apache pour Render et Symfony
 RUN a2enmod rewrite
-# Render fournit la variable d'environnement PORT, on configure Apache pour l'écouter
-RUN sed -i "s/Listen 80/Listen \${PORT:-8000}/g" /etc/apache2/ports.conf
-RUN sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:\${PORT:-8000}>/g" /etc/apache2/sites-available/000-default.conf
+# Render fournit la variable d'environnement PORT (ou 8000 par défaut)
+ENV PORT=8000
+RUN sed -i "s/Listen 80/Listen \${PORT}/g" /etc/apache2/ports.conf
+RUN sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:\${PORT}>/g" /etc/apache2/sites-available/000-default.conf
 # On pointe le DocumentRoot vers le dossier public de Symfony
 RUN sed -i "s!/var/www/html!/app/public!g" /etc/apache2/sites-available/000-default.conf
 # Autoriser les règles de réécriture (AllowOverride)
