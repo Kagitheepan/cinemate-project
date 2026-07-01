@@ -64,8 +64,11 @@ class LoadMoviesCommand extends Command
         ];
 
         foreach ($moviesData as $data) {
-            $movie = new Movie();
-            $movie->setTmdbId($data['tmdbId']);
+            $movie = $this->em->getRepository(Movie::class)->findOneBy(['tmdbId' => $data['tmdbId']]);
+            if (!$movie) {
+                $movie = new Movie();
+                $movie->setTmdbId($data['tmdbId']);
+            }
             $movie->setTitle($data['title']);
             $movie->setDescription($data['description']);
             $movie->setReleaseDate($data['releaseDate']);
