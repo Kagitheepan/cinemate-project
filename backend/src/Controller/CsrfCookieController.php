@@ -16,7 +16,7 @@ class CsrfCookieController extends AbstractController
     {
         $token = bin2hex(random_bytes(32));
 
-        $response = new JsonResponse(['message' => 'CSRF cookie set']);
+        $response = new JsonResponse(['message' => 'CSRF cookie set', 'token' => $token]);
         $response->headers->setCookie(
             Cookie::create('CSRF-TOKEN')
                 ->withValue($token)
