@@ -6,9 +6,9 @@ lexik_jwt_authentication:
     set_cookies:
         BEARER:
             lifetime: 3600
-            samesite: lax
+            samesite: none
             path: /
-            secure: '%env(bool:JWT_COOKIE_SECURE)%'
+            secure: true
             httpOnly: true
 
     token_extractors:

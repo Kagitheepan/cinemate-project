@@ -26,7 +26,7 @@ class CsrfCookieControllerTest extends WebTestCase
         
         $this->assertNotNull($csrfCookie);
         $this->assertFalse($csrfCookie->isHttpOnly());
-        $this->assertSame('lax', $csrfCookie->getSameSite());
+        $this->assertSame('none', $csrfCookie->getSameSite());
         
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertSame('CSRF cookie set', $data['message']);
