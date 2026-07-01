@@ -1,18 +1,26 @@
 # backend/Dockerfile
-FROM php:8.4-cli
-# 1. Installation des outils de base indispensables (git, unzip, openssl)
+FROM php:8.4-apache
+
+# 1. Installation des outils de base indispensables
 RUN apt-get update && apt-get install -y git unzip openssl
 
-# 2. Installation ultra-optimisée des extensions PHP (pdo_mysql, zip, intl, mongodb)
-# On utilise le script officiel recommandé par la communauté pour accélérer le build et réduire l'usage mémoire.
+# Configuration d'Apache pour Render et Symfony
+RUN a2enmod rewrite
+ENV PORT=8000
+RUN sed -i "s/Listen 80/Listen \${PORT}/g" /etc/apache2/ports.conf
+RUN sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:\${PORT}>/g" /etc/apache2/sites-available/000-default.conf
+RUN sed -i "s!/var/www/html!/app/public!g" /etc/apache2/sites-available/000-default.conf
+RUN echo "<Directory /app/public>\n    AllowOverride All\n    Require all granted\n</Directory>" >> /etc/apache2/apache2.conf
+
+# 2. Installation ultra-optimisée des extensions PHP
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions && \
     install-php-extensions pdo pdo_mysql zip intl mongodb sodium
 
-# Activer la compression GZIP globale pour PHP et OPcache pour le serveur CLI
+# Activer la compression GZIP globale pour PHP et OPcache
 RUN echo "zlib.output_compression = On" >> /usr/local/etc/php/conf.d/optimizations.ini && \
     echo "zlib.output_compression_level = 6" >> /usr/local/etc/php/conf.d/optimizations.ini && \
-    echo "opcache.enable_cli = 1" >> /usr/local/etc/php/conf.d/optimizations.ini && \
+    echo "opcache.enable = 1" >> /usr/local/etc/php/conf.d/optimizations.ini && \
     echo "opcache.memory_consumption = 256" >> /usr/local/etc/php/conf.d/optimizations.ini && \
     echo "opcache.max_accelerated_files = 20000" >> /usr/local/etc/php/conf.d/optimizations.ini
 
@@ -21,22 +29,22 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copie de tous les fichiers du projet (backend) dans le conteneur
+# Copie de tous les fichiers du projet
 COPY . /app
 
-# S'assure que le fichier .env existe (même vide) pour éviter l'erreur Dotenv\Exception\PathException
-# si le fichier a été ignoré via .gitignore lors du push sur GitHub.
+# On installe les dépendances PENDANT la création de l'image (beaucoup plus rapide au démarrage !)
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer install --no-interaction --optimize-autoloader --no-scripts --no-dev
+
 RUN touch .env
 
-# 4.  Expose le port 8000 (Port par défaut du serveur Symfony CLI)
-EXPOSE 8000
-
-# 5. Commande de démarrage : Installation sans scripts + Génération JWT via OpenSSL + Cache Clear + Migrations + Lancement serveur
-CMD bash -c "composer install --no-interaction --optimize-autoloader --no-scripts && \
-             mkdir -p config/jwt && \
-             openssl genpkey -out config/jwt/private.pem -pass env:JWT_PASSPHRASE -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096 && \
-             openssl pkey -in config/jwt/private.pem -passin env:JWT_PASSPHRASE -pubout -out config/jwt/public.pem && \
+# 5. Script de démarrage : JWT + Migrations + Lancement d'Apache
+CMD bash -c "mkdir -p config/jwt && \
+             if [ ! -f config/jwt/private.pem ]; then \
+                 openssl genpkey -out config/jwt/private.pem -pass env:JWT_PASSPHRASE -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096; \
+                 openssl pkey -in config/jwt/private.pem -passin env:JWT_PASSPHRASE -pubout -out config/jwt/public.pem; \
+             fi && \
              php bin/console cache:clear && \
              php bin/console doctrine:migrations:migrate --no-interaction && \
-             echo 'Starting PHP Server...' && \
-             php -S 0.0.0.0:8000 -t public"
+             echo 'Starting Apache Server...' && \
+             apache2-foreground"
