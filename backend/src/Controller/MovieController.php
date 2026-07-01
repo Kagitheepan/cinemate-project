@@ -301,6 +301,38 @@ class MovieController extends AbstractController
         return $this->json($data);
     }
 
+    #[Route('/reset-db', name: 'api_reset_db', methods: ['GET'])]
+    public function resetDb(EntityManagerInterface $em, KernelInterface $kernel): JsonResponse
+    {
+        // 1. Delete all existing movies to clean up old corrupted data
+        $movies = $em->getRepository(Movie::class)->findAll();
+        foreach ($movies as $movie) {
+            $em->remove($movie);
+        }
+        $em->flush();
+
+        // 2. Import 3 fresh pages of popular movies
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+        $input = new ArrayInput([
+            'command' => 'app:import-movies',
+            '--pages' => 3,
+        ]);
+        $output = new BufferedOutput();
+        $application->run($input, $output);
+
+        // 3. Clear cache
+        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v3.json';
+        if (file_exists($cacheFile)) {
+            unlink($cacheFile);
+        }
+
+        return $this->json([
+            'message' => 'Base de données réinitialisée à neuf !',
+            'details' => $output->fetch()
+        ]);
+    }
+
     #[Route('/init-db', name: 'api_init_db', methods: ['GET'])]
     public function initDb(Request $request, KernelInterface $kernel): JsonResponse
     {
