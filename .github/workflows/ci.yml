@@ -98,6 +98,8 @@ jobs:
           php bin/console doctrine:fixtures:load --env=test -n
 
       - name: Run tests
+        env:
+          SYMFONY_DEPRECATIONS_HELPER: weak
         run: |
           set +e
           php bin/phpunit -c phpunit.xml.dist 2>&1 | tee phpunit.log
