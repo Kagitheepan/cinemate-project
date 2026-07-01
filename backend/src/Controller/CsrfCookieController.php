@@ -21,9 +21,9 @@ class CsrfCookieController extends AbstractController
             Cookie::create('CSRF-TOKEN')
                 ->withValue($token)
                 ->withPath('/')
-                ->withSecure($request->isSecure())
+                ->withSecure(true) // Requis par les navigateurs modernes pour SameSite=None
                 ->withHttpOnly(false) // Le JS doit pouvoir lire ce cookie
-                ->withSameSite(Cookie::SAMESITE_LAX)
+                ->withSameSite(Cookie::SAMESITE_NONE)
         );
 
         return $response;
