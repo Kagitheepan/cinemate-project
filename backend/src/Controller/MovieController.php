@@ -308,7 +308,8 @@ class MovieController extends AbstractController
         $application->setAutoExit(false);
 
         $input = new ArrayInput([
-            'command' => 'app:load-movies',
+            'command' => 'app:import-movies',
+            '--pages' => 1,
         ]);
 
         $output = new BufferedOutput();
