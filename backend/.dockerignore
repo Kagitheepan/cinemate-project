@@ -1,0 +1,9 @@
+.git
+vendor/
+var/
+.env.local
+.env.*.local
+php.ini
+.phpunit.result.cache
+coverage_html/
+coverage.txt
