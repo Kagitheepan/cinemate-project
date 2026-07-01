@@ -10,7 +10,7 @@ class MovieControllerTest extends WebTestCase
 {
     private function clearCache(): void
     {
-        @unlink(sys_get_temp_dir() . '/cinemate_movies_list_v2.json');
+        @unlink(sys_get_temp_dir() . '/cinemate_movies_list_v3.json');
     }
 
     protected function tearDown(): void
@@ -22,7 +22,7 @@ class MovieControllerTest extends WebTestCase
     public function testListReturnsCachedMoviesWithCacheHeaders(): void
     {
         $this->clearCache();
-        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v2.json';
+        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v3.json';
         $movies = [['id' => '1', 'title' => 'Matrix', 'year' => '1999']];
         file_put_contents($cacheFile, json_encode($movies));
 
@@ -38,7 +38,7 @@ class MovieControllerTest extends WebTestCase
     public function testListReturnsNotModifiedWhenEtagMatchesCache(): void
     {
         $this->clearCache();
-        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v2.json';
+        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v3.json';
         $jsonContent = json_encode([['id' => '1', 'title' => 'Matrix']]);
         file_put_contents($cacheFile, $jsonContent);
 
@@ -55,7 +55,7 @@ class MovieControllerTest extends WebTestCase
     public function testListGeneratesCacheWhenMissing(): void
     {
         $this->clearCache();
-        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v2.json';
+        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v3.json';
         self::ensureKernelShutdown();
         $client = static::createClient();
         $client->request('GET', '/api/movies');
