@@ -71,10 +71,17 @@ class LoadMoviesCommand extends Command
             $movie->setReleaseDate($data['releaseDate']);
             $movie->setDirector($data['director']);
             $movie->setRating($data['rating']);
-            // $movie->setGenres($data['genres']);
+            // Map genres
+            foreach ($data['genres'] as $genreName) {
+                $genre = $this->em->getRepository(\App\Entity\Genre::class)->findOneBy(['genreName' => $genreName]);
+                if (!$genre) {
+                    $genre = new \App\Entity\Genre();
+                    $genre->setGenreName($genreName);
+                    $this->em->persist($genre);
+                }
+                $movie->addGenre($genre);
+            }
             
-            // Convert simple actor names to cast structure for compatibility
-            // This is just a dummy command anyway, let's keep it simple
             $this->em->persist($movie);
         }
 
