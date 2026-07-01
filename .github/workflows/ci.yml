@@ -42,6 +42,30 @@ jobs:
     name: Backend
     runs-on: ubuntu-latest
 
+    services:
+      database:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: cinemate_users_test
+          MYSQL_USER: test_user
+          MYSQL_PASSWORD: test_password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+      mongo-db:
+        image: mongo:6.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test_user
+          MONGO_INITDB_ROOT_PASSWORD: test_password
+        ports:
+          - 27017:27017
+
     defaults:
       run:
         working-directory: backend
@@ -62,6 +86,16 @@ jobs:
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
+
+      - name: Configure local hostnames
+        run: |
+          echo "127.0.0.1 database" | sudo tee -a /etc/hosts
+          echo "127.0.0.1 mongo-db" | sudo tee -a /etc/hosts
+
+      - name: Prepare Database
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:schema:update --force --env=test
 
       - name: Run tests
         run: |
