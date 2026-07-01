@@ -10,7 +10,7 @@ ENV PORT=8000
 RUN sed -i "s/Listen 80/Listen \${PORT}/g" /etc/apache2/ports.conf
 RUN sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:\${PORT}>/g" /etc/apache2/sites-available/000-default.conf
 RUN sed -i "s!/var/www/html!/app/public!g" /etc/apache2/sites-available/000-default.conf
-RUN echo "<Directory /app/public>\n    AllowOverride All\n    Require all granted\n</Directory>" >> /etc/apache2/apache2.conf
+RUN echo "<Directory /app/public>\n    AllowOverride All\n    Require all granted\n    FallbackResource /index.php\n</Directory>" >> /etc/apache2/apache2.conf
 
 # 2. Installation ultra-optimisée des extensions PHP
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
