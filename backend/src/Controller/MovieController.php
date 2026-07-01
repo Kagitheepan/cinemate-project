@@ -27,7 +27,7 @@ class MovieController extends AbstractController
     #[Route('', name: 'api_movies_list', methods: ['GET'])]
     public function list(MovieRepository $movieRepository, Request $request): JsonResponse
     {
-        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v2.json';
+        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v3.json';
         $cacheTtl = 3600; // 1 hour (3600 seconds)
         $jsonContent = null;
 
@@ -313,6 +313,12 @@ class MovieController extends AbstractController
 
         $output = new BufferedOutput();
         $application->run($input, $output);
+        
+        // Clear the cache file so the new movies/genres are immediately visible
+        $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v3.json';
+        if (file_exists($cacheFile)) {
+            unlink($cacheFile);
+        }
 
         return $this->json([
             'message' => 'Base de données initialisée avec succès !', 
