@@ -301,7 +301,7 @@ class MovieController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/reset-db', name: 'api_reset_db', methods: ['GET'])]
+    #[Route('/reset-db', name: 'api_reset_db', methods: ['GET'], priority: 2)]
     public function resetDb(EntityManagerInterface $em, KernelInterface $kernel): JsonResponse
     {
         // 1. Delete all existing movies to clean up old corrupted data
@@ -333,7 +333,7 @@ class MovieController extends AbstractController
         ]);
     }
 
-    #[Route('/init-db', name: 'api_init_db', methods: ['GET'])]
+    #[Route('/init-db', name: 'api_init_db', methods: ['GET'], priority: 2)]
     public function initDb(Request $request, KernelInterface $kernel): JsonResponse
     {
         $application = new Application($kernel);
