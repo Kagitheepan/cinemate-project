@@ -302,20 +302,23 @@ class MovieController extends AbstractController
     }
 
     #[Route('/init-db', name: 'api_init_db', methods: ['GET'])]
-    public function initDb(KernelInterface $kernel): JsonResponse
+    public function initDb(Request $request, KernelInterface $kernel): JsonResponse
     {
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
+        $pages = $request->query->getInt('pages', 1);
+        $startPage = $request->query->getInt('start', 1);
+
         $input = new ArrayInput([
             'command' => 'app:import-movies',
-            '--pages' => 1,
+            '--pages' => $pages,
+            '--start-page' => $startPage,
         ]);
 
         $output = new BufferedOutput();
         $application->run($input, $output);
         
-        // Clear the cache file so the new movies/genres are immediately visible
         $cacheFile = sys_get_temp_dir() . '/cinemate_movies_list_v3.json';
         if (file_exists($cacheFile)) {
             unlink($cacheFile);
