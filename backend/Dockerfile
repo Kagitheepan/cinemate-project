@@ -10,7 +10,7 @@ ENV PORT=8000
 RUN sed -i "s/Listen 80/Listen \${PORT}/g" /etc/apache2/ports.conf
 RUN sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:\${PORT}>/g" /etc/apache2/sites-available/000-default.conf
 RUN sed -i "s!/var/www/html!/app/public!g" /etc/apache2/sites-available/000-default.conf
-RUN echo "<Directory /app/public>\n    AllowOverride All\n    Require all granted\n    FallbackResource /index.php\n</Directory>" >> /etc/apache2/apache2.conf
+RUN echo "<Directory /app/public>\n    AllowOverride All\n    Require all granted\n    FallbackResource /index.php\n    SetEnvIf Authorization \"(.*)\" HTTP_AUTHORIZATION=\$1\n</Directory>" >> /etc/apache2/apache2.conf
 
 # 2. Installation ultra-optimisée des extensions PHP
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -39,11 +39,7 @@ RUN composer install --no-interaction --optimize-autoloader --no-scripts --no-de
 RUN touch .env
 
 # 5. Script de démarrage : JWT + Migrations + Lancement d'Apache
-CMD bash -c "mkdir -p config/jwt && \
-             if [ ! -f config/jwt/private.pem ]; then \
-                 openssl genpkey -out config/jwt/private.pem -pass env:JWT_PASSPHRASE -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096; \
-                 openssl pkey -in config/jwt/private.pem -passin env:JWT_PASSPHRASE -pubout -out config/jwt/public.pem; \
-             fi && \
+CMD bash -c "php bin/console lexik:jwt:generate-keypair --skip-if-exists && \
              php bin/console cache:clear && \
              php bin/console doctrine:migrations:migrate --no-interaction && \
              echo 'Starting Apache Server...' && \
