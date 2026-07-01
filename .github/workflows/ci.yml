@@ -42,6 +42,27 @@ jobs:
     name: Backend
     runs-on: ubuntu-latest
 
+    services:
+      database:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+      mongo-db:
+        image: mongo:6.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: root
+        ports:
+          - 27017:27017
+
     defaults:
       run:
         working-directory: backend
@@ -63,10 +84,25 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction --no-scripts
 
+      - name: Configure local hostnames and env overrides
+        run: |
+          echo "127.0.0.1 database" | sudo tee -a /etc/hosts
+          echo "127.0.0.1 mongo-db" | sudo tee -a /etc/hosts
+          echo 'DATABASE_URL="mysql://root:root@database:3306/cinemate_users_test?serverVersion=8.0&charset=utf8mb4"' > .env.test.local
+          echo 'MONGODB_URI="mongodb://root:root@mongo-db:27017"' >> .env.test.local
+
+      - name: Prepare Database
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:schema:update --force --env=test
+          php bin/console doctrine:fixtures:load --env=test -n
+
       - name: Run tests
+        env:
+          SYMFONY_DEPRECATIONS_HELPER: weak
         run: |
           set +e
-          php bin/phpunit -c phpunit.dist.xml 2>&1 | tee phpunit.log
+          php bin/phpunit -c phpunit.xml.dist 2>&1 | tee phpunit.log
           status=${PIPESTATUS[0]}
           if [ "$status" -ne 0 ]; then
             while IFS= read -r line; do
