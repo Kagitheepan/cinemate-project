@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
 import MovieGrid from '../components/MovieGrid';
 import { Link, useNavigate } from 'react-router-dom';
@@ -70,17 +70,19 @@ const Home = () => {
     // Use unique movies (API movies are unique by ID usually, but mock might have duplicates if we kept that logic)
     const uniqueMovies = movies.filter(m => !m.id.endsWith('-2'));
 
-    const filteredMovies = uniqueMovies.filter(movie => {
-        const matchesDuration = maxDuration ? (movie.duration || 999) <= maxDuration : true;
-        const query = searchQuery.toLowerCase();
-        const matchesSearch = query ? (
-            movie.title.toLowerCase().includes(query) ||
-            (movie.director && movie.director.toLowerCase().includes(query)) ||
-            (movie.castNames && movie.castNames.some(name => name.toLowerCase().includes(query)))
-        ) : true;
-        const matchesGenre = selectedGenre ? (movie.genres || []).includes(selectedGenre) : true;
-        return matchesDuration && matchesSearch && matchesGenre;
-    });
+    const filteredMovies = useMemo(() => {
+        return uniqueMovies.filter(movie => {
+            const matchesDuration = maxDuration ? (movie.duration || 999) <= maxDuration : true;
+            const query = searchQuery.toLowerCase();
+            const matchesSearch = query ? (
+                movie.title.toLowerCase().includes(query) ||
+                (movie.director && movie.director.toLowerCase().includes(query)) ||
+                (movie.castNames && movie.castNames.some(name => name.toLowerCase().includes(query)))
+            ) : true;
+            const matchesGenre = selectedGenre ? (movie.genres || []).includes(selectedGenre) : true;
+            return matchesDuration && matchesSearch && matchesGenre;
+        });
+    }, [uniqueMovies, maxDuration, searchQuery, selectedGenre]);
 
     // Show all matching if searching or filtering, otherwise show top 6
     const isFiltering = searchQuery || selectedGenre || maxDuration;
