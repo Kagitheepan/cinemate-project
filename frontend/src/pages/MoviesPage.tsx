@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import MovieGrid from '../components/MovieGrid';
 import Button from '../components/ui/Button';
 import { useMovies } from '../context/MovieContext';
@@ -37,18 +37,20 @@ const MoviesPage = () => {
     }, [searchQuery, selectedGenre, maxDuration]);
 
     // Apply filters
-    const filteredMovies = movies.filter(movie => {
-        const query = searchQuery.toLowerCase();
-        const matchesSearch = query ? (
-            movie.title.toLowerCase().includes(query) ||
-            (movie.director && movie.director.toLowerCase().includes(query)) ||
-            (movie.castNames && movie.castNames.some(name => name.toLowerCase().includes(query)))
-        ) : true;
-        
-        const matchesGenre = selectedGenre ? (movie.genres || []).includes(selectedGenre) : true;
-        const matchesDuration = maxDuration ? (movie.duration || 999) <= maxDuration : true;
-        return matchesSearch && matchesGenre && matchesDuration;
-    });
+    const filteredMovies = useMemo(() => {
+        return movies.filter(movie => {
+            const query = searchQuery.toLowerCase();
+            const matchesSearch = query ? (
+                movie.title.toLowerCase().includes(query) ||
+                (movie.director && movie.director.toLowerCase().includes(query)) ||
+                (movie.castNames && movie.castNames.some(name => name.toLowerCase().includes(query)))
+            ) : true;
+            
+            const matchesGenre = selectedGenre ? (movie.genres || []).includes(selectedGenre) : true;
+            const matchesDuration = maxDuration ? (movie.duration || 999) <= maxDuration : true;
+            return matchesSearch && matchesGenre && matchesDuration;
+        });
+    }, [movies, searchQuery, selectedGenre, maxDuration]);
 
     const displayedMovies = filteredMovies.slice(0, displayedCount);
 
