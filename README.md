@@ -65,6 +65,19 @@ docker compose up -d       # Arrière-plan
 docker compose logs -f backend   # Logs d'un service
 ```
 
+### Importation des films
+
+Pour importer les films depuis l'API TMDB en local, exécutez la commande suivante :
+
+```bash
+docker exec cinemate-back php bin/console app:import-movies
+```
+
+*Options disponibles :*
+- `--pages` (`-p`) : Nombre de pages à importer (par défaut : `5`)
+- `--start-page` (`-s`) : Page de démarrage de l'import (par défaut : `1`)
+
+
 ### Exécution des tests
 
 #### Tests backend (PHPUnit)
